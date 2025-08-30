@@ -1,0 +1,25 @@
+baseURL: 'https://bloodraven.in'
+languageCode: 'en-us'
+title: 'BloodRaven'
+theme: ''
+
+params:
+  author: "Ishan Jaain"
+  description: "My Corner of the Internet"
+
+menu:
+  main:
+    - name: "Home"
+      url: "/"
+      weight: 1
+    - name: "Blogs"
+      url: "/blogs/"
+      weight: 2
+    - name: "Recommendations"
+      url: "/recommendations/"
+      weight: 3
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
