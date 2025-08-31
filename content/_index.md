@@ -10,11 +10,11 @@ Welcome to **BloodRaven.in** — my little corner of the internet.
 
 ## 🧑‍💻 About Me
 
-I'm a **Software Engineer 2 – Application DevOps** at **Mastercard, Gurugram, India**.  
-I’m passionate about **Cloud, Containers, and Community** — always exploring ways to build, break, and improve systems.  
+I’m a **Software Engineer** specializing in **Cloud, DevOps and SRE**.
+Passionate about **Cloud, Containers, and Community** — always exploring ways to **build, break, and improve systems**. 
 
 Outside of work, you’ll usually find me:
-- Brewing **freshly ground coffee** with my trusty Aeropress ☕  
+- Brewing **freshly ground coffee** with my handy Aeropress ☕  
 - Watching **movies, TV shows, and anime** 🎬  
 - Trying (and failing, sometimes 😅) to get out of a **reading slump** 📚  
 

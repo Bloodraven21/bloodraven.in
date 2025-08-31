@@ -2,7 +2,6 @@
 title: "Tech Blogs"
 ---
 
-# 💻 Tech Blogs
 
 Welcome to my collection of **technology-focused posts** — a space where I share:  
 

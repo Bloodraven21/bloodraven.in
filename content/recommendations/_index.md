@@ -2,7 +2,6 @@
 title: "Recommendations"
 ---
 
-# ⭐ Recommendations
 
 This is my space for sharing things I’ve found valuable, inspiring, or just plain fun.  
 Expect a mix of:  

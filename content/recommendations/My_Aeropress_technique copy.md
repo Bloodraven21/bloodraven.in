@@ -4,8 +4,6 @@ date: 2025-08-30T10:00:00+05:30
 draft: false
 ---
 
-# ☕ My Aeropress Technique
-
 ## What You’ll Need
 - **Aeropress**
 - **Coffee Grinder**
@@ -31,7 +29,7 @@ Both use the **Inverted Aeropress Method**, but the difference lies in the amoun
 ### Steps
 1. Invert the Aeropress.  
 2. Add coffee grounds + 50ml of water.  
-3. Let bloom for **30 seconds**.  
+3. Let it bloom for **30 seconds**.  
 4. Add **150–190ml** of water.  
 5. Brew for:  
    - **Light roast:** 2 minutes (120s) + bloom → total **150s**  
