@@ -13,7 +13,7 @@ jobs:
         with:
           hugo-version: 'latest'
       - name: Build
-        run: hugo --minify
+        run: hugo
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
