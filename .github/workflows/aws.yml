@@ -1,42 +1,28 @@
 name: Deploy bloodraven.in to S3
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
-
+        uses: actions/checkout@v4
       - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
+        uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: 'latest'
-
       - name: Build
         run: hugo --minify
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-south-1
-
       - name: Deploy to S3
-        uses: aws-actions/s3-sync-action@v1
-        with:
-          bucket: ${{ secrets.BUCKET }}
-          region: ap-south-1
-          source-dir: ./public
-          # optional: remove deleted files from S3
-          delete: true
-
+        run: |
+          aws s3 sync ./public s3://${{ secrets.BUCKET }} --region ap-south-1 --delete
       - name: Invalidate CloudFront
-        uses: chetan/invalidate-cloudfront-action@v2
-        with:
-          distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
-          paths: "/*"
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
