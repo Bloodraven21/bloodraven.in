@@ -2,24 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Recommendations on Ishan Jain</title>
-    <link>http://localhost:44633/recommendations/</link>
+    <link>http://localhost:35853/recommendations/</link>
     <description>Recent content in Recommendations on Ishan Jain</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 30 Aug 2025 10:00:00 +0530</lastBuildDate>
-    <atom:link href="http://localhost:44633/recommendations/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:35853/recommendations/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My Aeropress Technique</title>
-      <link>http://localhost:44633/recommendations/my_aeropress_technique-copy/</link>
+      <link>http://localhost:35853/recommendations/my_aeropress_technique-copy/</link>
       <pubDate>Sat, 30 Aug 2025 10:00:00 +0530</pubDate>
-      <guid>http://localhost:44633/recommendations/my_aeropress_technique-copy/</guid>
+      <guid>http://localhost:35853/recommendations/my_aeropress_technique-copy/</guid>
       <description>What You’ll Need Aeropress Coffee Grinder Freshly Roasted Coffee (ideally &amp;lt; 1 month old, no more than 6 weeks) Hot Water Brewing Styles I like to brew my coffee in two ways:&#xA;Hot Aeropress Coffee Iced Aeropress Coffee Both use the Inverted Aeropress Method, but the difference lies in the amount of water and whether ice is added.&#xA;🔥 Hot Aeropress Coffee Coffee: 12.5g, freshly ground (light → medium roast) Water: Boil, then let it rest for ~1 min before use Steps Invert the Aeropress.</description>
     </item>
     <item>
       <title>Playlist Recommendations</title>
-      <link>http://localhost:44633/recommendations/playlist_recommendations/</link>
+      <link>http://localhost:35853/recommendations/playlist_recommendations/</link>
       <pubDate>Sat, 30 Aug 2025 10:00:00 +0530</pubDate>
-      <guid>http://localhost:44633/recommendations/playlist_recommendations/</guid>
+      <guid>http://localhost:35853/recommendations/playlist_recommendations/</guid>
       <description>Theser are the playlist I listen to.&#xA;I’ve split them into Spotify and YouTube.&#xA;🎧 Spotify Playlists All Gas No Breaks You Faded Away Like Smoke Find Good Songs 📺 YouTube Playlists Tokyo Chill Labs - I wish summer would never end. Tokyo Chill Labs - Neo Soul. </description>
     </item>
   </channel>
