@@ -31,6 +31,29 @@ body {
     justify-content: center;
 }
 
+/* Navigation items */
+.nav-item {
+    list-style: none;
+}
+
+.nav-link {
+    color: #E0E0E0;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #c77dff;
+    background-color: rgba(199, 125, 255, 0.1);
+}
+
+.nav-link.active {
+    color: #c77dff;
+    background-color: rgba(199, 125, 255, 0.15);
+}
+
 /* Main content */
 main {
     flex: 1;
