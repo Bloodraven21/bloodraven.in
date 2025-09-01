@@ -2,26 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:35853/recommendations/my_aeropress_technique-copy/</loc>
+    <loc>https://www.bloodraven.in/recommendations/my_aeropress_technique-copy/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:35853/blogs/my-first-post/</loc>
+    <loc>https://www.bloodraven.in/blogs/my-first-post/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:35853/recommendations/playlist_recommendations/</loc>
+    <loc>https://www.bloodraven.in/recommendations/playlist_recommendations/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:35853/recommendations/</loc>
+    <loc>https://www.bloodraven.in/recommendations/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:35853/blogs/</loc>
+    <loc>https://www.bloodraven.in/blogs/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:35853/</loc>
+    <loc>https://www.bloodraven.in/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:35853/categories/</loc>
+    <loc>https://www.bloodraven.in/categories/</loc>
   </url><url>
-    <loc>http://localhost:35853/tags/</loc>
+    <loc>https://www.bloodraven.in/tags/</loc>
   </url>
 </urlset>
