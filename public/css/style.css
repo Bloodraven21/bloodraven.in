@@ -231,3 +231,27 @@ article .date {
         gap: 1rem;
     }
 }
+
+.content ul,
+.content ol {
+    list-style: none;
+    padding-left: 0;
+    margin: 1rem 0;
+}
+
+.content li {
+    margin: 0.75rem 0;
+    padding: 0.9rem 1rem;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.3s ease;
+}
+
+.content li:hover {
+    transform: translateY(-4px);
+    border-color: #a855f7;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.4);
+    background: linear-gradient(145deg, #1e1b4b, #312e81);
+}
