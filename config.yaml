@@ -2,6 +2,7 @@ baseURL: 'https://bloodraven.in/'
 languageCode: 'en-us'
 title: 'BloodRaven'
 theme: ''
+publishDir: "public"
 
 params:
   author: "Ishan Jaain"
