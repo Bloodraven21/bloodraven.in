@@ -1,22 +1,27 @@
 {{ define "main" }}
-<div class="intro-section">
-    <div class="intro-content">
-        <h1>{{ .Title }}</h1>
-        {{ .Content }}
-    </div>
+<div class="post-header">
+    <h1>{{ .Title }}</h1>
+    {{ if .Content }}
+        <div class="section-description">
+            {{ .Content }}
+        </div>
+    {{ end }}
 </div>
 
 {{ if .Pages }}
-<ul class="content-list">
+<div class="post-list">
     {{ range .Pages }}
-    <li>
-        <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-        <span class="date">{{ .Date.Format "January 2, 2006" }}</span>
-        <p>{{ .Summary }}</p>
-    </li>
+    <div class="post-item">
+        <time class="post-date">{{ .Date.Format "January 2, 2006" }}</time>
+        <h3 class="post-title">
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </h3>
+    </div>
     {{ end }}
-</ul>
+</div>
 {{ else }}
-<p>No recommendations yet. Check back soon!</p>
+<div class="no-posts">
+    <p>No posts yet. Check back soon!</p>
+</div>
 {{ end }}
 {{ end }}

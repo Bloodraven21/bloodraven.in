@@ -63,6 +63,8 @@ main {
     width: 100%;
     display: flex;
     flex-direction: column;
+    text-align: left;          /* Force left alignment */
+    align-items: flex-start;   /* Align content to left */
 }
 
 /* Intro section */
@@ -75,17 +77,20 @@ main {
     font-size: 2.5rem;
     margin-bottom: 1rem;
     color: #c77dff;
+    text-align: center; /* Keep big heading centered */
 }
 
 .intro-content h2 {
     font-size: 1.8rem;
     margin: 2rem 0 1rem;
     color: #c77dff;
+    text-align: left;
 }
 
 .intro-content p {
     margin-bottom: 1rem;
     font-size: 1.1rem;
+    text-align: left;
 }
 
 /* Links */
@@ -136,6 +141,7 @@ footer {
     list-style: none;
     padding: 0;
     margin-top: 2rem;
+    text-align: left;
 }
 
 .content-list li {
@@ -159,6 +165,7 @@ footer {
     font-size: 1.3rem;
     font-weight: bold;
     margin-bottom: 0.5rem;
+    text-align: left;
 }
 
 .content-list h3 a {
@@ -177,6 +184,7 @@ footer {
     color: #94a3b8;
     font-style: italic;
     margin-bottom: 0.75rem;
+    text-align: left;
 }
 
 .content-list p {
@@ -186,6 +194,7 @@ footer {
     max-height: 4.5em; /* ~3 lines */
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left;
 }
 
 /* Article styling */
@@ -193,18 +202,21 @@ article header h1 {
     color: #c77dff;
     font-size: 2rem;
     margin-bottom: 0.5rem;
+    text-align: center;
 }
 
 article .date {
     color: #94a3b8;
     margin-bottom: 2rem;
     font-style: italic;
+    text-align: left;
 }
 
 .content h1, .content h2, .content h3 {
     color: #c77dff;
     margin-top: 2rem;
     margin-bottom: 1rem;
+    text-align: left;
 }
 
 .content h1 { font-size: 1.8rem; }
@@ -252,5 +264,108 @@ article .date {
     
     .socials {
         gap: 1rem;
+    }
+}
+
+/* Post List Styling */
+.post-header {
+    margin-bottom: 3rem;
+    text-align: center; /* keep Recommendations title centered */
+}
+
+.post-header h1 {
+    font-size: 2.5rem;
+    color: #c77dff;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.section-description {
+    font-size: 1.1rem;
+    color: #cbd5e1;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+    text-align: left;
+}
+
+.post-list {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.post-item {
+    display: flex;
+    align-items: baseline;
+    gap: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #334155;
+    transition: background-color 0.2s ease;
+    text-align: left;
+}
+
+.post-item:hover {
+    background-color: rgba(199, 125, 255, 0.05);
+    margin: 0 -1rem;
+    padding: 1.5rem 1rem;
+    border-radius: 8px;
+    border-bottom: 1px solid #334155;
+}
+
+.post-item:last-child {
+    border-bottom: none;
+}
+
+.post-date {
+    font-size: 0.95rem;
+    color: #94a3b8;
+    font-weight: 500;
+    min-width: 140px;
+    flex-shrink: 0;
+    text-align: left;
+}
+
+.post-title {
+    flex: 1;
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: left;
+}
+
+.post-title a {
+    color: #E0E0E0;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.post-title a:hover {
+    color: #c77dff;
+}
+
+.no-posts {
+    text-align: left;
+    padding: 3rem 0;
+    color: #94a3b8;
+    font-size: 1.1rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .post-item {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    .post-date {
+        min-width: auto;
+        font-size: 0.85rem;
+    }
+    
+    .post-header h1 {
+        font-size: 2rem;
     }
 }
