@@ -21,3 +21,4 @@ I’ve split them into **Spotify** and **YouTube**.
 
 - [Tokyo Chill Labs - I wish summer would never end.](https://www.youtube.com/watch?v=aeCt2CEY5jk&t=0s) 
 - [Tokyo Chill Labs - Neo Soul.](https://www.youtube.com/watch?v=0Fj64pWOSqQ&t=0s)
+- [Slow Coffee Sessions Vol. 7 | Nebula | Chill Lofi Hip Hop Music Mix](https://www.youtube.com/watch?v=XNjOHQOgbzU&t=2949s)
