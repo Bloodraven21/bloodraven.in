@@ -30,6 +30,9 @@ Outside of work, you’ll usually find me:
 ## ✨ Let’s Connect
 
 This space is for sharing, learning, and connecting.  
-Feel free to explore — and don’t hesitate to reach out if something resonates with you!
+
+Feel free to explore — and don’t hesitate to reach out if something resonates with you!  
+
 📅 **Book a 15-minute fireside chat with me:**  
+
 [calendly.com/ishanij10115](https://calendly.com/ishanij10115)
