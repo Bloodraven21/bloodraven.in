@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tech Blogs on Ishan Jain</title>
-    <link>http://localhost:40639/blogs/</link>
+    <link>http://localhost:1313/blogs/</link>
     <description>Recent content in Tech Blogs on Ishan Jain</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 Aug 2025 10:00:00 +0530</lastBuildDate>
-    <atom:link href="http://localhost:40639/blogs/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 17 Sep 2025 10:00:00 +0530</lastBuildDate>
+    <atom:link href="http://localhost:1313/blogs/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My First Tech Blog Post</title>
-      <link>http://localhost:40639/blogs/my-first-post/</link>
-      <pubDate>Sat, 30 Aug 2025 10:00:00 +0530</pubDate>
-      <guid>http://localhost:40639/blogs/my-first-post/</guid>
-      <description>Welcome to My First Post This is where your blog content goes. You can use all markdown features:&#xA;Lists Bold text code snippets Links and more! Code Example def hello_world(): print(&amp;#34;Hello, World!&amp;#34;) </description>
+      <title>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</title>
+      <link>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</link>
+      <pubDate>Wed, 17 Sep 2025 10:00:00 +0530</pubDate>
+      <guid>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</guid>
+      <description>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup When people say ‘learn AWS,’ it’s easy to get lost in a sea of services. In reality, most real-world architectures start with a VPC, subnets, instances, storage, and permissions.&#xA;In this guide, we’ll build a secure, production-style setup step-by-step — and we’ll do it four ways:&#xA;AWS Console AWS CLI Bash Automation Scripts Terraform What You Will Gain After Doing This Hands-on experience with core AWS services Learn how to automate (CLI, scripts, Terraform) Cover security best practices (bastion, private DB, IAM roles, S3 VPC endpoints) AWS Architecture Diagram 🖼️ What This Architecture Shows This diagram represents a secure, highly available, multi-AZ VPC that you’d find in a real-world AWS setup.</description>
     </item>
   </channel>
 </rss>

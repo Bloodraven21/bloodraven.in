@@ -2,26 +2,26 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:40639/recommendations/my_aeropress_technique-copy/</loc>
+    <loc>http://localhost:1313/blogs/</loc>
+    <lastmod>2025-09-17T10:00:00+05:30</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</loc>
+    <lastmod>2025-09-17T10:00:00+05:30</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/</loc>
+    <lastmod>2025-09-17T10:00:00+05:30</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/recommendations/my_aeropress_technique-copy/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:40639/blogs/my-first-post/</loc>
+    <loc>http://localhost:1313/recommendations/playlist_recommendations/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:40639/recommendations/playlist_recommendations/</loc>
+    <loc>http://localhost:1313/recommendations/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:40639/recommendations/</loc>
-    <lastmod>2025-08-30T10:00:00+05:30</lastmod>
+    <loc>http://localhost:1313/categories/</loc>
   </url><url>
-    <loc>http://localhost:40639/blogs/</loc>
-    <lastmod>2025-08-30T10:00:00+05:30</lastmod>
-  </url><url>
-    <loc>http://localhost:40639/</loc>
-    <lastmod>2025-08-30T10:00:00+05:30</lastmod>
-  </url><url>
-    <loc>http://localhost:40639/categories/</loc>
-  </url><url>
-    <loc>http://localhost:40639/tags/</loc>
+    <loc>http://localhost:1313/tags/</loc>
   </url>
 </urlset>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup - Ishan Jain</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+    <nav class="navbar">
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="/" class="nav-link">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="/blogs/" class="nav-link active">Blogs</a>
+            </li>
+            <li class="nav-item">
+                <a href="/recommendations/" class="nav-link">Recommendations</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+    
+    <main>
+        
+<article>
+    <header>
+        <h1>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</h1>
+        <p class="date">September 17, 2025</p>
+    </header>
+    
+    <div class="content">
+        <h1 id="the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup">The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</h1>
+<p>When people say ‘learn AWS,’ it’s easy to get lost in a sea of services. In reality, most real-world architectures start with a VPC, subnets, instances, storage, and permissions.<br>
+In this guide, we’ll build a secure, production-style setup step-by-step — and we’ll do it four ways:</p>
+<ul>
+<li><strong>AWS Console</strong></li>
+<li><strong>AWS CLI</strong></li>
+<li><strong>Bash Automation Scripts</strong></li>
+<li><strong>Terraform</strong></li>
+</ul>
+<hr>
+<h2 id="what-you-will-gain-after-doing-this">What You Will Gain After Doing This</h2>
+<ul>
+<li>Hands-on experience with core AWS services</li>
+<li>Learn how to automate (CLI, scripts, Terraform)</li>
+<li>Cover security best practices (bastion, private DB, IAM roles, S3 VPC endpoints)</li>
+</ul>
+<hr>
+<h2 id="aws-architecture-diagram">AWS Architecture Diagram</h2>
+<p><img src="/images/aws-architecture.png" alt="AWS Architecture"></p>
+<hr>
+<h2 id="-what-this-architecture-shows">🖼️ What This Architecture Shows</h2>
+<p>This diagram represents a <strong>secure, highly available, multi-AZ VPC</strong> that you’d find in a real-world AWS setup.<br>
+It’s not a “Hello World” demo — it’s a <strong>mini production environment</strong> with all the moving parts you’d expect:</p>
+<ul>
+<li><strong>Networking:</strong> VPC, public/private/DB subnets across 3 Availability Zones</li>
+<li><strong>Security:</strong> Bastion host, security groups, IAM roles, VPC endpoint</li>
+<li><strong>Compute:</strong> Public EC2 (Bastion) + Private EC2</li>
+<li><strong>Storage:</strong> S3 bucket with VPC endpoint (private access)</li>
+<li><strong>Database:</strong> Multi-AZ RDS with primary + standby in private DB subnets</li>
+<li><strong>Routing:</strong> Internet Gateway, NAT Gateway, route tables</li>
+</ul>
+<hr>
+<h2 id="-why-building-this-gives-you-real-world-hands-on">🛠️ Why Building This Gives You Real-World Hands-On</h2>
+<ol>
+<li>
+<p><strong>You’ll Design a Real Network Topology</strong></p>
+<ul>
+<li>3-tier subnets (public, private app, private DB) across multiple AZs — exactly how production networks are built for availability and security.</li>
+</ul>
+</li>
+<li>
+<p><strong>You’ll Practice the Right Security Patterns</strong></p>
+<ul>
+<li>Bastion host for controlled SSH access (no direct SSH to private servers).</li>
+<li>Security groups that only allow specific sources (Bastion → Private EC2, Private EC2 → DB).</li>
+<li>IAM roles for EC2 to access S3 instead of hard-coded credentials.</li>
+<li>S3 VPC Endpoint for private S3 access without exposing to the Internet.</li>
+</ul>
+</li>
+<li>
+<p><strong>You’ll Work With Core AWS Services</strong></p>
+<ul>
+<li>EC2, VPC, Subnets, Security Groups, Route Tables, NAT Gateway, Internet Gateway, RDS, S3, IAM Roles, VPC Endpoints — these are bread-and-butter AWS services.</li>
+</ul>
+</li>
+<li>
+<p><strong>You’ll Learn Multi-AZ High Availability</strong></p>
+<ul>
+<li>Deploying subnets and DBs across multiple AZs shows you how AWS achieves fault tolerance.</li>
+</ul>
+</li>
+<li>
+<p><strong>You’ll Deploy It Four Ways</strong></p>
+<ul>
+<li><strong>AWS Console:</strong> You’ll understand each setting and option visually.</li>
+<li><strong>AWS CLI:</strong> You’ll get comfortable with automation commands.</li>
+<li><strong>Bash Script + CLI:</strong> You’ll learn how to parameterize and repeat deployments.</li>
+<li><strong>Terraform:</strong> You’ll practice true Infrastructure as Code, versioning, and repeatability.</li>
+</ul>
+</li>
+</ol>
+<p>This combo is exactly how real production teams work: design + manual console, then automation via CLI, then Infra as Code via Terraform.</p>
+
+    </div>
+</article>
+
+    </main>
+    
+    <footer>
+    <div class="social-links">
+        <h3>Connect with me:</h3>
+        <div class="socials">
+            <a href="https://github.com/bloodraven21" target="_blank">GitHub</a>
+            <a href="https://www.instagram.com/bloodraven.2112" target="_blank">Instagram</a>
+            <a href="https://linkedin.com/in/ishan-jain21" target="_blank">LinkedIn</a>
+            <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target="_blank">Spotify</a>
+            <a href="https://x.com/bloodravendev" target="_blank">Twitter</a>
+            
+        </div>
+    </div>
+</footer>
+</body>
+</html>
