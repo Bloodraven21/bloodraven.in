@@ -3,12 +3,15 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>http://localhost:1313/blogs/</loc>
-    <lastmod>2025-09-17T10:00:00+05:30</lastmod>
+    <lastmod>2025-11-02T14:53:00+05:30</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</loc>
-    <lastmod>2025-09-17T10:00:00+05:30</lastmod>
+    <loc>http://localhost:1313/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</loc>
+    <lastmod>2025-11-02T14:53:00+05:30</lastmod>
   </url><url>
     <loc>http://localhost:1313/</loc>
+    <lastmod>2025-11-02T14:53:00+05:30</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</loc>
     <lastmod>2025-09-17T10:00:00+05:30</lastmod>
   </url><url>
     <loc>http://localhost:1313/recommendations/my_aeropress_technique-copy/</loc>

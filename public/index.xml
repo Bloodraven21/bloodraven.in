@@ -6,8 +6,15 @@
     <description>Recent content in Welcome to BloodRaven on Ishan Jain</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 17 Sep 2025 10:00:00 +0530</lastBuildDate>
+    <lastBuildDate>Sun, 02 Nov 2025 14:53:00 +0530</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The Curious Case of Request and Limit on AWS EKS Fargate</title>
+      <link>http://localhost:1313/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</link>
+      <pubDate>Sun, 02 Nov 2025 14:53:00 +0530</pubDate>
+      <guid>http://localhost:1313/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</guid>
+      <description>If you&amp;rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:&#xA;The Scenario You have a pod with the following resource specifications:&#xA;resources: requests: cpu: 100m memory: 500Mi limits: cpu: 4000m memory: 8000Mi At first glance, you might think: &amp;ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.</description>
+    </item>
     <item>
       <title>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</title>
       <link>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</link>
