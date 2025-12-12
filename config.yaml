@@ -5,7 +5,7 @@ theme: ''
 publishDir: "public"
 
 params:
-  author: "Ishan Jaain"
+  author: "Ishan Jain"
   description: "My Corner of the Internet"
 
 menu:
