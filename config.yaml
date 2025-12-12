@@ -19,6 +19,9 @@ menu:
     - name: "Recommendations"
       url: "/recommendations/"
       weight: 3
+    - name: "Socials"
+      url: "/Socials"
+      weight: 4
 
 markup:
   goldmark:
