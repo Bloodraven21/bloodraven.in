@@ -20,7 +20,7 @@ menu:
       url: "/recommendations/"
       weight: 3
     - name: "Socials"
-      url: "/Socials"
+      url: "/socials/"
       weight: 4
 
 markup:

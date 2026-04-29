@@ -352,6 +352,38 @@ article .date {
     font-size: 1.1rem;
 }
 
+.socials-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.social-link-card {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #334155;
+    text-align: center;
+    color: #E0E0E0;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: color 0.3s ease, background-color 0.2s ease, padding 0.2s ease;
+    border-radius: 8px;
+}
+
+.social-link-card:last-child {
+    border-bottom: none;
+}
+
+.social-link-card:hover {
+    color: #c77dff;
+    background-color: rgba(199, 125, 255, 0.05);
+    padding: 1.5rem 1rem;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .post-item {
