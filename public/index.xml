@@ -6,8 +6,15 @@
     <description>Recent content in Welcome to BloodRaven on Ishan Jain</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 10 May 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 19 May 2026 10:00:00 +0530</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Stop Asking for a DevOps Roadmap. Read This Instead</title>
+      <link>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup-copy/</link>
+      <pubDate>Tue, 19 May 2026 10:00:00 +0530</pubDate>
+      <guid>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup-copy/</guid>
+      <description>Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask &amp;ldquo;give us a roadmap of becoming a DevOps engineer&amp;rdquo; or &amp;ldquo;what was your roadmap,&amp;rdquo; I go blank and start thinking, what was my roadmap? And I say, learn Docker, K8s, Terraform, or AWS. So I sat down and wrote my thoughts. If I needed to start again with no memory of g a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.</description>
+    </item>
     <item>
       <title>The Curious Case of Docker Hardened Images</title>
       <link>http://localhost:1313/blogs/the-curious-case-of-docker-hardend-images/</link>

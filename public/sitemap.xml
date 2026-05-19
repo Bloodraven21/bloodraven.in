@@ -59,6 +59,9 @@
     <loc>http://localhost:1313/recommendations/</loc>
     <lastmod>2025-08-30T10:00:00+05:30</lastmod>
   </url><url>
+    <loc>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup-copy/</loc>
+    <lastmod>2025-05-19T10:00:00+05:30</lastmod>
+  </url><url>
     <loc>http://localhost:1313/socials/</loc>
   </url>
 </urlset>

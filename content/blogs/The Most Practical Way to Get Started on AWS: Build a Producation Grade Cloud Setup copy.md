@@ -1,6 +1,6 @@
 ---
 title: "Stop Asking for a DevOps Roadmap. Read This Instead"
-date: 2025-05-19T10:00:00+05:30
+date: 2026-05-19T10:00:00+05:30
 draft: false
 ---
 
