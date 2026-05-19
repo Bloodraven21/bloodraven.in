@@ -6,342 +6,426 @@ draft: false
 
 # Stop Asking for a DevOps Roadmap. Read This Instead
 
-People who reach out to me and ask "give us a roadmap of becoming a DevOps engineer" or "what was your roadmap," I go blank and start thinking, what was my roadmap? And I say, learn Docker, K8s, Terraform, or AWS.
-So I sat down and wrote my thoughts. If I needed to start again with no memory of g a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.
-Also, a job is an outcome of being a good engineer and problem solver. Learn to become that, not to get a job. This is the first thing I would have told my 21-year-old self when I started to learn.
+People who reach out to me and ask "give us a roadmap of becoming a DevOps engineer" or "what was your roadmap" - I go blank. What was my roadmap? I end up saying: learn Docker, K8s, Terraform, or AWS.
 
+So I sat down and wrote my thoughts. If I needed to start again with no memory of being a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.
 
------
+A job is an outcome of being a good engineer and problem solver. Learn to become that, not to get a job. That's the first thing I would have told my 21-year-old self.
 
-## Starting with a programming language
+---
 
-I would say **Go**. 
-Docker, K8s, Terraform are all written in Go, so it makes sense.
+## Programming Language
 
-But don't just learn the syntax.
+Start with **Go**.
 
-Learn how an HTTP server is made. 
+Docker, K8s, and Terraform are all written in Go - it makes sense. But don't just learn the syntax.
 
-What is a request? 
+- Build an HTTP server from scratch
 
-HTTP methods: POST, GET, PUT, UPDATE, DELETE. 
+- Understand what a request is: HTTP methods (GET, POST, PUT, DELETE), error codes, rate limiting, exponential backoffs, API contracts
 
-HTTP error codes. Rate limiting. Exponential backoffs. API contracts.
+- Packages, dependencies, supply chains
 
-Packages, Dependencies, Supply Changes
+- Queuing, caching, goroutines, concurrency, graceful shutdown
 
-Then some queuing. Some caching. Goroutines. Concurrency. Graceful shutdown
+- Observability: logging, traces (APM), profiling
 
-Then learn about observability: logging, traces (APM), profiling the code.
+- Performance testing, load testing, requests per second
 
-Then performance testing, load testing, requests per second.
+**Resources to get started:**
 
+- [A Tour of Go](https://go.dev/tour/) - the official interactive intro. Start here.
+- [Go by Example](https://gobyexample.com/) - annotated examples for every concept. Keep this open as a reference.
+- [Test-Driven Development](https://www.ibm.com/think/topics/test-driven-development) - understand TDD before you write real Go code.
+- [Effective Go patterns](https://gist.github.com/stefanbirkner/835b7d0c498b4026f65a) - patterns worth knowing once you have the basics down.
 
+---
 
------
 ## Linux
 
 You will live in the terminal. Get comfortable here.
 
-Basic commands and navigation: cd, ls, pwd, mkdir, rm, cp, mv, find, grep, cat, less, head, tail. 
+**Basic navigation:**
 
-File system: understand how Linux organizes everything. /etc for configs, /var for logs, /home for users, /tmp for throwaway stuff.
+`cd`, `ls`, `pwd`, `mkdir`, `rm`, `cp`, `mv`, `find`, `grep`, `cat`, `less`, `head`, `tail`
 
-User space vs kernel space: user space is where your applications run, kernel space is where the OS does the heavy lifting. Understanding this boundary helps you debug problems that feel invisible.
+**File system:**
 
-File manipulation: create, edit, permissions (chmod, chown). Know what 755 and 644 mean.
-stdout, stdin, stderr: three streams. Learn to redirect them with >, 2>, and pipe them with |. This is how you compose commands together.
+Linux organizes everything under `/`. Know the key directories:
 
-Bash: write shell scripts. Not because bash is elegant, but because every server you will ever touch has it.
+- `/etc` - configs
+- `/var` - logs
+- `/home` - users
+- `/tmp` - throwaway stuff
 
-Networking: IP addresses, subnets, DNS. Know what happens when you type a URL in your browser and hit enter.
+**User space vs kernel space:**
 
-Ports: just a number that tells the OS which app gets the traffic. 80 is HTTP, 443 is HTTPS, 22 is SSH.
+User space is where your applications run. Kernel space is where the OS does the heavy lifting. Understanding this boundary helps you debug problems that feel invisible.
 
-SSH: how you talk to remote servers. Learn key-based auth, not passwords. You will SSH into things thousands of times in your career.
+**File permissions:**
 
+Create, edit, `chmod`, `chown`. Know what `755` and `644` mean.
 
-----
+**Streams:**
 
-## Git and Github
+`stdout`, `stdin`, `stderr` - three streams. Redirect with `>`, `2>`, and pipe with `|`. This is how you compose commands.
 
-### Git: version control. It tracks every change you make to your code. You can go back in time, work on features without breaking things, and merge it all together.
+**Bash:**
 
-.gitignore: tells Git what to not track. Node modules, .env files, build artifacts. Set this up first.
+Write shell scripts. Not because bash is elegant, but because every server you will ever touch has it.
 
-Tags: mark releases. v1.0.0, v1.1.0. Know what semantic versioning means.
+**Networking:**
 
-git stash: save your work temporarily without committing. Useful when you need to switch branches quickly.
+- IP addresses, subnets, DNS
+- Know what happens when you type a URL and hit enter
+- Ports: 80 is HTTP, 443 is HTTPS, 22 is SSH
 
-git log, git diff, git blame: your debugging friends. Who changed what, when, and why.
+**SSH:**
 
-git reset: undo commits. --soft keeps your changes staged, --hard throws everything away. Know the difference before you run it.
+How you talk to remote servers. Learn key-based auth, not passwords. You will SSH into things thousands of times in your career.
 
-git revert: creates a new commit that undoes a previous one. Safer than reset because it does not rewrite history.
+**Resources to get started:**
 
-git cherry-pick: grab a specific commit from another branch and apply it to yours. Useful when you need just that one fix, not the whole branch.
+- [Linux Roadmap](https://roadmap.sh/linux) - a structured visual guide covering everything above and more.
 
-git bisect: binary search through your commit history to find which commit broke something. Criminally underused.
+---
 
-Squashing commits: combine multiple messy commits into one clean one before merging. Keep the history readable.
+## Git and GitHub
 
-Hooks: scripts that run automatically on certain Git events. Pre-commit hooks to run linting before you even commit. Pre-push hooks to run tests before code leaves your machine.
+### Git
 
-Interactive rebase (git rebase -i): reorder, squash, edit, drop commits. This is where you clean up your work before anyone else sees it.
+Git is version control. It tracks every change you make to your code. You can go back in time, work on features without breaking things, and merge it all together.
 
-Upstream and origin: origin is your fork, upstream is the original repo. Learn to keep them in sync.
+- `.gitignore` - tells Git what not to track: node modules, `.env` files, build artifacts. Set this up first.
 
-Detached HEAD: you checked out a commit instead of a branch. Not broken, just confusing the first time. Know what it means and how to get out.
+- `git stash` - save work temporarily without committing
 
-Git is not hard. It is just badly explained. Practice it by breaking things in a throwaway repo. Break it, fix it, repeat.
+- `git log`, `git diff`, `git blame` - your debugging friends: who changed what, when, and why
 
-Learn Git from the terminal. Not from a GUI. GUIs hide what is actually happening.
+- `git reset` - undo commits. `--soft` keeps changes staged, `--hard` throws everything away. Know the difference before you run it.
 
+- `git revert` - creates a new commit that undoes a previous one. Safer than reset because it doesn't rewrite history.
 
-### GitHub: where your code lives online. Git is the tool, GitHub is the platform.
+- `git cherry-pick` - grab a specific commit from another branch and apply it to yours
 
-Commits: save points. Small, meaningful commits with good messages. Not "fixed stuff."
+- `git bisect` - binary search through commit history to find which commit broke something. Criminally underused.
 
-Branches: work on features in isolation. Main branch stays clean, always deployable.
+- Squashing commits - combine messy commits into one clean one before merging
 
-Merge and rebase: two ways to combine branches. Learn both, have an opinion on when to use which.
+- Hooks - scripts that run on Git events. Pre-commit for linting, pre-push for tests.
 
-Pull requests: how code gets reviewed before it goes into main. No one pushes to main directly. Ever.
+- Interactive rebase (`git rebase -i`) - reorder, squash, edit, drop commits before anyone else sees them
 
-Merge conflicts: they will happen. Do not panic. Read the diff, pick the right changes, move on.
+- Tags - mark releases: `v1.0.0`, `v1.1.0`. Know semantic versioning.
+
+- Upstream vs origin - origin is your fork, upstream is the original repo. Keep them in sync.
+
+- Detached HEAD - you checked out a commit instead of a branch. Not broken, just confusing the first time.
+
+Git is not hard. It's just badly explained. Practice by breaking things in a throwaway repo. Learn it from the terminal, not a GUI - GUIs hide what's actually happening.
+
+**Resources to get started:**
+
+- [Learn Git](https://git-scm.com/learn) - the official book and resources. Free, thorough, authoritative.
+
+### GitHub
+
+Git is the tool. GitHub is the platform where your code lives.
+
+- **Commits** - small, meaningful save points with good messages. Not "fixed stuff."
+
+- **Branches** - work on features in isolation. Main stays clean and always deployable.
+
+- **Pull requests** - how code gets reviewed before it goes into main. No one pushes to main directly. Ever.
+
+- **Merge vs rebase** - two ways to combine branches. Learn both, have an opinion on when to use which.
+
+- **Merge conflicts** - they will happen. Don't panic. Read the diff, pick the right changes, move on.
+
+**Resources to get started:**
+
+- [GitHub Learning](https://learn.github.com/) - official GitHub courses covering PRs, Actions, and more.
 
 ---
 
 ## Docker
 
-What are containers and why are they required: a way to package your application with everything it needs to run, so it works the same everywhere. No more "it works on my machine."
+- **Containers** - a way to package your application with everything it needs to run, so it works the same everywhere. No more "it works on my machine."
 
-What is Docker: the tool that makes containers easy to build, run, and share.
+- **How Docker works** - it uses Linux kernel features (namespaces and cgroups) to isolate processes. It's not a VM; it shares the host kernel.
 
-How does a Docker container work: it uses Linux kernel features like namespaces and cgroups to isolate processes. It is not a VM, it shares the host kernel.
+- **Dockerfile** - a recipe that tells Docker how to build your image. Every line is an instruction.
 
-Dockerfile: a recipe that tells Docker how to build your image. Every line is an instruction.
+- **Multi-stage builds** - use multiple `FROM` statements to keep your final image small. Build in one stage, copy only what you need into the next.
 
-Multi-stage Dockerfiles: use multiple FROM statements to keep your final image small. Build in one stage, copy only what you need into the next.
+- **Layers** - every instruction in your Dockerfile creates a layer. Layers are cached. Order your Dockerfile smartly and builds get fast.
 
-Docker layers: every instruction in your Dockerfile creates a layer. Layers are cached. Order your Dockerfile smartly and your builds get fast.
+- **Networking** - containers can talk to each other. Learn bridge networks, host networking, and how to expose ports.
 
-Docker networking: containers can talk to each other. Learn bridge networks, host networking, and how to expose ports.
+- **Container registries** - where your images live. Docker Hub is public. ECR, GCR, ACR are private.
 
-Container registries: where your images live. Docker Hub is public. ECR, GCR, ACR are private. Learn to push and pull images.
+- **Docker Compose** - define and run multi-container applications with a single YAML file. Your local dev environment lives here.
 
-Docker Compose: define and run multi-container applications with a single YAML file. Your local dev environment lives here.
+**Resources to get started:**
 
-
-----
-
-## AWS
-
-What is AWS: Amazon needed infrastructure for itself, built way more than it needed, and started selling the rest. That is literally how AWS was born.
-
-How AWS is designed: regions are geographic locations (Mumbai, Virginia, Frankfurt). Each region has multiple availability zones (AZs). Each AZ is one or more physical data centres. This is how AWS gives you redundancy. If one AZ goes down, your app stays up.
-
-Basics first: VPC, IAM, EC2, ECR, Lambda, S3. These are the building blocks. Everything else is built on top of these.
-
-IAM: who can do what. Users, roles, policies. Learn this well because bad IAM is how companies get hacked.
-
-S3: object storage. Files go in, files come out. Versioning, lifecycle policies, bucket policies. Deceptively simple but incredibly powerful.
-
-EC2: a virtual machine in the cloud. Pick your OS, pick your size, SSH in. This is where most things run.
-
-ECR: a private Docker registry on AWS. You push images here, your services pull from here.
-
-Lambda: run code without managing servers. You give it a function, it runs when triggered. You pay only when it runs.
-
-VPC (go deeper): this is where it all clicks.
-
-Subnets: public subnets can reach the internet, private subnets cannot. Your databases go in private, your load balancers go in public.
-
-Internet gateway: the door between your VPC and the internet.
-
-NAT gateway: lets your private subnets reach the internet (for updates, API calls) without being reachable from the internet.
-
-Route tables: rules that decide where traffic goes. Every subnet has one.
-
-VPC PrivateLink: lets services talk to each other without traffic ever leaving the AWS network. No internet, no exposure.
-
-Understand how services interact with each other. How does an EC2 instance in a private subnet pull an image from ECR? How does a Lambda function write to S3? How does traffic flow from a user's browser to your app and back? Trace the path. Draw it out. This is how it stops being a list of services and starts becoming a system.
-
-## Terraform
-
-
-What is Terraform: you write code that describes your infrastructure, run it, and Terraform builds it for you. Infrastructure as Code. No more clicking around in the AWS console.
-
-HCL: HashiCorp Configuration Language. The syntax Terraform uses. Not a programming language, just a way to describe what you want.
-
-Providers: plugins that let Terraform talk to cloud platforms. AWS provider, GCP provider, Kubernetes provider. One tool, many clouds.
-
-Resources: the actual things you are creating. An EC2 instance, a VPC, an S3 bucket. Each one is a resource block in your code.
-
-State: Terraform keeps track of what it has created in a state file. This is how it knows what exists and what needs to change. Lose the state file and you are in trouble. Store it remotely (S3 + DynamoDB) from day one.
-
-Plan and Apply: terraform plan shows you what will change. terraform apply makes it happen. Always plan before you apply. Always.
-
-Modules: reusable chunks of Terraform code. Write your VPC setup once, use it across every project. Stop copying and pasting.
-
-Variables and Outputs: variables are inputs to your config, outputs are values you want to extract after creation. Keep things dynamic, not hardcoded.
-
-Workspaces and environments: separate your dev, staging, and production infrastructure. Same code, different state.
-
-terraform destroy: tears everything down. Powerful and terrifying. Respect it.
-
-The real skill with Terraform is not writing it. It is structuring it so a team of people can work on it without stepping on each other.
-
-----
-
-## Kubernetes
-
-What is Kubernetes: a container orchestrator. You tell it what you want running, how many copies, and it figures out the rest. Scheduling, scaling, restarting, networking. All handled.
-
-Why it is used: because running one container is easy. Running hundreds across multiple servers, keeping them healthy, scaling them up and down, routing traffic between them, that is the hard part. Kubernetes solves that.
-
-K8s basics:
-
-Pod: the smallest unit in Kubernetes. One or more containers running together. Think of it as a wrapper around your container.
-
-ReplicaSet: makes sure a specific number of pods are always running. One pod dies, it spins up another.
-
-Deployment: manages ReplicaSets for you. This is what you actually create most of the time. Rolling updates, rollbacks, scaling, all through deployments.
-
-Service: how pods get discovered and accessed. Three types to know.
-
-ClusterIP: internal only. Other pods inside the cluster can reach it, nothing outside can.
-
-NodePort: exposes the service on a port on every node. Quick and dirty, not for production.
-
-LoadBalancer: provisions an actual cloud load balancer (like an AWS ALB/NLB) and routes external traffic to your pods. This is how users reach your app.
-
-
-DaemonSet: runs one pod on every node. Useful for things like log collectors and monitoring agents. Every node gets one, automatically.
-
-StatefulSet: like a deployment but for things that need stable identity and persistent storage. Databases, message brokers. Pods get predictable names (app-0, app-1, app-2) and their storage sticks around even if the pod restarts.
-
-ConfigMap: key-value pairs for configuration. Environment variables, config files. Keep config out of your container image.
-
-Secrets: same as ConfigMap but for sensitive data. Passwords, tokens, API keys. Base64 encoded by default, which is not encryption. Don't treat it like it is.
-
-External Secrets: pulls secrets from external stores like AWS Secrets Manager or HashiCorp Vault into Kubernetes. This is how you do secrets properly.
-
-Events: Kubernetes logs what is happening to your resources. Pod scheduled, image pulled, container started, container crashed. When something breaks, kubectl describe and look at events first. Always.
-
-Common errors:
-
-CrashLoopBackOff: your container starts, crashes, restarts, crashes again. Check your logs.
-
-ImagePullBackOff: Kubernetes cannot pull your container image. Wrong image name, wrong tag, or missing registry credentials.
-
-OOMKilled: your container used more memory than it was allowed. Increase limits or fix the memory leak.
-
-Pending: pod is stuck waiting. Usually means the cluster does not have enough resources to schedule it.
-
-K8s architecture:
-
-Control plane: the brain of the cluster. This is what makes decisions. It does not run your application, it manages everything that does.
-
-API Server: the front door to Kubernetes. Every command you run with kubectl, every request from any component, goes through the API server. Nothing talks to anything else directly. Everything goes through here.
-
-etcd: a key-value store that holds the entire state of your cluster. What pods exist, what nodes are available, what configs are applied. If etcd dies and you have no backup, your cluster is gone. Treat it like a database because it is one.
-
-Scheduler: watches for newly created pods that have no node assigned. Looks at resource requests, affinity rules, taints, tolerations, and picks the best node. It does not run the pod, it just decides where it should go.
-
-Controller Manager: runs a bunch of control loops in the background. The ReplicaSet controller makes sure the right number of pods are running. The Node controller notices when a node goes down. The Job controller manages one-off tasks. Each controller watches the desired state in etcd and works to make reality match.
-
-Cloud Controller Manager: the piece that talks to your cloud provider. When you create a Service of type LoadBalancer, this is what actually provisions the AWS/GCP load balancer. It bridges Kubernetes and the cloud.
-
-Worker node components:
-
-kubelet: an agent that runs on every worker node. The API server tells the kubelet what pods should be running on its node, and the kubelet makes it happen. It pulls images, starts containers, reports health back. If the kubelet is dead, that node is blind.
-
-kube-proxy: handles networking on each node. Maintains network rules so that when traffic hits a Service, it gets routed to the right pod. It is the reason ClusterIP and NodePort actually work.
-
-Container runtime: the thing that actually runs containers. containerd, CRI-O. Docker used to be here but Kubernetes dropped it as a runtime. The kubelet talks to the container runtime through the CRI (Container Runtime Interface).
-
-How it all fits together:
-
-You run kubectl apply -f deployment.yaml. That hits the API server. API server validates it, stores the desired state in etcd. The controller manager notices a new deployment, creates a ReplicaSet, which creates pod objects. The scheduler sees unassigned pods, picks nodes for them. The kubelet on each chosen node picks up the assignment, tells the container runtime to pull the image and start the container. kube-proxy updates network rules so traffic can reach the new pods.
-That entire flow, from kubectl apply to a running container, is Kubernetes.
-
-Node: a machine (physical or virtual) in your cluster. Two types. Master nodes run the control plane (API server, scheduler, etcd, controller manager). Worker nodes run your actual workloads.
-
-Requests and limits:
-
-Requests: the minimum resources a pod is guaranteed. This is what the scheduler uses to decide where to place your pod.
-
-Limits: the maximum a pod can use. Go over the memory limit and you get OOMKilled.
-
-Why use them: without requests and limits, one greedy pod can eat all the resources on a node and starve everything else. Set them. Always.
-
-Pod scheduling: the scheduler looks at your pod's resource requests, node availability, affinity rules, taints and tolerations, and decides which node your pod lands on. Learn node affinity and taints when you need to pin workloads to specific nodes (like running on Graviton/arm64 instances).
-
-Kubernetes vs managed Kubernetes (EKS, GKE):
-
-Vanilla Kubernetes: you set up everything. The control plane, the networking, the upgrades, all you. Great for learning, painful for production.
-EKS (AWS), GKE (Google): they manage the control plane for you. Upgrades, patching, high availability of the master nodes. You just worry about your worker nodes and workloads. The Kubernetes API is the same, the difference is who is responsible for keeping the lights on underneath.
-Pick managed. Learn the concepts on vanilla if you want, but run production on managed. Life is too short to babysit etcd.
-
-
-----
-
-## CI/CD
-
-Understand why it is required: because you do not want humans manually building, testing, and deploying code. Humans make mistakes, automation does not. CI/CD is how code goes from a developer's laptop to production without someone SSHing into a server and running commands.
-
-Common steps in a pipeline:
-
-Lint the code: catch style issues and obvious bugs before anything else runs.
-
-Run tests: unit tests, integration tests. If tests fail, the pipeline stops. Nothing broken gets further.
-
-Run security/quality scans: tools like SonarQube check for vulnerabilities, code smells, coverage. Catch problems before they reach production, not after.
-
-Build the Docker image: package your application into a container image. Tag it properly. Use multi-stage builds to keep it lean.
-
-Push it to a container registry: ECR, GCR, Docker Hub. The image needs to live somewhere your deployment target can pull from.
-
-Deploy it: to Kubernetes, ECS, Lambda, EC2, whatever your setup is. The pipeline does the deploying, not you.
-
-The important part:
-Do not learn just Jenkins or just GitHub Actions. Learn what CI/CD is trying to achieve. Understand the flow: code change, validate, build, ship. The tool is just the thing executing that flow. Jenkins, GitHub Actions, GitLab CI, CircleCI, they all do the same thing differently. If you understand the "what" and "why," picking up any tool takes a day. If you only learn the tool, you are stuck when the next company uses a different one.
-
-
-----
-
-## Observability
-
-What is observability: the ability to understand what is happening inside your system by looking at what it outputs. When something breaks at 3 AM, observability is the difference between fixing it in 10 minutes and staring at a screen for 3 hours.
-
-Three pillars:
-
-Logs: text output from your application. What happened, when it happened. Structured logs (JSON) over plain text. Always. Makes searching and filtering actually possible.
-
-Metrics: numbers over time. CPU usage, memory, request count, error rate, latency. Metrics tell you something is wrong.
-
-Traces: follow a single request as it travels through multiple services. Service A calls Service B calls Service C. A trace connects the dots and shows you where the slowdown or failure actually is.
-
-Logs tell you what happened. Metrics tell you something is wrong. Traces tell you where.
-
-Tools to know:
-
-Prometheus: collects and stores metrics. Pull-based. Scrapes your services at intervals.
-
-Grafana: visualizes everything. Dashboards for metrics, logs, traces. Learn to build dashboards that actually help, not dashboards that just look pretty.
-
-ELK stack (Elasticsearch, Logstash, Kibana): log aggregation. Collect logs from everywhere, search them in one place.
-
-Loki: like ELK but lighter. Pairs well with Grafana.
-
-Jaeger or Tempo: distributed tracing. Follow requests across services.
-Alerting: metrics are useless if no one is watching. Set up alerts. But set up smart alerts. Alert on symptoms (high error rate, high latency), not on causes (CPU at 80%). Noisy alerts get ignored, and ignored alerts kill production.
-
-The real advice:
-Do not add observability after things break. Build it in from day one. If you cannot see inside your system, you do not understand your system.
-
+- [Docker 101 Tutorial](https://www.docker.com/101-tutorial/) - hands-on intro, runs a real container from minute one.
+- [Docker Learning Basics](https://www.docker.com/learning-paths/learning-basics/) - official learning path covering the full basics.
 
 ---
 
-## To understand these things and not get overwhelmed, just take your laptop. Start building, breaking, and documenting. That is how you will know how things actually work.
+## AWS
+
+**What is AWS:**
+
+Amazon needed infrastructure for itself, built way more than it needed, and started selling the rest. That's literally how AWS was born.
+
+**How AWS is designed:**
+
+- Regions are geographic locations (Mumbai, Virginia, Frankfurt)
+- Each region has multiple availability zones (AZs)
+- Each AZ is one or more physical data centres
+- This is how AWS gives you redundancy - if one AZ goes down, your app stays up
+
+**Start with the building blocks:** VPC, IAM, EC2, ECR, Lambda, S3. Everything else is built on top of these.
+
+| Service | What it does |
+|---------|-------------|
+| **IAM** | Who can do what. Users, roles, policies. Bad IAM is how companies get hacked. |
+| **S3** | Object storage. Versioning, lifecycle policies, bucket policies. Deceptively simple, incredibly powerful. |
+| **EC2** | A virtual machine in the cloud. Pick your OS, pick your size, SSH in. |
+| **ECR** | A private Docker registry on AWS. Push images here, services pull from here. |
+| **Lambda** | Run code without managing servers. Triggered on events. You pay only when it runs. |
+
+**VPC (go deeper):**
+
+- **Subnets** - public subnets can reach the internet, private subnets cannot. Databases go in private, load balancers go in public.
+
+- **Internet gateway** - the door between your VPC and the internet
+
+- **NAT gateway** - lets private subnets reach the internet (for updates, API calls) without being reachable from the internet
+
+- **Route tables** - rules that decide where traffic goes. Every subnet has one.
+
+- **VPC PrivateLink** - lets services talk to each other without traffic ever leaving the AWS network
+
+Understand how services interact: How does an EC2 instance in a private subnet pull an image from ECR? How does a Lambda write to S3? How does traffic flow from a browser to your app and back? Trace the path. Draw it out. This is how a list of services becomes a system.
+
+**Resources to get started:**
+
+- [The Most Practical Way to Get Started on AWS](https://www.bloodraven.in/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/) - build a production-grade cloud setup from scratch.
+
+---
+
+## Terraform
+
+**What is Terraform:**
+
+You write code that describes your infrastructure, run it, and Terraform builds it for you. Infrastructure as Code. No more clicking around in the AWS console.
+
+- **HCL** - HashiCorp Configuration Language. Not a programming language, just a way to describe what you want.
+
+- **Providers** - plugins that let Terraform talk to cloud platforms: AWS, GCP, Kubernetes. One tool, many clouds.
+
+- **Resources** - the actual things you're creating: an EC2 instance, a VPC, an S3 bucket.
+
+- **State** - Terraform tracks what it has created in a state file. Lose it and you're in trouble. Store it remotely (S3 + DynamoDB) from day one.
+
+- **Plan and Apply** - `terraform plan` shows what will change. `terraform apply` makes it happen. Always plan before you apply.
+
+- **Modules** - reusable chunks of Terraform code. Write your VPC setup once, use it across every project.
+
+- **Variables and Outputs** - variables are inputs, outputs are values you extract after creation. Keep things dynamic, not hardcoded.
+
+- **Workspaces** - separate dev, staging, and production infrastructure. Same code, different state.
+
+- **`terraform destroy`** - tears everything down. Powerful and terrifying. Respect it.
+
+The real skill with Terraform isn't writing it - it's structuring it so a team can work on it without stepping on each other.
+
+**Resources to get started:**
+
+- [Terraform Tutorials](https://developer.hashicorp.com/terraform/tutorials) - official HashiCorp tutorials, hands-on from day one.
+
+---
+
+## Kubernetes
+
+**What is Kubernetes:**
+
+A container orchestrator. You tell it what you want running, how many copies, and it figures out the rest - scheduling, scaling, restarting, networking.
+
+**Why it's used:**
+
+Running one container is easy. Running hundreds across multiple servers, keeping them healthy, scaling them up and down, routing traffic between them - that's the hard part. Kubernetes solves that.
+
+### Core Objects
+
+| Object | What it does |
+|--------|-------------|
+| **Pod** | Smallest unit. One or more containers running together. |
+| **ReplicaSet** | Ensures a specific number of pods are always running. |
+| **Deployment** | Manages ReplicaSets. Rolling updates, rollbacks, scaling. |
+| **DaemonSet** | Runs one pod on every node. Used for log collectors, monitoring agents. |
+| **StatefulSet** | Like a Deployment but for stateful workloads (databases, brokers). Pods get predictable names and persistent storage. |
+| **ConfigMap** | Key-value pairs for configuration. Keep config out of your container image. |
+| **Secrets** | Like ConfigMap but for sensitive data. Base64 encoded by default - that's not encryption. |
+| **External Secrets** | Pulls secrets from AWS Secrets Manager or HashiCorp Vault into Kubernetes. This is how you do secrets properly. |
+
+### Services
+
+- **ClusterIP** - internal only. Other pods inside the cluster can reach it, nothing outside can.
+
+- **NodePort** - exposes the service on a port on every node. Quick and dirty, not for production.
+
+- **LoadBalancer** - provisions a cloud load balancer (AWS ALB/NLB) and routes external traffic to your pods.
+
+### Common Errors
+
+| Error | Cause |
+|-------|-------|
+| `CrashLoopBackOff` | Container starts, crashes, restarts, crashes again. Check logs. |
+| `ImagePullBackOff` | Kubernetes can't pull your image. Wrong name, wrong tag, or missing registry credentials. |
+| `OOMKilled` | Container used more memory than allowed. Increase limits or fix the memory leak. |
+| `Pending` | Pod is stuck. Usually means the cluster doesn't have enough resources. |
+
+When something breaks, run `kubectl describe` and look at events first. Always.
+
+### Architecture
+
+**Control plane** (the brain - makes decisions, doesn't run your app):
+
+- **API Server** - the front door to Kubernetes. Every `kubectl` command, every component request, goes through here. Nothing talks to anything else directly.
+
+- **etcd** - a key-value store holding the entire cluster state. If etcd dies and you have no backup, your cluster is gone. Treat it like a database because it is one.
+
+- **Scheduler** - watches for pods with no node assigned. Looks at resource requests, affinity rules, taints, tolerations, and picks the best node.
+
+- **Controller Manager** - runs control loops in the background. ReplicaSet controller, Node controller, Job controller. Watches desired state in etcd and works to make reality match.
+
+- **Cloud Controller Manager** - talks to your cloud provider. When you create a `LoadBalancer` service, this is what actually provisions the AWS/GCP load balancer.
+
+**Worker node** (runs your actual workloads):
+
+- **kubelet** - agent on every worker node. API server tells it what pods should run; kubelet makes it happen.
+
+- **kube-proxy** - handles networking on each node. Maintains rules so traffic to a Service reaches the right pod.
+
+- **Container runtime** - the thing that actually runs containers (`containerd`, `CRI-O`). Kubelet talks to it through the CRI.
+
+**How it all fits together:**
+
+You run `kubectl apply -f deployment.yaml`. That hits the API Server → stored in etcd → Controller Manager creates a ReplicaSet → ReplicaSet creates pod objects → Scheduler picks nodes → kubelet on each node pulls the image and starts the container → kube-proxy updates network rules.
+
+That entire flow, from `kubectl apply` to a running container, is Kubernetes.
+
+### Requests and Limits
+
+- **Requests** - minimum resources guaranteed. The scheduler uses this to decide where to place your pod.
+
+- **Limits** - maximum a pod can use. Exceed the memory limit and you get `OOMKilled`.
+
+Without requests and limits, one greedy pod can starve everything else on a node. Set them. Always.
+
+### Managed vs Vanilla Kubernetes
+
+- **Vanilla Kubernetes** - you set up everything: control plane, networking, upgrades. Great for learning, painful for production.
+
+- **EKS / GKE** - they manage the control plane. You worry about worker nodes and workloads. The Kubernetes API is identical.
+
+Pick managed. Learn the concepts on vanilla if you want, but run production on managed. Life is too short to babysit etcd.
+
+**Resources to get started:**
+
+- [Kubernetes Basics](https://kubernetes.io/docs/tutorials/kubernetes-basics/) - official interactive tutorial. Covers deployments, scaling, and updates.
+
+---
+
+## CI/CD
+
+**Why it exists:**
+
+You don't want humans manually building, testing, and deploying code. Humans make mistakes. CI/CD is how code goes from a developer's laptop to production without someone SSHing into a server and running commands.
+
+**Common pipeline steps:**
+
+1. **Lint** - catch style issues and obvious bugs before anything else runs
+
+2. **Test** - unit tests, integration tests. If tests fail, the pipeline stops. Nothing broken gets further.
+
+3. **Security / quality scans** - tools like SonarQube check for vulnerabilities and code smells
+
+4. **Build the Docker image** - package your application. Tag it properly. Use multi-stage builds to keep it lean.
+
+5. **Push to a registry** - ECR, GCR, Docker Hub. The image needs to live somewhere your deployment target can pull from.
+
+6. **Deploy** - to Kubernetes, ECS, Lambda, EC2, whatever your setup is. The pipeline deploys, not you.
+
+**The important part:**
+
+Don't learn just Jenkins or just GitHub Actions. Learn what CI/CD is trying to achieve - code change, validate, build, ship. The tool just executes that flow. Jenkins, GitHub Actions, GitLab CI, CircleCI all do the same thing differently. Understand the "what" and "why" and picking up any tool takes a day.
+
+**Resources to get started:**
+
+- [Learn CI/CD](https://www.freecodecamp.org/news/learn-continuous-integration-delivery-and-deployment/) - freeCodeCamp's guide covering CI, CD, and deployment end to end.
+
+---
+
+## Observability
+
+**What is observability:**
+
+The ability to understand what is happening inside your system by looking at what it outputs. When something breaks at 3 AM, observability is the difference between fixing it in 10 minutes and staring at a screen for 3 hours.
+
+**Three pillars:**
+
+| Pillar | What it tells you |
+|--------|------------------|
+| **Logs** | What happened and when. Use structured logs (JSON) - makes searching and filtering possible. |
+| **Metrics** | Numbers over time: CPU, memory, request count, error rate, latency. Tells you *something* is wrong. |
+| **Traces** | Follow a single request across multiple services. Shows you *where* the slowdown or failure is. |
+
+**Tools:**
+
+- **Prometheus** - collects and stores metrics. Pull-based, scrapes your services at intervals.
+
+- **Grafana** - visualizes everything. Dashboards for metrics, logs, traces.
+
+- **ELK stack** (Elasticsearch, Logstash, Kibana) - log aggregation. Collect logs from everywhere, search in one place.
+
+- **Loki** - like ELK but lighter. Pairs well with Grafana.
+
+- **Jaeger / Tempo** - distributed tracing. Follow requests across services.
+
+**Alerting:**
+
+Set up smart alerts. Alert on symptoms (high error rate, high latency), not on causes (CPU at 80%). Noisy alerts get ignored - and ignored alerts kill production.
+
+Don't add observability after things break. Build it in from day one. If you can't see inside your system, you don't understand your system.
+
+**Resources to get started:**
+
+- [What is Observability?](https://signoz.io/blog/o11y/) - a solid primer on the concepts before you touch any tooling.
+
+---
+
+
+  ## This is a starting point, not a guarantee.
+  
+  You can read every word here and still freeze when a production system goes down at 2 AM. You can know what etcd is and still not know why your pods are pending. You can understand CI/CD in theory and still ship
+  broken code to production.
+
+  Reading doesn't build the muscle doing does.
+
+  The engineers who are actually good at this aren't the ones who had the best roadmap. They're the ones who shipped things, broke things, got paged at odd hours, fixed things, and kept going. They Googled the same
+   errors you will. They felt lost in the same Kubernetes docs you will.
+
+  This blog can point you in a direction. It cannot replace the hours you have to put in. It cannot replace the frustration of something not working and having to figure out why. It cannot replace the moment
+  something finally clicks after you've stared at it long enough.
+
+  The map is not the territory. Go touch some grass and by grass, I mean a terminal.
+
+
+---
+## The only advice that matters
+
+Take your laptop. Start building, breaking, and documenting. That's how you'll know how things actually work.
