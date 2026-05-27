@@ -243,28 +243,16 @@ article .date {
     padding: 0;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    .nav-menu {
-        gap: 1rem;
-    }
-    
-    main {
-        padding: 1rem;
-    }
-    
-    .intro-content h1 {
-        font-size: 2rem;
-    }
-    
-    .socials {
-        gap: 1rem;
-    }
+.content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+.content table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Post List Styling */
@@ -384,20 +372,73 @@ article .date {
     padding: 1.5rem 1rem;
 }
 
-/* Mobile responsiveness */
+/* Responsive */
 @media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .nav-menu {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    main {
+        padding: 1rem;
+    }
+
+    .intro-section {
+        padding: 1.5rem 0;
+    }
+
+    .intro-content h1 {
+        font-size: 1.8rem;
+    }
+
+    article header h1 {
+        font-size: 1.5rem;
+    }
+
+    .socials {
+        gap: 1rem;
+    }
+
     .post-item {
         flex-direction: column;
         gap: 0.5rem;
         align-items: flex-start;
     }
-    
+
     .post-date {
         min-width: auto;
         font-size: 0.85rem;
     }
-    
+
     .post-header h1 {
-        font-size: 2rem;
+        font-size: 1.8rem;
+    }
+
+    .content h1 { font-size: 1.5rem; }
+    .content h2 { font-size: 1.3rem; }
+    .content h3 { font-size: 1.1rem; }
+}
+
+@media (max-width: 480px) {
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 0.35rem 0.6rem;
+    }
+
+    .intro-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .post-header h1 {
+        font-size: 1.5rem;
+    }
+
+    article header h1 {
+        font-size: 1.3rem;
     }
 }
