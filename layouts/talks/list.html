@@ -1,0 +1,60 @@
+{{ define "main" }}
+<div class="post-header">
+    <h1>{{ .Title }}</h1>
+</div>
+
+<div class="talks-wrapper">
+    {{ if site.Data.talks }}
+    <div class="talks-table-container">
+        <table class="talks-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Talk Title</th>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Slides</th>
+                    <th>GitHub</th>
+                    <th>Video</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range $i, $talk := site.Data.talks }}
+                <tr>
+                    <td class="talk-num">{{ add $i 1 }}</td>
+                    <td class="talk-title">{{ $talk.title }}</td>
+                    <td class="talk-event">{{ $talk.event }}</td>
+                    <td class="talk-date">{{ dateFormat "Jan 2006" $talk.date }}</td>
+                    <td>
+                        {{ if $talk.slides }}
+                            <a href="{{ $talk.slides }}" target="_blank" class="talk-link talk-link--slides">Slides</a>
+                        {{ else }}
+                            <span class="talk-na">—</span>
+                        {{ end }}
+                    </td>
+                    <td>
+                        {{ if $talk.github }}
+                            <a href="{{ $talk.github }}" target="_blank" class="talk-link talk-link--github">GitHub</a>
+                        {{ else }}
+                            <span class="talk-na">—</span>
+                        {{ end }}
+                    </td>
+                    <td>
+                        {{ if $talk.video }}
+                            <a href="{{ $talk.video }}" target="_blank" class="talk-link talk-link--video">Watch</a>
+                        {{ else }}
+                            <span class="talk-na">—</span>
+                        {{ end }}
+                    </td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </div>
+    {{ else }}
+    <div class="no-posts">
+        <p>No talks yet. Check back soon!</p>
+    </div>
+    {{ end }}
+</div>
+{{ end }}

@@ -372,6 +372,124 @@ article .date {
     padding: 1.5rem 1rem;
 }
 
+/* Talks table */
+.talks-wrapper {
+    width: 100%;
+}
+
+.talks-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 10px;
+    border: 1px solid #334155;
+}
+
+.talks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.talks-table thead tr {
+    background-color: #1e293b;
+    border-bottom: 2px solid #4a5568;
+}
+
+.talks-table th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    color: #c77dff;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.talks-table td {
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid #1e293b;
+    vertical-align: middle;
+    color: #cbd5e1;
+}
+
+.talks-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.talks-table tbody tr:hover td {
+    background-color: rgba(199, 125, 255, 0.05);
+}
+
+.talk-num {
+    color: #64748b;
+    font-size: 0.85rem;
+    width: 2rem;
+}
+
+.talk-title {
+    color: #E0E0E0;
+    font-weight: 500;
+    min-width: 180px;
+}
+
+.talk-event {
+    color: #94a3b8;
+    min-width: 140px;
+}
+
+.talk-date {
+    color: #94a3b8;
+    white-space: nowrap;
+    font-size: 0.9rem;
+}
+
+.talk-na {
+    color: #475569;
+}
+
+.talk-link {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.talk-link--slides {
+    color: #c77dff;
+    border-color: rgba(199, 125, 255, 0.4);
+}
+
+.talk-link--slides:hover {
+    background-color: rgba(199, 125, 255, 0.15);
+    border-color: #c77dff;
+    color: #c77dff;
+}
+
+.talk-link--github {
+    color: #94a3b8;
+    border-color: rgba(148, 163, 184, 0.4);
+}
+
+.talk-link--github:hover {
+    background-color: rgba(148, 163, 184, 0.1);
+    border-color: #94a3b8;
+    color: #E0E0E0;
+}
+
+.talk-link--video {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.4);
+}
+
+.talk-link--video:hover {
+    background-color: rgba(248, 113, 113, 0.1);
+    border-color: #f87171;
+    color: #f87171;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .navbar {

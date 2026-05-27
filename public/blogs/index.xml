@@ -6,8 +6,15 @@
     <description>Recent content in Tech Blogs on Ishan Jain</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 19 May 2026 10:00:00 +0530</lastBuildDate>
+    <lastBuildDate>Wed, 27 May 2026 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/blogs/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</title>
+      <link>http://localhost:1313/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</link>
+      <pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</guid>
+      <description>How Valkey 9.1.0&amp;rsquo;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.</description>
+    </item>
     <item>
       <title>Stop Asking for a DevOps Roadmap. Read This Instead</title>
       <link>http://localhost:1313/blogs/stop-asking-for-a-devops-roadmap.-read-this-instead/</link>
