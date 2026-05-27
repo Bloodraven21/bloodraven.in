@@ -257,8 +257,9 @@ article .date {
 
 /* Post List Styling */
 .post-header {
+    width: 100%;
     margin-bottom: 3rem;
-    text-align: center; /* keep Recommendations title centered */
+    text-align: center;
 }
 
 .post-header h1 {
@@ -279,6 +280,7 @@ article .date {
 }
 
 .post-list {
+    width: 100%;
     max-width: 700px;
     margin: 0 auto;
     text-align: left;
@@ -372,84 +374,49 @@ article .date {
     padding: 1.5rem 1rem;
 }
 
-/* Talks table */
-.talks-wrapper {
-    width: 100%;
+/* Talks */
+.talk-item {
+    align-items: flex-start;
 }
 
-.talks-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    border-radius: 10px;
-    border: 1px solid #334155;
+.talk-body {
+    flex: 1;
 }
 
-.talks-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.95rem;
+.talk-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.3rem;
+    flex-wrap: wrap;
 }
 
-.talks-table thead tr {
-    background-color: #1e293b;
-    border-bottom: 2px solid #4a5568;
-}
-
-.talks-table th {
-    padding: 0.85rem 1rem;
-    text-align: left;
-    color: #c77dff;
-    font-weight: 600;
-    white-space: nowrap;
-}
-
-.talks-table td {
-    padding: 0.85rem 1rem;
-    border-bottom: 1px solid #1e293b;
-    vertical-align: middle;
-    color: #cbd5e1;
-}
-
-.talks-table tbody tr:last-child td {
-    border-bottom: none;
-}
-
-.talks-table tbody tr:hover td {
-    background-color: rgba(199, 125, 255, 0.05);
-}
-
-.talk-num {
-    color: #64748b;
-    font-size: 0.85rem;
-    width: 2rem;
-}
-
-.talk-title {
-    color: #E0E0E0;
-    font-weight: 500;
-    min-width: 180px;
-}
-
-.talk-event {
-    color: #94a3b8;
-    min-width: 140px;
-}
-
-.talk-date {
-    color: #94a3b8;
-    white-space: nowrap;
+.talk-event-link {
     font-size: 0.9rem;
+    color: #94a3b8;
+    text-decoration: none;
 }
 
-.talk-na {
-    color: #475569;
+.talk-event-link:hover {
+    color: #c77dff;
+}
+
+.talk-event-name {
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.talk-links {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
 }
 
 .talk-link {
     display: inline-block;
-    padding: 0.25rem 0.65rem;
-    border-radius: 5px;
-    font-size: 0.8rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
     font-weight: 600;
     text-decoration: none;
     border: 1px solid;
