@@ -1,47 +1,7 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>Tech Blogs on Ishan Jain</title>
-    <link>http://localhost:1313/blogs/</link>
-    <description>Recent content in Tech Blogs on Ishan Jain</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    <lastBuildDate>Wed, 27 May 2026 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/blogs/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</title>
-      <link>http://localhost:1313/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</link>
-      <pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</guid>
-      <description>How Valkey 9.1.0&amp;rsquo;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.</description>
-    </item>
-    <item>
-      <title>Stop Asking for a DevOps Roadmap. Read This Instead</title>
-      <link>http://localhost:1313/blogs/stop-asking-for-a-devops-roadmap.-read-this-instead/</link>
-      <pubDate>Tue, 19 May 2026 10:00:00 +0530</pubDate>
-      <guid>http://localhost:1313/blogs/stop-asking-for-a-devops-roadmap.-read-this-instead/</guid>
-      <description>Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask &amp;ldquo;give us a roadmap of becoming a DevOps engineer&amp;rdquo; or &amp;ldquo;what was your roadmap&amp;rdquo; - I go blank. What was my roadmap? I end up saying: learn Docker, K8s, Terraform, or AWS.&#xA;So I sat down and wrote my thoughts. If I needed to start again with no memory of being a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.</description>
-    </item>
-    <item>
-      <title>The Curious Case of Docker Hardened Images</title>
-      <link>http://localhost:1313/blogs/the-curious-case-of-docker-hardend-images/</link>
-      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/blogs/the-curious-case-of-docker-hardend-images/</guid>
-      <description>An investigative look at Docker Hardened Images: what changed in December 2025, how DHI compares to distroless and Wolfi, and what the operational tax really looks like.</description>
-    </item>
-    <item>
-      <title>The Curious Case of Request and Limit on AWS EKS Fargate</title>
-      <link>http://localhost:1313/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</link>
-      <pubDate>Sun, 02 Nov 2025 14:53:00 +0530</pubDate>
-      <guid>http://localhost:1313/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</guid>
-      <description>If you&amp;rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:&#xA;The Scenario You have a pod with the following resource specifications:&#xA;resources: requests: cpu: 100m memory: 500Mi limits: cpu: 4000m memory: 8000Mi At first glance, you might think: &amp;ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.</description>
-    </item>
-    <item>
-      <title>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</title>
-      <link>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</link>
-      <pubDate>Wed, 17 Sep 2025 10:00:00 +0530</pubDate>
-      <guid>http://localhost:1313/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</guid>
-      <description>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup When people say ‘learn AWS,’ it’s easy to get lost in a sea of services. In reality, most real-world architectures start with a VPC, subnets, instances, storage, and permissions.&#xA;In this guide, we’ll build a secure, production-style setup step-by-step — and we’ll do it four ways:&#xA;AWS Console AWS CLI Bash Automation Scripts Terraform What You Will Gain After Doing This Hands-on experience with core AWS services Learn how to automate (CLI, scripts, Terraform) Cover security best practices (bastion, private DB, IAM roles, S3 VPC endpoints) AWS Architecture Diagram 🖼️ What This Architecture Shows This diagram represents a secure, highly available, multi-AZ VPC that you’d find in a real-world AWS setup.</description>
-    </item>
-  </channel>
-</rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tech Blogs on Ishan Jain</title><link>https://www.bloodraven.in/blogs/</link><description>Recent content in Tech Blogs on Ishan Jain</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Thu, 30 Jul 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.bloodraven.in/blogs/index.xml" rel="self" type="application/rss+xml"/><item><title>From Huffman to OpenObserve: Why Your 10GB Log File Fits in 3GB</title><link>https://www.bloodraven.in/blogs/from-huffman-to-openobserve-why-your-10gb-log-file-fits-in-3gb/</link><pubDate>Thu, 30 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/blogs/from-huffman-to-openobserve-why-your-10gb-log-file-fits-in-3gb/</guid><description>Every SRE has run gzip on a log file and watched 10GB collapse into 3GB. It feels like magic. It is not. It is a handful of very old, very simple ideas about redundancy, and once you understand them, the storage numbers behind modern observability tools stop looking like marketing and start looking like arithmetic.
+Let me walk from first principles up to how a tool like OpenObserve turns those principles into a 140x cost gap.</description></item><item><title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</title><link>https://www.bloodraven.in/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</link><pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</guid><description>How Valkey 9.1.0&amp;rsquo;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.</description></item><item><title>Stop Asking for a DevOps Roadmap. Read This Instead</title><link>https://www.bloodraven.in/blogs/stop-asking-for-a-devops-roadmap.-read-this-instead/</link><pubDate>Tue, 19 May 2026 10:00:00 +0530</pubDate><guid>https://www.bloodraven.in/blogs/stop-asking-for-a-devops-roadmap.-read-this-instead/</guid><description>Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask &amp;ldquo;give us a roadmap of becoming a DevOps engineer&amp;rdquo; or &amp;ldquo;what was your roadmap&amp;rdquo; - I go blank. What was my roadmap? I end up saying: learn Docker, K8s, Terraform, or AWS.
+So I sat down and wrote my thoughts. If I needed to start again with no memory of being a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.</description></item><item><title>The Curious Case of Docker Hardened Images</title><link>https://www.bloodraven.in/blogs/the-curious-case-of-docker-hardend-images/</link><pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/blogs/the-curious-case-of-docker-hardend-images/</guid><description>An investigative look at Docker Hardened Images: what changed in December 2025, how DHI compares to distroless and Wolfi, and what the operational tax really looks like.</description></item><item><title>The Curious Case of Request and Limit on AWS EKS Fargate</title><link>https://www.bloodraven.in/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</link><pubDate>Sun, 02 Nov 2025 14:53:00 +0530</pubDate><guid>https://www.bloodraven.in/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/</guid><description>If you&amp;rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:
+The Scenario You have a pod with the following resource specifications:
+resources: requests: cpu: 100m memory: 500Mi limits: cpu: 4000m memory: 8000Mi At first glance, you might think: &amp;ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.</description></item><item><title>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</title><link>https://www.bloodraven.in/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</link><pubDate>Wed, 17 Sep 2025 10:00:00 +0530</pubDate><guid>https://www.bloodraven.in/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/</guid><description>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup When people say ‘learn AWS,’ it’s easy to get lost in a sea of services. In reality, most real-world architectures start with a VPC, subnets, instances, storage, and permissions.
+In this guide, we’ll build a secure, production-style setup step-by-step — and we’ll do it four ways:
+AWS Console AWS CLI Bash Automation Scripts Terraform What You Will Gain After Doing This Hands-on experience with core AWS services Learn how to automate (CLI, scripts, Terraform) Cover security best practices (bastion, private DB, IAM roles, S3 VPC endpoints) AWS Architecture Diagram 🖼️ What This Architecture Shows This diagram represents a secure, highly available, multi-AZ VPC that you’d find in a real-world AWS setup.</description></item></channel></rss>

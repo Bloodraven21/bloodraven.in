@@ -1,7 +1,7 @@
 ---
 title: "From Huffman to OpenObserve: Why Your 10GB Log File Fits in 3GB"
 date: 2026-07-30
-draft: true
+draft: false
 tags: ["observability", "compression", "openobserve", "logs", "parquet"]
 ---
 

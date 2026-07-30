@@ -1,77 +1,6 @@
-<!DOCTYPE html>
-<html lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes - Ishan Jain</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <header>
-    <nav class="navbar">
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="/" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="/blogs/" class="nav-link active">Blogs</a>
-            </li>
-            <li class="nav-item">
-                <a href="/recommendations/" class="nav-link">Recommendations</a>
-            </li>
-            <li class="nav-item">
-                <a href="/talks/" class="nav-link">Talks</a>
-            </li>
-            <li class="nav-item">
-                <a href="/socials/" class="nav-link">Socials</a>
-            </li>
-        </ul>
-    </nav>
-</header>
-    
-    <main>
-        
-<article>
-    <header>
-        <h1>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</h1>
-        <p class="date">May 27, 2026</p>
-    </header>
-    
-    <div class="content">
-        <p>The default answer when a microservice needs a cache is to give it its own Redis or Valkey instance. It works, it is simple, and it never surprises you. It also means that a cluster running multiple services has one cache instance per service, most of them sitting at 2% utilisation.</p>
-<p>Valkey 9.1.0, released May 2026, adds a feature that makes consolidation practical: <strong>per-database ACL selectors</strong>. You can lock an ACL user to a single logical database with one directive. A service that authenticates as <code>app3</code> physically cannot read or write database 4. The server rejects the attempt at the protocol level. That is the story this post tells.</p>
-<hr>
-<h2 id="the-problem-with-one-instance-per-service">The problem with one instance per service</h2>
-<p>Valkey is fast and lightweight, but running a separate instance per service carries real overhead:</p>
-<ul>
-<li>Each instance needs its own memory headroom, CPU reservation, and PersistentVolumeClaim.</li>
-<li>Helm releases, Secrets, and Service objects multiply with every new tenant.</li>
-<li>Operating many small instances is not cheaper than one medium instance. It is just more fragile.</li>
-</ul>
-<p>The consolidation argument is simple: if the working sets are small and the access patterns are independent, one instance can serve all your services at acceptable performance and lower operational cost.</p>
-<p>The blocker has always been isolation. Without it, a bug in one service can read or corrupt another service&rsquo;s keys. Valkey&rsquo;s new <code>db=</code> ACL selector removes that blocker.</p>
-<hr>
-<h2 id="why-a-single-instance-can-handle-the-load">Why a single instance can handle the load</h2>
-<p>Before getting into isolation, it is worth addressing the obvious question: can one Valkey instance actually keep up?</p>
-<p>Valkey 8.0 redesigned its I/O threading model. Rather than a single thread handling reads, writes, and event polling, it distributes that work across multiple I/O threads while keeping command execution single-threaded (preserving data-safety guarantees). The result is a <a href="https://valkey.io/blog/unlock-one-million-rps/">230% throughput increase over Redis 7.2, reaching 1.19 million requests per second</a> on a single instance, with latency dropping by nearly 70%.</p>
-<p>Thread count scales dynamically with load, and thread affinity is maintained for cache locality. The upshot: a single well-sized Valkey instance is no longer a bottleneck concern for most consolidation scenarios.</p>
-<hr>
-<h2 id="how-per-database-acl-works">How per-database ACL works</h2>
-<p>A standalone Valkey instance supports 16 logical databases by default, indexed 0 through 15. <code>SELECT 3</code> switches a connection to database 3. Keys in database 3 are invisible from database 4.</p>
-<p>One important constraint before going further: <strong>databases are addressed by number only</strong>. There is no way to assign a human-readable name like <code>payments</code> or <code>inventory</code> to a database. Your ACL config maps a user to a number, and your service config maps to that same number. If you are planning this setup, that naming limitation is worth factoring in early.</p>
-<p>With DB 0 reserved for admin use, a single instance gives you 15 databases for services (indices 1 through 15).</p>
-<p>What was missing until 9.1.0 was an ACL primitive to enforce the database boundary at the user level. Valkey 9.1.0 adds the <code>db=</code> selector:</p>
-<pre tabindex="0"><code>user app3 on &gt;password3 ~* +@all db=3
-</code></pre><p>This user:</p>
-<ul>
-<li>Can only authenticate with <code>password3</code></li>
-<li>Has full read/write access to all keys and commands, but only within database 3</li>
-<li>If it issues <code>SELECT 4</code>, the server responds with <code>NOPERM user app3 has no permissions to access database 4</code></li>
-</ul>
-<p>That last line is the proof the demo is built around. One instance, hard per-service boundaries, enforced by the server.</p>
-<hr>
-<h2 id="architecture">Architecture</h2>
-<pre tabindex="0"><code>                     Kubernetes namespace
+<!doctype html><html lang=en-us><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes - Ishan Jain</title>
+<link rel=stylesheet href=/css/style.css></head><body><header><nav class=navbar><ul class=nav-menu><li class=nav-item><a href=/ class=nav-link>Home</a></li><li class=nav-item><a href=/blogs/ class="nav-link active">Blogs</a></li><li class=nav-item><a href=/recommendations/ class=nav-link>Recommendations</a></li><li class=nav-item><a href=/talks/ class=nav-link>Talks</a></li><li class=nav-item><a href=/socials/ class=nav-link>Socials</a></li></ul></nav></header><main><article><header><h1>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</h1><p class=date>May 27, 2026</p></header><div class=content><p>The default answer when a microservice needs a cache is to give it its own Redis or Valkey instance. It works, it is simple, and it never surprises you. It also means that a cluster running multiple services has one cache instance per service, most of them sitting at 2% utilisation.</p><p>Valkey 9.1.0, released May 2026, adds a feature that makes consolidation practical: <strong>per-database ACL selectors</strong>. You can lock an ACL user to a single logical database with one directive. A service that authenticates as <code>app3</code> physically cannot read or write database 4. The server rejects the attempt at the protocol level. That is the story this post tells.</p><hr><h2 id=the-problem-with-one-instance-per-service>The problem with one instance per service</h2><p>Valkey is fast and lightweight, but running a separate instance per service carries real overhead:</p><ul><li>Each instance needs its own memory headroom, CPU reservation, and PersistentVolumeClaim.</li><li>Helm releases, Secrets, and Service objects multiply with every new tenant.</li><li>Operating many small instances is not cheaper than one medium instance. It is just more fragile.</li></ul><p>The consolidation argument is simple: if the working sets are small and the access patterns are independent, one instance can serve all your services at acceptable performance and lower operational cost.</p><p>The blocker has always been isolation. Without it, a bug in one service can read or corrupt another service&rsquo;s keys. Valkey&rsquo;s new <code>db=</code> ACL selector removes that blocker.</p><hr><h2 id=why-a-single-instance-can-handle-the-load>Why a single instance can handle the load</h2><p>Before getting into isolation, it is worth addressing the obvious question: can one Valkey instance actually keep up?</p><p>Valkey 8.0 redesigned its I/O threading model. Rather than a single thread handling reads, writes, and event polling, it distributes that work across multiple I/O threads while keeping command execution single-threaded (preserving data-safety guarantees). The result is a <a href=https://valkey.io/blog/unlock-one-million-rps/>230% throughput increase over Redis 7.2, reaching 1.19 million requests per second</a> on a single instance, with latency dropping by nearly 70%.</p><p>Thread count scales dynamically with load, and thread affinity is maintained for cache locality. The upshot: a single well-sized Valkey instance is no longer a bottleneck concern for most consolidation scenarios.</p><hr><h2 id=how-per-database-acl-works>How per-database ACL works</h2><p>A standalone Valkey instance supports 16 logical databases by default, indexed 0 through 15. <code>SELECT 3</code> switches a connection to database 3. Keys in database 3 are invisible from database 4.</p><p>One important constraint before going further: <strong>databases are addressed by number only</strong>. There is no way to assign a human-readable name like <code>payments</code> or <code>inventory</code> to a database. Your ACL config maps a user to a number, and your service config maps to that same number. If you are planning this setup, that naming limitation is worth factoring in early.</p><p>With DB 0 reserved for admin use, a single instance gives you 15 databases for services (indices 1 through 15).</p><p>What was missing until 9.1.0 was an ACL primitive to enforce the database boundary at the user level. Valkey 9.1.0 adds the <code>db=</code> selector:</p><pre tabindex=0><code>user app3 on &gt;password3 ~* +@all db=3
+</code></pre><p>This user:</p><ul><li>Can only authenticate with <code>password3</code></li><li>Has full read/write access to all keys and commands, but only within database 3</li><li>If it issues <code>SELECT 4</code>, the server responds with <code>NOPERM user app3 has no permissions to access database 4</code></li></ul><p>That last line is the proof the demo is built around. One instance, hard per-service boundaries, enforced by the server.</p><hr><h2 id=architecture>Architecture</h2><pre tabindex=0><code>                     Kubernetes namespace
   +-----------------------------------------------------------+
   |                                                           |
   |   hit-service-1 (DB 1, user app1) ---\                   |
@@ -81,191 +10,29 @@
   |   hit-service-N (DB N, user appN) ----/                  |
   |                                                           |
   +-----------------------------------------------------------+
-</code></pre><p>One Valkey instance. Multiple services. Same container image across all services; only config differs per deployment. Each service connects with its own ACL user and is physically locked to its own logical database.</p>
-<hr>
-<h2 id="the-app">The app</h2>
-<p>The service is a minimal Go HTTP server (Gin + OpenTelemetry). One endpoint:</p>
-<pre tabindex="0"><code>GET /hit
+</code></pre><p>One Valkey instance. Multiple services. Same container image across all services; only config differs per deployment. Each service connects with its own ACL user and is physically locked to its own logical database.</p><hr><h2 id=the-app>The app</h2><p>The service is a minimal Go HTTP server (Gin + OpenTelemetry). One endpoint:</p><pre tabindex=0><code>GET /hit
   -&gt; generate a random 8-character alphanumeric key
   -&gt; SETEX hit:&lt;value&gt; &lt;HOT_TTL&gt; &lt;value&gt;
   -&gt; return { &#34;value&#34;: &#34;...&#34;, &#34;db&#34;: N, &#34;service&#34;: &#34;hit-service-N&#34; }
-</code></pre><p>Connection details come from environment variables injected by Helm:</p>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>VALKEY_HOST</code></td>
-<td><code>valkey</code></td>
-</tr>
-<tr>
-<td><code>VALKEY_DB</code></td>
-<td><code>3</code></td>
-</tr>
-<tr>
-<td><code>VALKEY_USER</code></td>
-<td><code>app3</code></td>
-</tr>
-<tr>
-<td><code>VALKEY_PASS</code></td>
-<td>from a Secret</td>
-</tr>
-<tr>
-<td><code>HOT_TTL</code></td>
-<td><code>60</code></td>
-</tr>
-</tbody>
-</table>
-<p>The client authenticates with <code>AUTH app3 password3</code> and selects database 3. Because the user is ACL-locked to that database, any attempt to <code>SELECT</code> a different index is rejected, which is exactly the isolation boundary the demo proves.</p>
-<hr>
-<h2 id="kubernetes-deployment">Kubernetes deployment</h2>
-<p>Valkey is deployed via the official <code>valkey-io/valkey-helm</code> chart with the image overridden to <code>9.1.0-trixie</code> (the chart&rsquo;s default <code>appVersion</code> is 8.x, which does not have the <code>db=</code> selector). The full ACL config is supplied through <code>auth.aclConfig</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">image</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">tag</span>: <span style="color:#e6db74">&#34;9.1.0-trixie&#34;</span>
-</span></span><span style="display:flex;"><span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">auth</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">enabled</span>: <span style="color:#66d9ef">true</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">aclConfig</span>: |<span style="color:#e6db74">
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user default on nopass ~* +@all
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user admin  on &gt;SUPERSECRET_ADMIN ~* +@all alldbs
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user app1   on &gt;password1  ~* +@all db=1
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    user app2   on &gt;password2  ~* +@all db=2
-</span></span></span><span style="display:flex;"><span><span style="color:#e6db74">    # ... up to db=15</span>    
-</span></span></code></pre></div><p>Each service is deployed with the same Helm chart, differing only in its values file:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># values-svc3.yaml</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">serviceName</span>: <span style="color:#ae81ff">hit-service-3</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">valkey</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">db</span>: <span style="color:#ae81ff">3</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">user</span>: <span style="color:#ae81ff">app3</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">existingSecret</span>: <span style="color:#ae81ff">valkey-app3</span>
-</span></span></code></pre></div><p>Multiple releases, one chart, one image, one Valkey instance.</p>
-<hr>
-<h2 id="load-test-results">Load test results</h2>
-<p>All tests were run with k6 as an in-cluster pod targeting services via cluster DNS. Full results are in <a href="test_log.md"><code>test_log.md</code></a>.</p>
-<h3 id="steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services">Steady load: 1 000 RPS per service (10 000 RPS total across 10 services)</h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Total requests</td>
-<td>599 374</td>
-</tr>
-<tr>
-<td>Actual RPS</td>
-<td>9 987 /s</td>
-</tr>
-<tr>
-<td>p(95) latency</td>
-<td>33.98 ms</td>
-</tr>
-<tr>
-<td>p(99) latency</td>
-<td>84.86 ms</td>
-</tr>
-<tr>
-<td>Error rate</td>
-<td>0.00 %</td>
-</tr>
-</tbody>
-</table>
-<p>All thresholds passed. The instance handled the load with p95 under 34 ms.</p>
-<h3 id="ramp-10-to-1-000-rps-per-service">Ramp: 10 to 1 000 RPS per service</h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Total requests</td>
-<td>902 361</td>
-</tr>
-<tr>
-<td>Average RPS</td>
-<td>7 519 /s</td>
-</tr>
-<tr>
-<td>p(95) latency</td>
-<td>36.03 ms</td>
-</tr>
-<tr>
-<td>Error rate</td>
-<td>0.00 %</td>
-</tr>
-</tbody>
-</table>
-<p>Ramped up over 30 s, held at peak for 60 s, ramped back down. Zero errors across the entire arc.</p>
-<h3 id="spike-4-services-at-1-000-rps-6-at-100-rps">Spike: 4 services at 1 000 RPS, 6 at 100 RPS</h3>
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Total requests</td>
-<td>276 006</td>
-</tr>
-<tr>
-<td>Actual RPS</td>
-<td>4 599 /s</td>
-</tr>
-<tr>
-<td>p(95) latency</td>
-<td>1.63 ms</td>
-</tr>
-<tr>
-<td>p(99) latency</td>
-<td>6.26 ms</td>
-</tr>
-<tr>
-<td>Error rate</td>
-<td>0.00 %</td>
-</tr>
-</tbody>
-</table>
-<p><strong>Zero errors across all three runs. 1 777 741 total requests.</strong></p>
-<hr>
-<h2 id="the-honest-caveat">The honest caveat</h2>
-<p><code>db=N</code> gives you <strong>access isolation</strong>, not <strong>resource isolation</strong>.</p>
-<p>There is no fair CPU or memory sharing between logical databases. A service that floods the instance with large keys or expensive commands will raise latency for every other tenant. The spike test confirms this at the aggregate level, and per-service Prometheus metrics (exported via the OpenTelemetry pipeline) would show the per-tenant effect more clearly.</p>
-<p>This is the right trade-off for most small-to-medium services: consolidation wins operationally, and the noisy-neighbour risk is manageable as long as you monitor per-tenant throughput. If you need hard resource guarantees, you need separate instances, or you wait for fair-scheduling primitives that are on the Valkey roadmap.</p>
-<hr>
-<h2 id="wrapping-up">Wrapping up</h2>
-<p>Valkey 9.1.0&rsquo;s <code>db=</code> ACL selector is a small directive with a large operational payoff. Multiple services, one instance, zero cross-tenant key access. The consolidation argument is proven; the caveat is honest.</p>
-<p>Two things to keep in mind before adopting this pattern: databases are numbered, not named, and a single standalone instance gives you 15 slots for services. Both constraints are workable for most teams but worth planning around from the start.</p>
-<p>The full source (Go service, Helm chart, k6 scripts, and deployment guide) is at <a href="https://github.com/Bloodraven21/multitenant_valkey">github.com/Bloodraven21/multitenant_valkey</a>.</p>
-
-    </div>
-</article>
-
-    </main>
-    
-    <footer>
-    <div class="social-links">
-        <h3>Connect with me:</h3>
-        <div class="socials">
-            <a href="https://github.com/bloodraven21" target="_blank">GitHub</a>
-            <a href="https://www.instagram.com/bloodraven.2112" target="_blank">Instagram</a>
-            <a href="https://linkedin.com/in/ishan-jain21" target="_blank">LinkedIn</a>
-            <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target="_blank">Spotify</a>
-            <a href="https://x.com/bloodravendev" target="_blank">Twitter</a>
-            
-        </div>
-    </div>
-</footer>
-</body>
-</html>
+</code></pre><p>Connection details come from environment variables injected by Helm:</p><table><thead><tr><th>Variable</th><th>Example</th></tr></thead><tbody><tr><td><code>VALKEY_HOST</code></td><td><code>valkey</code></td></tr><tr><td><code>VALKEY_DB</code></td><td><code>3</code></td></tr><tr><td><code>VALKEY_USER</code></td><td><code>app3</code></td></tr><tr><td><code>VALKEY_PASS</code></td><td>from a Secret</td></tr><tr><td><code>HOT_TTL</code></td><td><code>60</code></td></tr></tbody></table><p>The client authenticates with <code>AUTH app3 password3</code> and selects database 3. Because the user is ACL-locked to that database, any attempt to <code>SELECT</code> a different index is rejected, which is exactly the isolation boundary the demo proves.</p><hr><h2 id=kubernetes-deployment>Kubernetes deployment</h2><p>Valkey is deployed via the official <code>valkey-io/valkey-helm</code> chart with the image overridden to <code>9.1.0-trixie</code> (the chart&rsquo;s default <code>appVersion</code> is 8.x, which does not have the <code>db=</code> selector). The full ACL config is supplied through <code>auth.aclConfig</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>image</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>tag</span>: <span style=color:#e6db74>&#34;9.1.0-trixie&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>auth</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>enabled</span>: <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>aclConfig</span>: |<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    user default on nopass ~* +@all
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    user admin  on &gt;SUPERSECRET_ADMIN ~* +@all alldbs
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    user app1   on &gt;password1  ~* +@all db=1
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    user app2   on &gt;password2  ~* +@all db=2
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>    # ... up to db=15</span>    
+</span></span></code></pre></div><p>Each service is deployed with the same Helm chart, differing only in its values file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># values-svc3.yaml</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>serviceName</span>: <span style=color:#ae81ff>hit-service-3</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>valkey</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>db</span>: <span style=color:#ae81ff>3</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>user</span>: <span style=color:#ae81ff>app3</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>existingSecret</span>: <span style=color:#ae81ff>valkey-app3</span>
+</span></span></code></pre></div><p>Multiple releases, one chart, one image, one Valkey instance.</p><hr><h2 id=load-test-results>Load test results</h2><p>All tests were run with k6 as an in-cluster pod targeting services via cluster DNS. Full results are in <a href=test_log.md><code>test_log.md</code></a>.</p><h3 id=steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services>Steady load: 1 000 RPS per service (10 000 RPS total across 10 services)</h3><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total requests</td><td>599 374</td></tr><tr><td>Actual RPS</td><td>9 987 /s</td></tr><tr><td>p(95) latency</td><td>33.98 ms</td></tr><tr><td>p(99) latency</td><td>84.86 ms</td></tr><tr><td>Error rate</td><td>0.00 %</td></tr></tbody></table><p>All thresholds passed. The instance handled the load with p95 under 34 ms.</p><h3 id=ramp-10-to-1-000-rps-per-service>Ramp: 10 to 1 000 RPS per service</h3><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total requests</td><td>902 361</td></tr><tr><td>Average RPS</td><td>7 519 /s</td></tr><tr><td>p(95) latency</td><td>36.03 ms</td></tr><tr><td>Error rate</td><td>0.00 %</td></tr></tbody></table><p>Ramped up over 30 s, held at peak for 60 s, ramped back down. Zero errors across the entire arc.</p><h3 id=spike-4-services-at-1-000-rps-6-at-100-rps>Spike: 4 services at 1 000 RPS, 6 at 100 RPS</h3><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total requests</td><td>276 006</td></tr><tr><td>Actual RPS</td><td>4 599 /s</td></tr><tr><td>p(95) latency</td><td>1.63 ms</td></tr><tr><td>p(99) latency</td><td>6.26 ms</td></tr><tr><td>Error rate</td><td>0.00 %</td></tr></tbody></table><p><strong>Zero errors across all three runs. 1 777 741 total requests.</strong></p><hr><h2 id=the-honest-caveat>The honest caveat</h2><p><code>db=N</code> gives you <strong>access isolation</strong>, not <strong>resource isolation</strong>.</p><p>There is no fair CPU or memory sharing between logical databases. A service that floods the instance with large keys or expensive commands will raise latency for every other tenant. The spike test confirms this at the aggregate level, and per-service Prometheus metrics (exported via the OpenTelemetry pipeline) would show the per-tenant effect more clearly.</p><p>This is the right trade-off for most small-to-medium services: consolidation wins operationally, and the noisy-neighbour risk is manageable as long as you monitor per-tenant throughput. If you need hard resource guarantees, you need separate instances, or you wait for fair-scheduling primitives that are on the Valkey roadmap.</p><hr><h2 id=wrapping-up>Wrapping up</h2><p>Valkey 9.1.0&rsquo;s <code>db=</code> ACL selector is a small directive with a large operational payoff. Multiple services, one instance, zero cross-tenant key access. The consolidation argument is proven; the caveat is honest.</p><p>Two things to keep in mind before adopting this pattern: databases are numbered, not named, and a single standalone instance gives you 15 slots for services. Both constraints are workable for most teams but worth planning around from the start.</p><p>The full source (Go service, Helm chart, k6 scripts, and deployment guide) is at <a href=https://github.com/Bloodraven21/multitenant_valkey>github.com/Bloodraven21/multitenant_valkey</a>.</p></div></article></main><footer><div class=social-links><h3>Connect with me:</h3><div class=socials><a href=https://github.com/bloodraven21 target=_blank>GitHub</a>
+<a href=https://www.instagram.com/bloodraven.2112 target=_blank>Instagram</a>
+<a href=https://linkedin.com/in/ishan-jain21 target=_blank>LinkedIn</a>
+<a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target=_blank>Spotify</a>
+<a href=https://x.com/bloodravendev target=_blank>Twitter</a></div></div></footer></body></html>

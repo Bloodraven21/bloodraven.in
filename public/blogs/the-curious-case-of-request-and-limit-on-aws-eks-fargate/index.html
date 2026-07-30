@@ -1,410 +1,70 @@
-<!DOCTYPE html>
-<html lang="en-us">
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Curious Case of Request and Limit on AWS EKS Fargate - Ishan Jain</title>
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <header>
-    <nav class="navbar">
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="/" class="nav-link">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="/blogs/" class="nav-link active">Blogs</a>
-            </li>
-            <li class="nav-item">
-                <a href="/recommendations/" class="nav-link">Recommendations</a>
-            </li>
-            <li class="nav-item">
-                <a href="/talks/" class="nav-link">Talks</a>
-            </li>
-            <li class="nav-item">
-                <a href="/socials/" class="nav-link">Socials</a>
-            </li>
-        </ul>
-    </nav>
-</header>
-    
-    <main>
-        
-<article>
-    <header>
-        <h1>The Curious Case of Request and Limit on AWS EKS Fargate</h1>
-        <p class="date">November 2, 2025</p>
-    </header>
-    
-    <div class="content">
-        <p>If you&rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:</p>
-<h2 id="the-scenario">The Scenario</h2>
-<p>You have a pod with the following resource specifications:</p>
-<pre tabindex="0"><code class="language-yamlThe" data-lang="yamlThe">resources:
+<!doctype html><html lang=en-us><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>The Curious Case of Request and Limit on AWS EKS Fargate - Ishan Jain</title>
+<link rel=stylesheet href=/css/style.css></head><body><header><nav class=navbar><ul class=nav-menu><li class=nav-item><a href=/ class=nav-link>Home</a></li><li class=nav-item><a href=/blogs/ class="nav-link active">Blogs</a></li><li class=nav-item><a href=/recommendations/ class=nav-link>Recommendations</a></li><li class=nav-item><a href=/talks/ class=nav-link>Talks</a></li><li class=nav-item><a href=/socials/ class=nav-link>Socials</a></li></ul></nav></header><main><article><header><h1>The Curious Case of Request and Limit on AWS EKS Fargate</h1><p class=date>November 2, 2025</p></header><div class=content><p>If you&rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:</p><h2 id=the-scenario>The Scenario</h2><p>You have a pod with the following resource specifications:</p><pre tabindex=0><code class=language-yamlThe data-lang=yamlThe>resources:
   requests:
     cpu: 100m
     memory: 500Mi
   limits:
     cpu: 4000m
     memory: 8000Mi
-</code></pre><p>At first glance, you might think: &ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.&rdquo;</p>
-<p><strong>But here&rsquo;s the twist</strong>: On AWS Fargate, you don&rsquo;t pay for what you use—you pay for what you <em>request</em>.</p>
-<h2 id="how-fargate-billing-actually-works">How Fargate Billing Actually Works</h2>
-<p>Unlike traditional Kubernetes nodes where you pay for the entire EC2 instance, Fargate billing is based on the vCPU and memory resources <strong>requested</strong> by your pod. Here&rsquo;s what makes it curious:</p>
-<h3 id="the-reality-check">The Reality Check</h3>
-<p>With the configuration above:</p>
-<ul>
-<li><strong>Request</strong>: 100m CPU (0.1 vCPU), 500Mi memory</li>
-<li><strong>Limit</strong>: 4000m CPU (4 vCPU), 8000Mi memory</li>
-</ul>
-<p>You might expect to pay for 0.1 vCPU and 500Mi of memory. However, Fargate has a catch.</p>
-<h3 id="fargates-pod-size-calculation">Fargate&rsquo;s Pod Size Calculation</h3>
-<p>Fargate doesn&rsquo;t provision resources based on individual container requests. Instead, it:</p>
-<ol>
-<li><strong>Sums up all container requests</strong> in your pod</li>
-<li><strong>Rounds up to the nearest supported Fargate configuration</strong></li>
-</ol>
-<p>The supported configurations follow specific vCPU and memory combinations:</p>
-<table>
-<thead>
-<tr>
-<th>vCPU</th>
-<th>Memory Options</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>0.25 vCPU</td>
-<td>0.5 GB, 1 GB, 2 GB</td>
-</tr>
-<tr>
-<td>0.5 vCPU</td>
-<td>1 GB - 4 GB (1 GB increments)</td>
-</tr>
-<tr>
-<td>1 vCPU</td>
-<td>2 GB - 8 GB (1 GB increments)</td>
-</tr>
-<tr>
-<td>2 vCPU</td>
-<td>4 GB - 16 GB (1 GB increments)</td>
-</tr>
-<tr>
-<td>4 vCPU</td>
-<td>8 GB - 30 GB (1 GB increments)</td>
-</tr>
-</tbody>
-</table>
-<h3 id="what-you-actually-pay-for">What You Actually Pay For</h3>
-<p>In our example:</p>
-<ul>
-<li>CPU request: 100m = 0.1 vCPU → <strong>Rounds up to 0.25 vCPU</strong></li>
-<li>Memory request: 500Mi ≈ 0.5 GB → <strong>0.5 GB</strong></li>
-</ul>
-<p><strong>You&rsquo;ll be billed for</strong>: 0.25 vCPU and 0.5 GB memory</p>
-<p>But here&rsquo;s where it gets interesting&hellip;</p>
-<h2 id="the-limit-doesnt-matter-for-billing">The Limit Doesn&rsquo;t Matter (For Billing)</h2>
-<p>Your limit of 4 vCPU and 8GB memory is essentially <strong>ignored for billing purposes</strong>. Fargate provisions based on requests, not limits.</p>
-<p>However, there&rsquo;s an important implication:</p>
-<h3 id="performance-impact">Performance Impact</h3>
-<p>Since Fargate provisions 0.25 vCPU for your pod, even though you set a limit of 4 vCPU:</p>
-<ul>
-<li>Your container <strong>cannot</strong> actually use 4 vCPUs</li>
-<li>It&rsquo;s constrained by what Fargate provisioned (0.25 vCPU)</li>
-<li>The limit becomes effectively meaningless</li>
-</ul>
-<p>The same applies to memory:</p>
-<ul>
-<li>Fargate provisions 0.5 GB</li>
-<li>Your 8GB limit won&rsquo;t help if the pod tries to use more than provisioned</li>
-<li>OOMKilled errors will occur at the provisioned boundary, not your limit</li>
-</ul>
-<h2 id="best-practices-for-fargate">Best Practices for Fargate</h2>
-<h3 id="1-set-requests--limits">1. <strong>Set Requests = Limits</strong></h3>
-<p>Since limits don&rsquo;t give you burst capacity on Fargate, it&rsquo;s cleaner to set them equal:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">requests</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">250m     </span> <span style="color:#75715e"># 0.25 vCPU</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">512Mi </span> <span style="color:#75715e"># 0.5 GB</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">limits</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">250m</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">512Mi</span>
-</span></span></code></pre></div><h3 id="2-understand-the-rounding">2. <strong>Understand the Rounding</strong></h3>
-<p>Always check which Fargate configuration your requests will round up to. A request of 251m CPU will round up to 0.5 vCPU, doubling your cost.</p>
-<h3 id="3-right-size-your-pods">3. <strong>Right-Size Your Pods</strong></h3>
-<p>Monitor actual resource usage and set requests accordingly. Over-requesting wastes money; under-requesting causes performance issues or OOM errors.</p>
-<h3 id="4-consider-multiple-containers">4. <strong>Consider Multiple Containers</strong></h3>
-<p>If your pod has multiple containers, Fargate sums all their requests:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Container 1: 100m CPU, 256Mi memory</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Container 2: 100m CPU, 256Mi memory</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Total: 200m CPU, 512Mi memory</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Fargate provisions: 0.25 vCPU, 1 GB (rounds up memory to nearest supported config)</span>
-</span></span></code></pre></div><h2 id="the-cost-implication">The Cost Implication</h2>
-<p>Let&rsquo;s look at a real cost scenario (using approximate US East pricing):</p>
-<p><strong>Scenario 1: Optimal Configuration</strong></p>
-<ul>
-<li>Request/Limit: 0.25 vCPU, 0.5 GB</li>
-<li>Cost: ~$0.012/hour per pod</li>
-</ul>
-<p><strong>Scenario 2: Misunderstood Configuration</strong></p>
-<ul>
-<li>Request: 0.1 vCPU, 0.5 GB (thinking you&rsquo;re optimizing)</li>
-<li>Actual Fargate provision: 0.25 vCPU, 0.5 GB</li>
-<li>Cost: ~$0.012/hour per pod (same as Scenario 1!)</li>
-</ul>
-<p><strong>Scenario 3: Accidental Waste</strong></p>
-<ul>
-<li>Request: 0.3 vCPU, 0.6 GB</li>
-<li>Actual Fargate provision: 0.5 vCPU, 1 GB (rounds up!)</li>
-<li>Cost: ~$0.024/hour per pod (2x more!)</li>
-</ul>
-<h2 id="when-should-you-actually-use-eks-fargate">When Should You Actually Use EKS Fargate?</h2>
-<p>Given Fargate&rsquo;s unique billing model, it&rsquo;s not a one-size-fits-all solution. Here are the scenarios where Fargate shines and where it doesn&rsquo;t:</p>
-<h3 id="-perfect-use-cases-for-fargate">✅ Perfect Use Cases for Fargate</h3>
-<h4 id="1-batch-jobs-with-predictable-resource-needs">1. <strong>Batch Jobs with Predictable Resource Needs</strong></h4>
-<p>Fargate is ideal for batch processing workloads where you know exactly how much CPU and memory you need:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Example: Nightly ETL job</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">batch/v1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Job</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">data-processing-job</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">template</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>      <span style="color:#f92672">containers</span>:
-</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">processor</span>
-</span></span><span style="display:flex;"><span>        <span style="color:#f92672">resources</span>:
-</span></span><span style="display:flex;"><span>          <span style="color:#f92672">requests</span>:
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">1000m</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">2Gi</span>
-</span></span><span style="display:flex;"><span>          <span style="color:#f92672">limits</span>:
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">1000m</span>
-</span></span><span style="display:flex;"><span>            <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">2Gi</span>
-</span></span></code></pre></div><p><strong>Why it works:</strong></p>
-<ul>
-<li>Jobs run to completion and terminate</li>
-<li>You pay only for the duration of execution</li>
-<li>No idle infrastructure costs</li>
-<li>Predictable resource usage = no wasted provisioning</li>
-</ul>
-<h4 id="2-self-hosted-cicd-runners">2. <strong>Self-Hosted CI/CD Runners</strong></h4>
-<p>Jenkins agents, GitLab runners, GitHub Actions runners, or Argo Workflows on Fargate are excellent choices:</p>
-<p><strong>Benefits:</strong></p>
-<ul>
-<li>Runners spin up on-demand for each build</li>
-<li>Terminate immediately after job completion</li>
-<li>No need to maintain a pool of idle EC2 instances</li>
-<li>Each build gets isolated, dedicated resources</li>
-<li>Perfect for security-sensitive environments</li>
-</ul>
-<p><strong>Example use case:</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Ephemeral CI runner</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">resources</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">requests</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">2000m     </span> <span style="color:#75715e"># 2 vCPU for fast builds</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">4Gi    </span> <span style="color:#75715e"># 4 GB for build artifacts</span>
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">limits</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">cpu</span>: <span style="color:#ae81ff">2000m</span>
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">memory</span>: <span style="color:#ae81ff">4Gi</span>
-</span></span></code></pre></div><p>A typical build might take 5-10 minutes, so you only pay for that duration rather than keeping an EC2 instance running 24/7.</p>
-<h4 id="3-microservices-with-predictable-steady-load">3. <strong>Microservices with Predictable, Steady Load</strong></h4>
-<p>If your service has consistent traffic patterns without significant bursts:</p>
-<p><strong>Characteristics:</strong></p>
-<ul>
-<li>Stable request rates throughout the day</li>
-<li>Predictable resource consumption</li>
-<li>No need for aggressive autoscaling</li>
-<li>Clear understanding of CPU/memory requirements</li>
-</ul>
-<p><strong>Example:</strong> Internal APIs, admin dashboards, scheduled report generators</p>
-<h4 id="4-isolated-secure-workloads">4. <strong>Isolated, Secure Workloads</strong></h4>
-<p>When you need strong workload isolation:</p>
-<ul>
-<li>Multi-tenant applications requiring tenant-level isolation</li>
-<li>Compliance-heavy workloads (each pod gets its own VM boundary)</li>
-<li>Different customers&rsquo; workloads with security requirements</li>
-</ul>
-<h4 id="5-development-and-staging-environments">5. <strong>Development and Staging Environments</strong></h4>
-<p>For non-production environments where:</p>
-<ul>
-<li>You want to minimize operational overhead</li>
-<li>Resource requirements are well-understood</li>
-<li>Cost predictability matters more than absolute cost optimization</li>
-<li>You can terminate pods during non-business hours</li>
-</ul>
-<h3 id="-where-fargate-doesnt-make-sense">❌ Where Fargate Doesn&rsquo;t Make Sense</h3>
-<h4 id="1-highly-variable-or-bursty-workloads">1. <strong>Highly Variable or Bursty Workloads</strong></h4>
-<p>If your application has unpredictable spikes:</p>
-<p><strong>Problem:</strong> You must request resources for peak load, meaning you overpay during low-traffic periods.</p>
-<p><strong>Better alternative:</strong> EC2-based node groups with Cluster Autoscaler or Karpenter, where you can:</p>
-<ul>
-<li>Set low requests with high limits</li>
-<li>Burst into available node capacity</li>
-<li>Scale nodes down during off-peak</li>
-</ul>
-<p><strong>Example of bad fit:</strong></p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># E-commerce site with 10x traffic during flash sales</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># You&#39;d need to request for peak (expensive)</span>
-</span></span><span style="display:flex;"><span><span style="color:#75715e"># Or risk OOMKills during spikes (unreliable)</span>
-</span></span></code></pre></div><h4 id="2-long-running-services-with-consistent-traffic">2. <strong>Long-Running Services with Consistent Traffic</strong></h4>
-<p>For services running 24/7 with steady usage:</p>
-<p><strong>Cost comparison:</strong></p>
-<ul>
-<li><strong>Fargate:</strong> 0.25 vCPU, 0.5 GB = ~$8.76/month per pod</li>
-<li><strong>EC2 t3.small:</strong> 2 vCPU, 2 GB = ~$15/month (can run 8+ pods efficiently)</li>
-</ul>
-<p>At scale, EC2 nodes with efficient bin-packing become more cost-effective.</p>
-<h4 id="3-stateful-applications-requiring-node-level-access">3. <strong>Stateful Applications Requiring Node-Level Access</strong></h4>
-<p>Fargate limitations:</p>
-<ul>
-<li>No daemonsets (can&rsquo;t run node-level agents)</li>
-<li>No privileged containers by default</li>
-<li>Limited access to underlying infrastructure</li>
-<li>No direct EBS volume mounting (only EFS)</li>
-</ul>
-<p><strong>Not suitable for:</strong></p>
-<ul>
-<li>Databases requiring local SSD access</li>
-<li>Monitoring agents that need node-level metrics</li>
-<li>Custom networking or storage drivers</li>
-</ul>
-<h4 id="4-gpu-or-specialized-hardware-workloads">4. <strong>GPU or Specialized Hardware Workloads</strong></h4>
-<p>Fargate doesn&rsquo;t support:</p>
-<ul>
-<li>GPU instances</li>
-<li>High-performance networking requirements</li>
-<li>Custom instance types</li>
-</ul>
-<p>Machine learning training, rendering, or HPC workloads need EC2-based nodes.</p>
-<h4 id="5-cost-sensitive-high-density-workloads">5. <strong>Cost-Sensitive, High-Density Workloads</strong></h4>
-<p>If you&rsquo;re running hundreds of small microservices:</p>
-<p><strong>The math:</strong></p>
-<ul>
-<li>100 pods × 0.25 vCPU × 0.5 GB on Fargate = high cost</li>
-<li>Same workload on 3-4 optimized EC2 instances = significant savings</li>
-</ul>
-<p>Bin-packing efficiency matters at scale.</p>
-<h2 id="decision-framework-fargate-vs-ec2-nodes">Decision Framework: Fargate vs EC2 Nodes</h2>
-<p>Ask yourself these questions:</p>
-<table>
-<thead>
-<tr>
-<th>Question</th>
-<th>Fargate If&hellip;</th>
-<th>EC2 Nodes If&hellip;</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>Workload Duration</strong></td>
-<td>Short-lived, intermittent</td>
-<td>Long-running, 24/7</td>
-</tr>
-<tr>
-<td><strong>Resource Patterns</strong></td>
-<td>Predictable, steady</td>
-<td>Variable, bursty</td>
-</tr>
-<tr>
-<td><strong>Scale</strong></td>
-<td>&lt;50 pods</td>
-<td>&gt;100 pods</td>
-</tr>
-<tr>
-<td><strong>Operational Overhead</strong></td>
-<td>Want zero node management</td>
-<td>Have ops team/automation</td>
-</tr>
-<tr>
-<td><strong>Cost Priority</strong></td>
-<td>Simplicity &gt; absolute cost</td>
-<td>Optimize every dollar</td>
-</tr>
-<tr>
-<td><strong>Isolation Needs</strong></td>
-<td>Strong isolation required</td>
-<td>Standard Kubernetes isolation OK</td>
-</tr>
-<tr>
-<td><strong>Startup Speed</strong></td>
-<td>Can tolerate 30-60s cold start</td>
-<td>Need &lt;10s pod scheduling</td>
-</tr>
-</tbody>
-</table>
-<h2 id="hybrid-approach-best-of-both-worlds">Hybrid Approach: Best of Both Worlds</h2>
-<p>Many organizations use both:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># Fargate for CI/CD and batch jobs</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workload</span>: <span style="color:#ae81ff">batch</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nodeSelector</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">eks.amazonaws.com/compute-type</span>: <span style="color:#ae81ff">fargate</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#75715e"># EC2 nodes for core services</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">v1</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Pod</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">labels</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">workload</span>: <span style="color:#ae81ff">production</span>
-</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
-</span></span><span style="display:flex;"><span>  <span style="color:#f92672">nodeSelector</span>:
-</span></span><span style="display:flex;"><span>    <span style="color:#f92672">node.kubernetes.io/instance-type</span>: <span style="color:#ae81ff">t3.large</span>
-</span></span></code></pre></div><p>This gives you:</p>
-<ul>
-<li>Cost efficiency for steady workloads (EC2)</li>
-<li>Operational simplicity for ephemeral workloads (Fargate)</li>
-<li>Flexibility to optimize each workload type</li>
-</ul>
-<h2 id="conclusion">Conclusion</h2>
-<p>The curious case of requests and limits on AWS EKS Fargate teaches us an important lesson: <strong>requests are king</strong>. Unlike traditional Kubernetes where limits provide burst capacity, Fargate provisions based solely on requests and rounds up to supported configurations.</p>
-<p>Understanding this behavior is crucial for:</p>
-<ul>
-<li><strong>Cost optimization</strong>: Avoiding unnecessary rounding up</li>
-<li><strong>Performance tuning</strong>: Setting realistic expectations for your pods</li>
-<li><strong>Capacity planning</strong>: Knowing exactly what resources your applications have
-<!-- raw HTML omitted --></li>
-</ul>
-<p><strong>When to use Fargate:</strong></p>
-<ul>
-<li>Batch jobs with fixed, predictable resource needs</li>
-<li>Self-hosted CI/CD runners that spin up on-demand</li>
-<li>Deployments with steady, predictable load patterns</li>
-<li>Workloads requiring strong isolation</li>
-<li>When operational simplicity outweighs cost optimization
-<!-- raw HTML omitted --></li>
-</ul>
-<p><strong>When to avoid Fargate:</strong></p>
-<ul>
-<li>Highly variable or bursty workloads</li>
-<li>Long-running services at scale</li>
-<li>Cost-sensitive, high-density deployments</li>
-<li>Stateful apps requiring node-level access
-<!-- raw HTML omitted --></li>
-</ul>
-<p>Remember: On Fargate, your limits are more of a documentation tool than a functional resource boundary. Set your requests wisely, choose the right compute type for each workload, and you&rsquo;ll master the art of Fargate cost management.</p>
-<hr>
-
-    </div>
-</article>
-
-    </main>
-    
-    <footer>
-    <div class="social-links">
-        <h3>Connect with me:</h3>
-        <div class="socials">
-            <a href="https://github.com/bloodraven21" target="_blank">GitHub</a>
-            <a href="https://www.instagram.com/bloodraven.2112" target="_blank">Instagram</a>
-            <a href="https://linkedin.com/in/ishan-jain21" target="_blank">LinkedIn</a>
-            <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target="_blank">Spotify</a>
-            <a href="https://x.com/bloodravendev" target="_blank">Twitter</a>
-            
-        </div>
-    </div>
-</footer>
-</body>
-</html>
+</code></pre><p>At first glance, you might think: &ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.&rdquo;</p><p><strong>But here&rsquo;s the twist</strong>: On AWS Fargate, you don&rsquo;t pay for what you use—you pay for what you <em>request</em>.</p><h2 id=how-fargate-billing-actually-works>How Fargate Billing Actually Works</h2><p>Unlike traditional Kubernetes nodes where you pay for the entire EC2 instance, Fargate billing is based on the vCPU and memory resources <strong>requested</strong> by your pod. Here&rsquo;s what makes it curious:</p><h3 id=the-reality-check>The Reality Check</h3><p>With the configuration above:</p><ul><li><strong>Request</strong>: 100m CPU (0.1 vCPU), 500Mi memory</li><li><strong>Limit</strong>: 4000m CPU (4 vCPU), 8000Mi memory</li></ul><p>You might expect to pay for 0.1 vCPU and 500Mi of memory. However, Fargate has a catch.</p><h3 id=fargates-pod-size-calculation>Fargate&rsquo;s Pod Size Calculation</h3><p>Fargate doesn&rsquo;t provision resources based on individual container requests. Instead, it:</p><ol><li><strong>Sums up all container requests</strong> in your pod</li><li><strong>Rounds up to the nearest supported Fargate configuration</strong></li></ol><p>The supported configurations follow specific vCPU and memory combinations:</p><table><thead><tr><th>vCPU</th><th>Memory Options</th></tr></thead><tbody><tr><td>0.25 vCPU</td><td>0.5 GB, 1 GB, 2 GB</td></tr><tr><td>0.5 vCPU</td><td>1 GB - 4 GB (1 GB increments)</td></tr><tr><td>1 vCPU</td><td>2 GB - 8 GB (1 GB increments)</td></tr><tr><td>2 vCPU</td><td>4 GB - 16 GB (1 GB increments)</td></tr><tr><td>4 vCPU</td><td>8 GB - 30 GB (1 GB increments)</td></tr></tbody></table><h3 id=what-you-actually-pay-for>What You Actually Pay For</h3><p>In our example:</p><ul><li>CPU request: 100m = 0.1 vCPU → <strong>Rounds up to 0.25 vCPU</strong></li><li>Memory request: 500Mi ≈ 0.5 GB → <strong>0.5 GB</strong></li></ul><p><strong>You&rsquo;ll be billed for</strong>: 0.25 vCPU and 0.5 GB memory</p><p>But here&rsquo;s where it gets interesting&mldr;</p><h2 id=the-limit-doesnt-matter-for-billing>The Limit Doesn&rsquo;t Matter (For Billing)</h2><p>Your limit of 4 vCPU and 8GB memory is essentially <strong>ignored for billing purposes</strong>. Fargate provisions based on requests, not limits.</p><p>However, there&rsquo;s an important implication:</p><h3 id=performance-impact>Performance Impact</h3><p>Since Fargate provisions 0.25 vCPU for your pod, even though you set a limit of 4 vCPU:</p><ul><li>Your container <strong>cannot</strong> actually use 4 vCPUs</li><li>It&rsquo;s constrained by what Fargate provisioned (0.25 vCPU)</li><li>The limit becomes effectively meaningless</li></ul><p>The same applies to memory:</p><ul><li>Fargate provisions 0.5 GB</li><li>Your 8GB limit won&rsquo;t help if the pod tries to use more than provisioned</li><li>OOMKilled errors will occur at the provisioned boundary, not your limit</li></ul><h2 id=best-practices-for-fargate>Best Practices for Fargate</h2><h3 id=1-set-requests--limits>1. <strong>Set Requests = Limits</strong></h3><p>Since limits don&rsquo;t give you burst capacity on Fargate, it&rsquo;s cleaner to set them equal:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>resources</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>requests</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>cpu</span>: <span style=color:#ae81ff>250m     </span> <span style=color:#75715e># 0.25 vCPU</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>memory</span>: <span style=color:#ae81ff>512Mi </span> <span style=color:#75715e># 0.5 GB</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>limits</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>cpu</span>: <span style=color:#ae81ff>250m</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>memory</span>: <span style=color:#ae81ff>512Mi</span>
+</span></span></code></pre></div><h3 id=2-understand-the-rounding>2. <strong>Understand the Rounding</strong></h3><p>Always check which Fargate configuration your requests will round up to. A request of 251m CPU will round up to 0.5 vCPU, doubling your cost.</p><h3 id=3-right-size-your-pods>3. <strong>Right-Size Your Pods</strong></h3><p>Monitor actual resource usage and set requests accordingly. Over-requesting wastes money; under-requesting causes performance issues or OOM errors.</p><h3 id=4-consider-multiple-containers>4. <strong>Consider Multiple Containers</strong></h3><p>If your pod has multiple containers, Fargate sums all their requests:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Container 1: 100m CPU, 256Mi memory</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Container 2: 100m CPU, 256Mi memory</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Total: 200m CPU, 512Mi memory</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Fargate provisions: 0.25 vCPU, 1 GB (rounds up memory to nearest supported config)</span>
+</span></span></code></pre></div><h2 id=the-cost-implication>The Cost Implication</h2><p>Let&rsquo;s look at a real cost scenario (using approximate US East pricing):</p><p><strong>Scenario 1: Optimal Configuration</strong></p><ul><li>Request/Limit: 0.25 vCPU, 0.5 GB</li><li>Cost: ~$0.012/hour per pod</li></ul><p><strong>Scenario 2: Misunderstood Configuration</strong></p><ul><li>Request: 0.1 vCPU, 0.5 GB (thinking you&rsquo;re optimizing)</li><li>Actual Fargate provision: 0.25 vCPU, 0.5 GB</li><li>Cost: ~$0.012/hour per pod (same as Scenario 1!)</li></ul><p><strong>Scenario 3: Accidental Waste</strong></p><ul><li>Request: 0.3 vCPU, 0.6 GB</li><li>Actual Fargate provision: 0.5 vCPU, 1 GB (rounds up!)</li><li>Cost: ~$0.024/hour per pod (2x more!)</li></ul><h2 id=when-should-you-actually-use-eks-fargate>When Should You Actually Use EKS Fargate?</h2><p>Given Fargate&rsquo;s unique billing model, it&rsquo;s not a one-size-fits-all solution. Here are the scenarios where Fargate shines and where it doesn&rsquo;t:</p><h3 id=-perfect-use-cases-for-fargate>✅ Perfect Use Cases for Fargate</h3><h4 id=1-batch-jobs-with-predictable-resource-needs>1. <strong>Batch Jobs with Predictable Resource Needs</strong></h4><p>Fargate is ideal for batch processing workloads where you know exactly how much CPU and memory you need:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Example: Nightly ETL job</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>batch/v1</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Job</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>name</span>: <span style=color:#ae81ff>data-processing-job</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>template</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>spec</span>:
+</span></span><span style=display:flex><span>      <span style=color:#f92672>containers</span>:
+</span></span><span style=display:flex><span>      - <span style=color:#f92672>name</span>: <span style=color:#ae81ff>processor</span>
+</span></span><span style=display:flex><span>        <span style=color:#f92672>resources</span>:
+</span></span><span style=display:flex><span>          <span style=color:#f92672>requests</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>cpu</span>: <span style=color:#ae81ff>1000m</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>memory</span>: <span style=color:#ae81ff>2Gi</span>
+</span></span><span style=display:flex><span>          <span style=color:#f92672>limits</span>:
+</span></span><span style=display:flex><span>            <span style=color:#f92672>cpu</span>: <span style=color:#ae81ff>1000m</span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>memory</span>: <span style=color:#ae81ff>2Gi</span>
+</span></span></code></pre></div><p><strong>Why it works:</strong></p><ul><li>Jobs run to completion and terminate</li><li>You pay only for the duration of execution</li><li>No idle infrastructure costs</li><li>Predictable resource usage = no wasted provisioning</li></ul><h4 id=2-self-hosted-cicd-runners>2. <strong>Self-Hosted CI/CD Runners</strong></h4><p>Jenkins agents, GitLab runners, GitHub Actions runners, or Argo Workflows on Fargate are excellent choices:</p><p><strong>Benefits:</strong></p><ul><li>Runners spin up on-demand for each build</li><li>Terminate immediately after job completion</li><li>No need to maintain a pool of idle EC2 instances</li><li>Each build gets isolated, dedicated resources</li><li>Perfect for security-sensitive environments</li></ul><p><strong>Example use case:</strong></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Ephemeral CI runner</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>resources</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>requests</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>cpu</span>: <span style=color:#ae81ff>2000m     </span> <span style=color:#75715e># 2 vCPU for fast builds</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>memory</span>: <span style=color:#ae81ff>4Gi    </span> <span style=color:#75715e># 4 GB for build artifacts</span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>limits</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>cpu</span>: <span style=color:#ae81ff>2000m</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>memory</span>: <span style=color:#ae81ff>4Gi</span>
+</span></span></code></pre></div><p>A typical build might take 5-10 minutes, so you only pay for that duration rather than keeping an EC2 instance running 24/7.</p><h4 id=3-microservices-with-predictable-steady-load>3. <strong>Microservices with Predictable, Steady Load</strong></h4><p>If your service has consistent traffic patterns without significant bursts:</p><p><strong>Characteristics:</strong></p><ul><li>Stable request rates throughout the day</li><li>Predictable resource consumption</li><li>No need for aggressive autoscaling</li><li>Clear understanding of CPU/memory requirements</li></ul><p><strong>Example:</strong> Internal APIs, admin dashboards, scheduled report generators</p><h4 id=4-isolated-secure-workloads>4. <strong>Isolated, Secure Workloads</strong></h4><p>When you need strong workload isolation:</p><ul><li>Multi-tenant applications requiring tenant-level isolation</li><li>Compliance-heavy workloads (each pod gets its own VM boundary)</li><li>Different customers&rsquo; workloads with security requirements</li></ul><h4 id=5-development-and-staging-environments>5. <strong>Development and Staging Environments</strong></h4><p>For non-production environments where:</p><ul><li>You want to minimize operational overhead</li><li>Resource requirements are well-understood</li><li>Cost predictability matters more than absolute cost optimization</li><li>You can terminate pods during non-business hours</li></ul><h3 id=-where-fargate-doesnt-make-sense>❌ Where Fargate Doesn&rsquo;t Make Sense</h3><h4 id=1-highly-variable-or-bursty-workloads>1. <strong>Highly Variable or Bursty Workloads</strong></h4><p>If your application has unpredictable spikes:</p><p><strong>Problem:</strong> You must request resources for peak load, meaning you overpay during low-traffic periods.</p><p><strong>Better alternative:</strong> EC2-based node groups with Cluster Autoscaler or Karpenter, where you can:</p><ul><li>Set low requests with high limits</li><li>Burst into available node capacity</li><li>Scale nodes down during off-peak</li></ul><p><strong>Example of bad fit:</strong></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># E-commerce site with 10x traffic during flash sales</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># You&#39;d need to request for peak (expensive)</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># Or risk OOMKills during spikes (unreliable)</span>
+</span></span></code></pre></div><h4 id=2-long-running-services-with-consistent-traffic>2. <strong>Long-Running Services with Consistent Traffic</strong></h4><p>For services running 24/7 with steady usage:</p><p><strong>Cost comparison:</strong></p><ul><li><strong>Fargate:</strong> 0.25 vCPU, 0.5 GB = ~$8.76/month per pod</li><li><strong>EC2 t3.small:</strong> 2 vCPU, 2 GB = ~$15/month (can run 8+ pods efficiently)</li></ul><p>At scale, EC2 nodes with efficient bin-packing become more cost-effective.</p><h4 id=3-stateful-applications-requiring-node-level-access>3. <strong>Stateful Applications Requiring Node-Level Access</strong></h4><p>Fargate limitations:</p><ul><li>No daemonsets (can&rsquo;t run node-level agents)</li><li>No privileged containers by default</li><li>Limited access to underlying infrastructure</li><li>No direct EBS volume mounting (only EFS)</li></ul><p><strong>Not suitable for:</strong></p><ul><li>Databases requiring local SSD access</li><li>Monitoring agents that need node-level metrics</li><li>Custom networking or storage drivers</li></ul><h4 id=4-gpu-or-specialized-hardware-workloads>4. <strong>GPU or Specialized Hardware Workloads</strong></h4><p>Fargate doesn&rsquo;t support:</p><ul><li>GPU instances</li><li>High-performance networking requirements</li><li>Custom instance types</li></ul><p>Machine learning training, rendering, or HPC workloads need EC2-based nodes.</p><h4 id=5-cost-sensitive-high-density-workloads>5. <strong>Cost-Sensitive, High-Density Workloads</strong></h4><p>If you&rsquo;re running hundreds of small microservices:</p><p><strong>The math:</strong></p><ul><li>100 pods × 0.25 vCPU × 0.5 GB on Fargate = high cost</li><li>Same workload on 3-4 optimized EC2 instances = significant savings</li></ul><p>Bin-packing efficiency matters at scale.</p><h2 id=decision-framework-fargate-vs-ec2-nodes>Decision Framework: Fargate vs EC2 Nodes</h2><p>Ask yourself these questions:</p><table><thead><tr><th>Question</th><th>Fargate If&mldr;</th><th>EC2 Nodes If&mldr;</th></tr></thead><tbody><tr><td><strong>Workload Duration</strong></td><td>Short-lived, intermittent</td><td>Long-running, 24/7</td></tr><tr><td><strong>Resource Patterns</strong></td><td>Predictable, steady</td><td>Variable, bursty</td></tr><tr><td><strong>Scale</strong></td><td>&lt;50 pods</td><td>>100 pods</td></tr><tr><td><strong>Operational Overhead</strong></td><td>Want zero node management</td><td>Have ops team/automation</td></tr><tr><td><strong>Cost Priority</strong></td><td>Simplicity > absolute cost</td><td>Optimize every dollar</td></tr><tr><td><strong>Isolation Needs</strong></td><td>Strong isolation required</td><td>Standard Kubernetes isolation OK</td></tr><tr><td><strong>Startup Speed</strong></td><td>Can tolerate 30-60s cold start</td><td>Need &lt;10s pod scheduling</td></tr></tbody></table><h2 id=hybrid-approach-best-of-both-worlds>Hybrid Approach: Best of Both Worlds</h2><p>Many organizations use both:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># Fargate for CI/CD and batch jobs</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Pod</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>labels</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>workload</span>: <span style=color:#ae81ff>batch</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>nodeSelector</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>eks.amazonaws.com/compute-type</span>: <span style=color:#ae81ff>fargate</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#75715e># EC2 nodes for core services</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>apiVersion</span>: <span style=color:#ae81ff>v1</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>kind</span>: <span style=color:#ae81ff>Pod</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>metadata</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>labels</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>workload</span>: <span style=color:#ae81ff>production</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>spec</span>:
+</span></span><span style=display:flex><span>  <span style=color:#f92672>nodeSelector</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>node.kubernetes.io/instance-type</span>: <span style=color:#ae81ff>t3.large</span>
+</span></span></code></pre></div><p>This gives you:</p><ul><li>Cost efficiency for steady workloads (EC2)</li><li>Operational simplicity for ephemeral workloads (Fargate)</li><li>Flexibility to optimize each workload type</li></ul><h2 id=conclusion>Conclusion</h2><p>The curious case of requests and limits on AWS EKS Fargate teaches us an important lesson: <strong>requests are king</strong>. Unlike traditional Kubernetes where limits provide burst capacity, Fargate provisions based solely on requests and rounds up to supported configurations.</p><p>Understanding this behavior is crucial for:</p><ul><li><strong>Cost optimization</strong>: Avoiding unnecessary rounding up</li><li><strong>Performance tuning</strong>: Setting realistic expectations for your pods</li><li><strong>Capacity planning</strong>: Knowing exactly what resources your applications have</li></ul><p><strong>When to use Fargate:</strong></p><ul><li>Batch jobs with fixed, predictable resource needs</li><li>Self-hosted CI/CD runners that spin up on-demand</li><li>Deployments with steady, predictable load patterns</li><li>Workloads requiring strong isolation</li><li>When operational simplicity outweighs cost optimization</li></ul><p><strong>When to avoid Fargate:</strong></p><ul><li>Highly variable or bursty workloads</li><li>Long-running services at scale</li><li>Cost-sensitive, high-density deployments</li><li>Stateful apps requiring node-level access</li></ul><p>Remember: On Fargate, your limits are more of a documentation tool than a functional resource boundary. Set your requests wisely, choose the right compute type for each workload, and you&rsquo;ll master the art of Fargate cost management.</p><hr></div></article></main><footer><div class=social-links><h3>Connect with me:</h3><div class=socials><a href=https://github.com/bloodraven21 target=_blank>GitHub</a>
+<a href=https://www.instagram.com/bloodraven.2112 target=_blank>Instagram</a>
+<a href=https://linkedin.com/in/ishan-jain21 target=_blank>LinkedIn</a>
+<a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target=_blank>Spotify</a>
+<a href=https://x.com/bloodravendev target=_blank>Twitter</a></div></div></footer></body></html>
