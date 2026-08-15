@@ -17,7 +17,6 @@ hugo --gc --minify
 # New content
 hugo new writing/my-post-title.md
 hugo new talks/my-talk.md
-hugo new projects/my-project.md
 hugo new recommendations/my-recommendation.md
 ```
 
@@ -40,11 +39,8 @@ Custom Hugo site with **no theme** — every template is hand-written in `layout
 - `talks/` — one file per talk; front matter carries `event`, `event_url`, `slides`,
   `github`, `video`, optional `location`. `status` is *derived from the date*
   (future = upcoming) unless set explicitly. Previously `data/talks.yaml`.
-- `projects/` — empty by design; add a file and it appears on `/projects/` and in the
-  homepage "Open source" section automatically.
 - `recommendations/`, `socials/` — kept from the original site.
 - `about/` — the long-form intro that used to live in `content/_index.md`.
-- `now/` — placeholder; `lastmod` drives the "Last updated" line.
 - `_index.md` — homepage *data only*: hero copy, credentials, tech tags, terminal card
   and the "What I work on" list all live in its front matter, not in templates.
 
@@ -55,7 +51,7 @@ Custom Hugo site with **no theme** — every template is hand-written in `layout
 - `layouts/_default/{list,single,taxonomy,terms}.html` — fallbacks
 - `layouts/_default/_markup/render-{heading,image}.html` — heading anchors, lazy images
 - `layouts/partials/` — `icon.html` (inline SVG set), `hero.html`, `article-card.html`,
-  `project-card.html`, `talk-card.html`, `timeline-item.html`, `terminal-card.html`,
+  `talk-card.html`, `timeline-item.html`, `terminal-card.html`,
   `filters.html`, `toc.html`, `pager.html`, `page-description.html`, `head/{meta,schema}.html`
 
 **Styling:** `assets/css/*.css`, concatenated in filename order by `baseof.html`, minified and
@@ -83,3 +79,6 @@ Rebuild with `hugo --gc --minify --cleanDestinationDir` so stale files do not ge
 Article bodies, titles, dates, descriptions, tags and links are the source of truth and are not
 rewritten by template or design work. Cards fall back to a page's own Hugo summary rather than
 inventing copy; sections with no content render an empty state instead of placeholder items.
+
+Nav is Home / Writing / Talks / About. `/recommendations/` and `/socials/` stay reachable from
+the footer.

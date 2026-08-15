@@ -74,40 +74,4 @@
 </section>
 {{- end }}
 
-{{- /* ----------------------------------------------------------- Open source
-
-  Rendered only when there are real project pages under content/projects/.
-  The redesign does not ship placeholder repositories, and no star or fork
-  counts are hard-coded anywhere.                                          */ -}}
-{{- $projects := where site.RegularPages "Section" "projects" -}}
-{{- $featuredProjects := where $projects "Params.featured" true -}}
-{{- $shown := cond (gt (len $featuredProjects) 0) $featuredProjects $projects -}}
-{{- with first 4 $shown }}
-{{- $gh := "" }}{{ with index (where site.Data.social "icon" "github") 0 }}{{ $gh = .url }}{{ end }}
-<section class="section" aria-labelledby="open-source">
-  <div class="container">
-    {{ partial "section-header.html" (dict
-        "eyebrow" "Open source"
-        "title" "Things I build and maintain"
-        "id" "open-source"
-        "level" "h2"
-        "linkURL" "/projects/" "linkLabel" "All projects") }}
-
-    <div class="grid grid--4">
-      {{- range . }}
-        {{ partial "project-card.html" (dict "page" .) }}
-      {{- end }}
-    </div>
-
-    {{- with $gh }}
-    <p style="margin-top:var(--space-6)">
-      <a class="link-arrow" href="{{ . }}" rel="noopener" target="_blank">
-        View more on GitHub {{ partial "icon.html" "arrow-up-right" }}
-      </a>
-    </p>
-    {{- end }}
-  </div>
-</section>
-{{- end }}
-
 {{ end }}

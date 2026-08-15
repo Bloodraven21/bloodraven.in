@@ -376,14 +376,6 @@ a.tag:hover {
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
 }
 
-.grid--3 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
-}
-
-.grid--4 {
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr));
-}
-
 .stack {
   display: flex;
   flex-direction: column;
