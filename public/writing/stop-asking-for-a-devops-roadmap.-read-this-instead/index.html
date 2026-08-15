@@ -1,16 +1,790 @@
-<!doctype html><html lang=en-us data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(){var e,t=document.documentElement;t.classList.add("js");try{e=localStorage.getItem("theme"),(e==="light"||e==="dark")&&t.setAttribute("data-theme",e)}catch{}})()</script><title>Stop Asking for a DevOps Roadmap. Read This Instead | Ishan Jain</title>
-<meta name=description content="Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask “give us a roadmap of becoming a DevOps engineer” or “what was your roadmap” - I go blank. What was my roadmap? I …"><meta name=author content="Ishan Jain"><link rel=canonical href=https://www.bloodraven.in/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/><meta property="og:site_name" content="Ishan Jain"><meta property="og:type" content="article"><meta property="og:title" content="Stop Asking for a DevOps Roadmap. Read This Instead"><meta property="og:description" content="Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask “give us a roadmap of becoming a DevOps engineer” or “what was your roadmap” - I go blank. What was my roadmap? I …"><meta property="og:url" content="https://www.bloodraven.in/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://www.bloodraven.in/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Ishan Jain — Cloud & Platform Engineer"><meta property="article:published_time" content="2026-05-19T10:00:00+05:30"><meta property="article:modified_time" content="2026-05-19T10:00:00+05:30"><meta property="article:author" content="Ishan Jain"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="Stop Asking for a DevOps Roadmap. Read This Instead"><meta name=twitter:description content="Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask “give us a roadmap of becoming a DevOps engineer” or “what was your roadmap” - I go blank. What was my roadmap? I …"><meta name=twitter:image content="https://www.bloodraven.in/og-image.png"><meta name=twitter:creator content="@bloodravendev"><meta name=theme-color content="#080810" media="(prefers-color-scheme: dark)"><meta name=theme-color content="#fbfafd" media="(prefers-color-scheme: light)"><link rel=icon href=/favicon.ico sizes=32x32><link rel=icon href=/favicon.svg type=image/svg+xml><link rel=apple-touch-icon href=/apple-touch-icon.png><link rel=alternate type=application/rss+xml href=https://www.bloodraven.in/index.xml title="Ishan Jain"><link rel=preload href=/fonts/inter-latin.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=/fonts/space-grotesk-latin.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=/css/main.min.9750529ca4caf81fb9cb6388413340235f6a03e93698fa4c88f4428a0ba6581b.css integrity="sha256-l1BSnKTK+B+5y2OIQTNAI19qA+k2mPpMiPRCigumWBs=" crossorigin=anonymous><script type=application/ld+json>"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"author\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\",\"url\":\"https://www.bloodraven.in/\"},\"dateModified\":\"2026-05-19\",\"datePublished\":\"2026-05-19\",\"headline\":\"Stop Asking for a DevOps Roadmap. Read This Instead\",\"inLanguage\":\"en\",\"mainEntityOfPage\":\"https://www.bloodraven.in/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/\",\"publisher\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\"},\"url\":\"https://www.bloodraven.in/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/\"}"</script></head><body><a class=skip-link href=#main>Skip to content</a><header class=site-header><div class="container header-inner"><a class=brand href=/><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-<span>BLOODRAVEN</span>
-</a><button class="icon-btn nav-toggle" type=button data-nav-toggle aria-expanded=false aria-controls=site-nav aria-label=Menu><svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><nav class=header-nav id=site-nav aria-label=Primary><ul class=nav-list><li><a class=nav-link href=/>Home</a></li><li><a class=nav-link href=/writing/ aria-current=true>Writing</a></li><li><a class=nav-link href=/talks/>Talks</a></li></ul><span class=header-divider aria-hidden=true></span><div class=header-actions><a class=icon-btn href=https://github.com/bloodraven21 rel="me noopener" target=_blank aria-label="GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63.0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577.0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93.0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176.0.0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22.0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22.0 1.606-.015 2.896-.015 3.286.0.315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-<a class=icon-btn href=https://linkedin.com/in/ishan-jain21 rel="me noopener" target=_blank aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853.0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601.0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433A2.062 2.062.0 013.274 5.368a2.064 2.064.0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225.0H1.771C.792.0.0.774.0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2.0 22.222.0h.003z"/></svg></a>
-<button class="icon-btn theme-toggle" type=button data-theme-toggle aria-pressed=false aria-label="Switch to light theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 009 9 9 9 0 11-9-9z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button></div></nav></div></header><main id=main class=site-main tabindex=-1><article><div class="container container--prose"><header class=article-header><h1>Stop Asking for a DevOps Roadmap. Read This Instead</h1><p class=article-meta><time datetime=2026-05-19>May 19, 2026</time>
-<span class=sep aria-hidden=true>·</span>
-<span>14 min read</span></p></header><div class=article-body><details class=toc open><summary>On this page</summary><nav aria-label="Table of contents"><nav id=TableOfContents><ul><li><a href=#programming-language>Programming Language</a></li><li><a href=#linux>Linux</a></li><li><a href=#git-and-github>Git and GitHub</a><ul><li><a href=#git>Git</a></li><li><a href=#github>GitHub</a></li></ul></li><li><a href=#docker>Docker</a></li><li><a href=#aws>AWS</a></li><li><a href=#terraform>Terraform</a></li><li><a href=#kubernetes>Kubernetes</a><ul><li><a href=#core-objects>Core Objects</a></li><li><a href=#services>Services</a></li><li><a href=#common-errors>Common Errors</a></li><li><a href=#architecture>Architecture</a></li><li><a href=#requests-and-limits>Requests and Limits</a></li><li><a href=#managed-vs-vanilla-kubernetes>Managed vs Vanilla Kubernetes</a></li></ul></li><li><a href=#cicd>CI/CD</a></li><li><a href=#observability>Observability</a></li><li><a href=#this-is-a-starting-point-not-a-guarantee>This is a starting point, not a guarantee.</a></li><li><a href=#the-only-advice-that-matters>The only advice that matters</a></li></ul></nav></nav></details><div class=prose><h2 id=stop-asking-for-a-devops-roadmap-read-this-instead>Stop Asking for a DevOps Roadmap. Read This Instead<a class=heading-anchor href=#stop-asking-for-a-devops-roadmap-read-this-instead aria-label="Link to this section"></a></h2><p>People who reach out to me and ask &ldquo;give us a roadmap of becoming a DevOps engineer&rdquo; or &ldquo;what was your roadmap&rdquo; - I go blank. What was my roadmap? I end up saying: learn Docker, K8s, Terraform, or AWS.</p><p>So I sat down and wrote my thoughts. If I needed to start again with no memory of being a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.</p><p>A job is an outcome of being a good engineer and problem solver. Learn to become that, not to get a job. That&rsquo;s the first thing I would have told my 21-year-old self.</p><hr><h2 id=programming-language>Programming Language<a class=heading-anchor href=#programming-language aria-label="Link to this section"></a></h2><p>Start with <strong>Go</strong>.</p><p>Docker, K8s, and Terraform are all written in Go - it makes sense. But don&rsquo;t just learn the syntax.</p><ul><li><p>Build an HTTP server from scratch</p></li><li><p>Understand what a request is: HTTP methods (GET, POST, PUT, DELETE), error codes, rate limiting, exponential backoffs, API contracts</p></li><li><p>Packages, dependencies, supply chains</p></li><li><p>Queuing, caching, goroutines, concurrency, graceful shutdown</p></li><li><p>Observability: logging, traces (APM), profiling</p></li><li><p>Performance testing, load testing, requests per second</p></li></ul><p><strong>Resources to get started:</strong></p><ul><li><a href=https://go.dev/tour/>A Tour of Go</a> - the official interactive intro. Start here.</li><li><a href=https://gobyexample.com/>Go by Example</a> - annotated examples for every concept. Keep this open as a reference.</li><li><a href=https://www.ibm.com/think/topics/test-driven-development>Test-Driven Development</a> - understand TDD before you write real Go code.</li><li><a href=https://gist.github.com/stefanbirkner/835b7d0c498b4026f65a>Effective Go patterns</a> - patterns worth knowing once you have the basics down.</li></ul><hr><h2 id=linux>Linux<a class=heading-anchor href=#linux aria-label="Link to this section"></a></h2><p>You will live in the terminal. Get comfortable here.</p><p><strong>Basic navigation:</strong></p><p><code>cd</code>, <code>ls</code>, <code>pwd</code>, <code>mkdir</code>, <code>rm</code>, <code>cp</code>, <code>mv</code>, <code>find</code>, <code>grep</code>, <code>cat</code>, <code>less</code>, <code>head</code>, <code>tail</code></p><p><strong>File system:</strong></p><p>Linux organizes everything under <code>/</code>. Know the key directories:</p><ul><li><code>/etc</code> - configs</li><li><code>/var</code> - logs</li><li><code>/home</code> - users</li><li><code>/tmp</code> - throwaway stuff</li></ul><p><strong>User space vs kernel space:</strong></p><p>User space is where your applications run. Kernel space is where the OS does the heavy lifting. Understanding this boundary helps you debug problems that feel invisible.</p><p><strong>File permissions:</strong></p><p>Create, edit, <code>chmod</code>, <code>chown</code>. Know what <code>755</code> and <code>644</code> mean.</p><p><strong>Streams:</strong></p><p><code>stdout</code>, <code>stdin</code>, <code>stderr</code> - three streams. Redirect with <code>></code>, <code>2></code>, and pipe with <code>|</code>. This is how you compose commands.</p><p><strong>Bash:</strong></p><p>Write shell scripts. Not because bash is elegant, but because every server you will ever touch has it.</p><p><strong>Networking:</strong></p><ul><li>IP addresses, subnets, DNS</li><li>Know what happens when you type a URL and hit enter</li><li>Ports: 80 is HTTP, 443 is HTTPS, 22 is SSH</li></ul><p><strong>SSH:</strong></p><p>How you talk to remote servers. Learn key-based auth, not passwords. You will SSH into things thousands of times in your career.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://roadmap.sh/linux>Linux Roadmap</a> - a structured visual guide covering everything above and more.</li></ul><hr><h2 id=git-and-github>Git and GitHub<a class=heading-anchor href=#git-and-github aria-label="Link to this section"></a></h2><h3 id=git>Git<a class=heading-anchor href=#git aria-label="Link to this section"></a></h3><p>Git is version control. It tracks every change you make to your code. You can go back in time, work on features without breaking things, and merge it all together.</p><ul><li><p><code>.gitignore</code> - tells Git what not to track: node modules, <code>.env</code> files, build artifacts. Set this up first.</p></li><li><p><code>git stash</code> - save work temporarily without committing</p></li><li><p><code>git log</code>, <code>git diff</code>, <code>git blame</code> - your debugging friends: who changed what, when, and why</p></li><li><p><code>git reset</code> - undo commits. <code>--soft</code> keeps changes staged, <code>--hard</code> throws everything away. Know the difference before you run it.</p></li><li><p><code>git revert</code> - creates a new commit that undoes a previous one. Safer than reset because it doesn&rsquo;t rewrite history.</p></li><li><p><code>git cherry-pick</code> - grab a specific commit from another branch and apply it to yours</p></li><li><p><code>git bisect</code> - binary search through commit history to find which commit broke something. Criminally underused.</p></li><li><p>Squashing commits - combine messy commits into one clean one before merging</p></li><li><p>Hooks - scripts that run on Git events. Pre-commit for linting, pre-push for tests.</p></li><li><p>Interactive rebase (<code>git rebase -i</code>) - reorder, squash, edit, drop commits before anyone else sees them</p></li><li><p>Tags - mark releases: <code>v1.0.0</code>, <code>v1.1.0</code>. Know semantic versioning.</p></li><li><p>Upstream vs origin - origin is your fork, upstream is the original repo. Keep them in sync.</p></li><li><p>Detached HEAD - you checked out a commit instead of a branch. Not broken, just confusing the first time.</p></li></ul><p>Git is not hard. It&rsquo;s just badly explained. Practice by breaking things in a throwaway repo. Learn it from the terminal, not a GUI - GUIs hide what&rsquo;s actually happening.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://git-scm.com/learn>Learn Git</a> - the official book and resources. Free, thorough, authoritative.</li></ul><h3 id=github>GitHub<a class=heading-anchor href=#github aria-label="Link to this section"></a></h3><p>Git is the tool. GitHub is the platform where your code lives.</p><ul><li><p><strong>Commits</strong> - small, meaningful save points with good messages. Not &ldquo;fixed stuff.&rdquo;</p></li><li><p><strong>Branches</strong> - work on features in isolation. Main stays clean and always deployable.</p></li><li><p><strong>Pull requests</strong> - how code gets reviewed before it goes into main. No one pushes to main directly. Ever.</p></li><li><p><strong>Merge vs rebase</strong> - two ways to combine branches. Learn both, have an opinion on when to use which.</p></li><li><p><strong>Merge conflicts</strong> - they will happen. Don&rsquo;t panic. Read the diff, pick the right changes, move on.</p></li></ul><p><strong>Resources to get started:</strong></p><ul><li><a href=https://learn.github.com/>GitHub Learning</a> - official GitHub courses covering PRs, Actions, and more.</li></ul><hr><h2 id=docker>Docker<a class=heading-anchor href=#docker aria-label="Link to this section"></a></h2><ul><li><p><strong>Containers</strong> - a way to package your application with everything it needs to run, so it works the same everywhere. No more &ldquo;it works on my machine.&rdquo;</p></li><li><p><strong>How Docker works</strong> - it uses Linux kernel features (namespaces and cgroups) to isolate processes. It&rsquo;s not a VM; it shares the host kernel.</p></li><li><p><strong>Dockerfile</strong> - a recipe that tells Docker how to build your image. Every line is an instruction.</p></li><li><p><strong>Multi-stage builds</strong> - use multiple <code>FROM</code> statements to keep your final image small. Build in one stage, copy only what you need into the next.</p></li><li><p><strong>Layers</strong> - every instruction in your Dockerfile creates a layer. Layers are cached. Order your Dockerfile smartly and builds get fast.</p></li><li><p><strong>Networking</strong> - containers can talk to each other. Learn bridge networks, host networking, and how to expose ports.</p></li><li><p><strong>Container registries</strong> - where your images live. Docker Hub is public. ECR, GCR, ACR are private.</p></li><li><p><strong>Docker Compose</strong> - define and run multi-container applications with a single YAML file. Your local dev environment lives here.</p></li></ul><p><strong>Resources to get started:</strong></p><ul><li><a href=https://www.docker.com/101-tutorial/>Docker 101 Tutorial</a> - hands-on intro, runs a real container from minute one.</li><li><a href=https://www.docker.com/learning-paths/learning-basics/>Docker Learning Basics</a> - official learning path covering the full basics.</li></ul><hr><h2 id=aws>AWS<a class=heading-anchor href=#aws aria-label="Link to this section"></a></h2><p><strong>What is AWS:</strong></p><p>Amazon needed infrastructure for itself, built way more than it needed, and started selling the rest. That&rsquo;s literally how AWS was born.</p><p><strong>How AWS is designed:</strong></p><ul><li>Regions are geographic locations (Mumbai, Virginia, Frankfurt)</li><li>Each region has multiple availability zones (AZs)</li><li>Each AZ is one or more physical data centres</li><li>This is how AWS gives you redundancy - if one AZ goes down, your app stays up</li></ul><p><strong>Start with the building blocks:</strong> VPC, IAM, EC2, ECR, Lambda, S3. Everything else is built on top of these.</p><table><thead><tr><th>Service</th><th>What it does</th></tr></thead><tbody><tr><td><strong>IAM</strong></td><td>Who can do what. Users, roles, policies. Bad IAM is how companies get hacked.</td></tr><tr><td><strong>S3</strong></td><td>Object storage. Versioning, lifecycle policies, bucket policies. Deceptively simple, incredibly powerful.</td></tr><tr><td><strong>EC2</strong></td><td>A virtual machine in the cloud. Pick your OS, pick your size, SSH in.</td></tr><tr><td><strong>ECR</strong></td><td>A private Docker registry on AWS. Push images here, services pull from here.</td></tr><tr><td><strong>Lambda</strong></td><td>Run code without managing servers. Triggered on events. You pay only when it runs.</td></tr></tbody></table><p><strong>VPC (go deeper):</strong></p><ul><li><p><strong>Subnets</strong> - public subnets can reach the internet, private subnets cannot. Databases go in private, load balancers go in public.</p></li><li><p><strong>Internet gateway</strong> - the door between your VPC and the internet</p></li><li><p><strong>NAT gateway</strong> - lets private subnets reach the internet (for updates, API calls) without being reachable from the internet</p></li><li><p><strong>Route tables</strong> - rules that decide where traffic goes. Every subnet has one.</p></li><li><p><strong>VPC PrivateLink</strong> - lets services talk to each other without traffic ever leaving the AWS network</p></li></ul><p>Understand how services interact: How does an EC2 instance in a private subnet pull an image from ECR? How does a Lambda write to S3? How does traffic flow from a browser to your app and back? Trace the path. Draw it out. This is how a list of services becomes a system.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://www.bloodraven.in/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/>The Most Practical Way to Get Started on AWS</a> - build a production-grade cloud setup from scratch.</li></ul><hr><h2 id=terraform>Terraform<a class=heading-anchor href=#terraform aria-label="Link to this section"></a></h2><p><strong>What is Terraform:</strong></p><p>You write code that describes your infrastructure, run it, and Terraform builds it for you. Infrastructure as Code. No more clicking around in the AWS console.</p><ul><li><p><strong>HCL</strong> - HashiCorp Configuration Language. Not a programming language, just a way to describe what you want.</p></li><li><p><strong>Providers</strong> - plugins that let Terraform talk to cloud platforms: AWS, GCP, Kubernetes. One tool, many clouds.</p></li><li><p><strong>Resources</strong> - the actual things you&rsquo;re creating: an EC2 instance, a VPC, an S3 bucket.</p></li><li><p><strong>State</strong> - Terraform tracks what it has created in a state file. Lose it and you&rsquo;re in trouble. Store it remotely (S3 + DynamoDB) from day one.</p></li><li><p><strong>Plan and Apply</strong> - <code>terraform plan</code> shows what will change. <code>terraform apply</code> makes it happen. Always plan before you apply.</p></li><li><p><strong>Modules</strong> - reusable chunks of Terraform code. Write your VPC setup once, use it across every project.</p></li><li><p><strong>Variables and Outputs</strong> - variables are inputs, outputs are values you extract after creation. Keep things dynamic, not hardcoded.</p></li><li><p><strong>Workspaces</strong> - separate dev, staging, and production infrastructure. Same code, different state.</p></li><li><p><strong><code>terraform destroy</code></strong> - tears everything down. Powerful and terrifying. Respect it.</p></li></ul><p>The real skill with Terraform isn&rsquo;t writing it - it&rsquo;s structuring it so a team can work on it without stepping on each other.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://developer.hashicorp.com/terraform/tutorials>Terraform Tutorials</a> - official HashiCorp tutorials, hands-on from day one.</li></ul><hr><h2 id=kubernetes>Kubernetes<a class=heading-anchor href=#kubernetes aria-label="Link to this section"></a></h2><p><strong>What is Kubernetes:</strong></p><p>A container orchestrator. You tell it what you want running, how many copies, and it figures out the rest - scheduling, scaling, restarting, networking.</p><p><strong>Why it&rsquo;s used:</strong></p><p>Running one container is easy. Running hundreds across multiple servers, keeping them healthy, scaling them up and down, routing traffic between them - that&rsquo;s the hard part. Kubernetes solves that.</p><h3 id=core-objects>Core Objects<a class=heading-anchor href=#core-objects aria-label="Link to this section"></a></h3><table><thead><tr><th>Object</th><th>What it does</th></tr></thead><tbody><tr><td><strong>Pod</strong></td><td>Smallest unit. One or more containers running together.</td></tr><tr><td><strong>ReplicaSet</strong></td><td>Ensures a specific number of pods are always running.</td></tr><tr><td><strong>Deployment</strong></td><td>Manages ReplicaSets. Rolling updates, rollbacks, scaling.</td></tr><tr><td><strong>DaemonSet</strong></td><td>Runs one pod on every node. Used for log collectors, monitoring agents.</td></tr><tr><td><strong>StatefulSet</strong></td><td>Like a Deployment but for stateful workloads (databases, brokers). Pods get predictable names and persistent storage.</td></tr><tr><td><strong>ConfigMap</strong></td><td>Key-value pairs for configuration. Keep config out of your container image.</td></tr><tr><td><strong>Secrets</strong></td><td>Like ConfigMap but for sensitive data. Base64 encoded by default - that&rsquo;s not encryption.</td></tr><tr><td><strong>External Secrets</strong></td><td>Pulls secrets from AWS Secrets Manager or HashiCorp Vault into Kubernetes. This is how you do secrets properly.</td></tr></tbody></table><h3 id=services>Services<a class=heading-anchor href=#services aria-label="Link to this section"></a></h3><ul><li><p><strong>ClusterIP</strong> - internal only. Other pods inside the cluster can reach it, nothing outside can.</p></li><li><p><strong>NodePort</strong> - exposes the service on a port on every node. Quick and dirty, not for production.</p></li><li><p><strong>LoadBalancer</strong> - provisions a cloud load balancer (AWS ALB/NLB) and routes external traffic to your pods.</p></li></ul><h3 id=common-errors>Common Errors<a class=heading-anchor href=#common-errors aria-label="Link to this section"></a></h3><table><thead><tr><th>Error</th><th>Cause</th></tr></thead><tbody><tr><td><code>CrashLoopBackOff</code></td><td>Container starts, crashes, restarts, crashes again. Check logs.</td></tr><tr><td><code>ImagePullBackOff</code></td><td>Kubernetes can&rsquo;t pull your image. Wrong name, wrong tag, or missing registry credentials.</td></tr><tr><td><code>OOMKilled</code></td><td>Container used more memory than allowed. Increase limits or fix the memory leak.</td></tr><tr><td><code>Pending</code></td><td>Pod is stuck. Usually means the cluster doesn&rsquo;t have enough resources.</td></tr></tbody></table><p>When something breaks, run <code>kubectl describe</code> and look at events first. Always.</p><h3 id=architecture>Architecture<a class=heading-anchor href=#architecture aria-label="Link to this section"></a></h3><p><strong>Control plane</strong> (the brain - makes decisions, doesn&rsquo;t run your app):</p><ul><li><p><strong>API Server</strong> - the front door to Kubernetes. Every <code>kubectl</code> command, every component request, goes through here. Nothing talks to anything else directly.</p></li><li><p><strong>etcd</strong> - a key-value store holding the entire cluster state. If etcd dies and you have no backup, your cluster is gone. Treat it like a database because it is one.</p></li><li><p><strong>Scheduler</strong> - watches for pods with no node assigned. Looks at resource requests, affinity rules, taints, tolerations, and picks the best node.</p></li><li><p><strong>Controller Manager</strong> - runs control loops in the background. ReplicaSet controller, Node controller, Job controller. Watches desired state in etcd and works to make reality match.</p></li><li><p><strong>Cloud Controller Manager</strong> - talks to your cloud provider. When you create a <code>LoadBalancer</code> service, this is what actually provisions the AWS/GCP load balancer.</p></li></ul><p><strong>Worker node</strong> (runs your actual workloads):</p><ul><li><p><strong>kubelet</strong> - agent on every worker node. API server tells it what pods should run; kubelet makes it happen.</p></li><li><p><strong>kube-proxy</strong> - handles networking on each node. Maintains rules so traffic to a Service reaches the right pod.</p></li><li><p><strong>Container runtime</strong> - the thing that actually runs containers (<code>containerd</code>, <code>CRI-O</code>). Kubelet talks to it through the CRI.</p></li></ul><p><strong>How it all fits together:</strong></p><p>You run <code>kubectl apply -f deployment.yaml</code>. That hits the API Server → stored in etcd → Controller Manager creates a ReplicaSet → ReplicaSet creates pod objects → Scheduler picks nodes → kubelet on each node pulls the image and starts the container → kube-proxy updates network rules.</p><p>That entire flow, from <code>kubectl apply</code> to a running container, is Kubernetes.</p><h3 id=requests-and-limits>Requests and Limits<a class=heading-anchor href=#requests-and-limits aria-label="Link to this section"></a></h3><ul><li><p><strong>Requests</strong> - minimum resources guaranteed. The scheduler uses this to decide where to place your pod.</p></li><li><p><strong>Limits</strong> - maximum a pod can use. Exceed the memory limit and you get <code>OOMKilled</code>.</p></li></ul><p>Without requests and limits, one greedy pod can starve everything else on a node. Set them. Always.</p><h3 id=managed-vs-vanilla-kubernetes>Managed vs Vanilla Kubernetes<a class=heading-anchor href=#managed-vs-vanilla-kubernetes aria-label="Link to this section"></a></h3><ul><li><p><strong>Vanilla Kubernetes</strong> - you set up everything: control plane, networking, upgrades. Great for learning, painful for production.</p></li><li><p><strong>EKS / GKE</strong> - they manage the control plane. You worry about worker nodes and workloads. The Kubernetes API is identical.</p></li></ul><p>Pick managed. Learn the concepts on vanilla if you want, but run production on managed. Life is too short to babysit etcd.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://kubernetes.io/docs/tutorials/kubernetes-basics/>Kubernetes Basics</a> - official interactive tutorial. Covers deployments, scaling, and updates.</li></ul><hr><h2 id=cicd>CI/CD<a class=heading-anchor href=#cicd aria-label="Link to this section"></a></h2><p><strong>Why it exists:</strong></p><p>You don&rsquo;t want humans manually building, testing, and deploying code. Humans make mistakes. CI/CD is how code goes from a developer&rsquo;s laptop to production without someone SSHing into a server and running commands.</p><p><strong>Common pipeline steps:</strong></p><ol><li><p><strong>Lint</strong> - catch style issues and obvious bugs before anything else runs</p></li><li><p><strong>Test</strong> - unit tests, integration tests. If tests fail, the pipeline stops. Nothing broken gets further.</p></li><li><p><strong>Security / quality scans</strong> - tools like SonarQube check for vulnerabilities and code smells</p></li><li><p><strong>Build the Docker image</strong> - package your application. Tag it properly. Use multi-stage builds to keep it lean.</p></li><li><p><strong>Push to a registry</strong> - ECR, GCR, Docker Hub. The image needs to live somewhere your deployment target can pull from.</p></li><li><p><strong>Deploy</strong> - to Kubernetes, ECS, Lambda, EC2, whatever your setup is. The pipeline deploys, not you.</p></li></ol><p><strong>The important part:</strong></p><p>Don&rsquo;t learn just Jenkins or just GitHub Actions. Learn what CI/CD is trying to achieve - code change, validate, build, ship. The tool just executes that flow. Jenkins, GitHub Actions, GitLab CI, CircleCI all do the same thing differently. Understand the &ldquo;what&rdquo; and &ldquo;why&rdquo; and picking up any tool takes a day.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://www.freecodecamp.org/news/learn-continuous-integration-delivery-and-deployment/>Learn CI/CD</a> - freeCodeCamp&rsquo;s guide covering CI, CD, and deployment end to end.</li></ul><hr><h2 id=observability>Observability<a class=heading-anchor href=#observability aria-label="Link to this section"></a></h2><p><strong>What is observability:</strong></p><p>The ability to understand what is happening inside your system by looking at what it outputs. When something breaks at 3 AM, observability is the difference between fixing it in 10 minutes and staring at a screen for 3 hours.</p><p><strong>Three pillars:</strong></p><table><thead><tr><th>Pillar</th><th>What it tells you</th></tr></thead><tbody><tr><td><strong>Logs</strong></td><td>What happened and when. Use structured logs (JSON) - makes searching and filtering possible.</td></tr><tr><td><strong>Metrics</strong></td><td>Numbers over time: CPU, memory, request count, error rate, latency. Tells you <em>something</em> is wrong.</td></tr><tr><td><strong>Traces</strong></td><td>Follow a single request across multiple services. Shows you <em>where</em> the slowdown or failure is.</td></tr></tbody></table><p><strong>Tools:</strong></p><ul><li><p><strong>Prometheus</strong> - collects and stores metrics. Pull-based, scrapes your services at intervals.</p></li><li><p><strong>Grafana</strong> - visualizes everything. Dashboards for metrics, logs, traces.</p></li><li><p><strong>ELK stack</strong> (Elasticsearch, Logstash, Kibana) - log aggregation. Collect logs from everywhere, search in one place.</p></li><li><p><strong>Loki</strong> - like ELK but lighter. Pairs well with Grafana.</p></li><li><p><strong>Jaeger / Tempo</strong> - distributed tracing. Follow requests across services.</p></li></ul><p><strong>Alerting:</strong></p><p>Set up smart alerts. Alert on symptoms (high error rate, high latency), not on causes (CPU at 80%). Noisy alerts get ignored - and ignored alerts kill production.</p><p>Don&rsquo;t add observability after things break. Build it in from day one. If you can&rsquo;t see inside your system, you don&rsquo;t understand your system.</p><p><strong>Resources to get started:</strong></p><ul><li><a href=https://signoz.io/blog/o11y/>What is Observability?</a> - a solid primer on the concepts before you touch any tooling.</li></ul><hr><h2 id=this-is-a-starting-point-not-a-guarantee>This is a starting point, not a guarantee.<a class=heading-anchor href=#this-is-a-starting-point-not-a-guarantee aria-label="Link to this section"></a></h2><p>You can read every word here and still freeze when a production system goes down at 2 AM. You can know what etcd is and still not know why your pods are pending. You can understand CI/CD in theory and still ship
-broken code to production.</p><p>Reading doesn&rsquo;t build the muscle doing does.</p><p>The engineers who are actually good at this aren&rsquo;t the ones who had the best roadmap. They&rsquo;re the ones who shipped things, broke things, got paged at odd hours, fixed things, and kept going. They Googled the same
-errors you will. They felt lost in the same Kubernetes docs you will.</p><p>This blog can point you in a direction. It cannot replace the hours you have to put in. It cannot replace the frustration of something not working and having to figure out why. It cannot replace the moment
-something finally clicks after you&rsquo;ve stared at it long enough.</p><p>The map is not the territory. Go touch some grass and by grass, I mean a terminal.</p><hr><h2 id=the-only-advice-that-matters>The only advice that matters<a class=heading-anchor href=#the-only-advice-that-matters aria-label="Link to this section"></a></h2><p>Take your laptop. Start building, breaking, and documenting. That&rsquo;s how you&rsquo;ll know how things actually work.</p></div></div><footer class=article-footer><p class=share-links><a class=res-link href="https://x.com/intent/tweet?text=Stop+Asking+for+a+DevOps+Roadmap.+Read+This+Instead&url=https%3A%2F%2Fwww.bloodraven.in%2Fwriting%2Fstop-asking-for-a-devops-roadmap.-read-this-instead%2F" rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>Share</a></p></footer><nav class=pager aria-label="More in this section"><a class="pager__link pager__link--prev" href=/writing/the-curious-case-of-docker-hardend-images/><span class=pager__dir><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Older</span>
-<span class=pager__title>The Curious Case of Docker Hardened Images</span>
-</a><a class="pager__link pager__link--next" href=/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/><span class=pager__dir>Newer<svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-<span class=pager__title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</span></a></nav></div></article></main><footer class=site-footer><div class=container><div class=footer-grid><div class=footer-col><h2>Let&rsquo;s connect</h2><ul class=footer-links><li><a href=https://github.com/bloodraven21 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63.0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577.0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93.0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176.0.0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22.0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22.0 1.606-.015 2.896-.015 3.286.0.315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>GitHub</span></a></li><li><a href=https://linkedin.com/in/ishan-jain21 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853.0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601.0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433A2.062 2.062.0 013.274 5.368a2.064 2.064.0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225.0H1.771C.792.0.0.774.0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2.0 22.222.0h.003z"/></svg><span>LinkedIn</span></a></li><li><a href=https://x.com/bloodravendev rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg><span>Twitter</span></a></li><li><a href=https://www.instagram.com/bloodraven.2112 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 0C8.74.0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333.0 8.74.0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26.0 12 0zm0 2.16c3.203.0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211.0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844.0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162.0 100 12.324 6.162 6.162.0 100-12.324zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm7.846-10.405a1.441 1.441.0 01-2.881.0 1.44 1.44.0 012.881.0z"/></svg><span>Instagram</span></a></li><li><a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 0C5.4.0.0 5.4.0 12s5.4 12 12 12 12-5.4 12-12S18.66.0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6s.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg><span>Spotify</span></a></li></ul></div><div class=footer-col><h2>Explore</h2><ul class=footer-links><li><a href=/writing/>Writing</a></li><li><a href=/talks/>Talks</a></li><li><a href=/recommendations/>Recommendations</a></li><li><a href=/socials/>Socials</a></li></ul></div><div class=footer-col><h2>Built with</h2><ul class=footer-links><li><a href=https://gohugo.io/ rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hugo</span></a></li><li><a href=/index.xml><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg><span>RSS feed</span></a></li><li><a href=https://calendly.com/ishanij10115 rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Book a 15-minute fireside chat</span></a></li></ul></div></div><div class=footer-bottom><span>&copy; 2026 Ishan Jain</span>
-<span class=footer-meta><a href=/sitemap.xml>Sitemap</a>
-<a href=/index.xml>RSS</a></span></div></div></footer><script src=/js/site.min.22f99032ce880ee1515d818caebe231f8b13f5964603b245a708295e3a823875.js integrity="sha256-IvmQMs6IDuFRXYGMrr4jH4sT9ZZGA7JFpwgpXjqCOHU=" crossorigin=anonymous defer></script></body></html>
+<!DOCTYPE html>
+<html lang="en-us" data-theme="dark">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark"){d.setAttribute("data-theme",t)}}catch(e){}})();</script>
+<title>Stop Asking for a DevOps Roadmap. Read This Instead | Ishan Jain</title>
+<meta name="description" content="Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask “give us a roadmap of becoming a DevOps engineer” or “what was your roadmap” - I go blank. What was my roadmap? I …">
+<meta name="author" content="Ishan Jain">
+<link rel="canonical" href="http://localhost:1313/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/">
+
+<meta property="og:site_name" content="Ishan Jain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stop Asking for a DevOps Roadmap. Read This Instead">
+<meta property="og:description" content="Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask “give us a roadmap of becoming a DevOps engineer” or “what was your roadmap” - I go blank. What was my roadmap? I …">
+<meta property="og:url" content="http://localhost:1313/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://localhost:1313/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ishan Jain — Cloud &amp; Platform Engineer">
+<meta property="article:published_time" content="2026-05-19T10:00:00&#43;05:30">
+<meta property="article:modified_time" content="2026-05-19T10:00:00&#43;05:30">
+<meta property="article:author" content="Ishan Jain">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stop Asking for a DevOps Roadmap. Read This Instead">
+<meta name="twitter:description" content="Stop Asking for a DevOps Roadmap. Read This Instead People who reach out to me and ask “give us a roadmap of becoming a DevOps engineer” or “what was your roadmap” - I go blank. What was my roadmap? I …">
+<meta name="twitter:image" content="http://localhost:1313/og-image.png">
+<meta name="twitter:creator" content="@bloodravendev">
+
+<meta name="theme-color" content="#080810" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbfafd" media="(prefers-color-scheme: light)">
+
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Ishan Jain">
+
+<link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/main.css">
+<script type="application/ld+json">"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"author\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\",\"url\":\"http://localhost:1313/\"},\"dateModified\":\"2026-05-19\",\"datePublished\":\"2026-05-19\",\"headline\":\"Stop Asking for a DevOps Roadmap. Read This Instead\",\"inLanguage\":\"en\",\"mainEntityOfPage\":\"http://localhost:1313/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/\",\"publisher\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\"},\"url\":\"http://localhost:1313/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/\"}"</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>BLOODRAVEN</span>
+    </a>
+
+    <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+            aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+
+    <nav class="header-nav" id="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li>
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/writing/" aria-current="true">Writing</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/talks/">Talks</a>
+        </li>
+      </ul>
+
+      <span class="header-divider" aria-hidden="true"></span>
+
+      <div class="header-actions">
+        <a class="icon-btn" href="https://github.com/bloodraven21" rel="me noopener" target="_blank"
+           aria-label="GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+        <a class="icon-btn" href="https://linkedin.com/in/ishan-jain21" rel="me noopener" target="_blank"
+           aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle
+                aria-pressed="false" aria-label="Switch to light theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+</header>
+
+
+<main id="main" class="site-main" tabindex="-1"><article>
+  <div class="container container--prose">
+    <header class="article-header">
+      <h1>Stop Asking for a DevOps Roadmap. Read This Instead</h1>
+
+      <p class="article-meta">
+        <time datetime="2026-05-19">May 19, 2026</time>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>14 min read</span>
+      </p>
+    </header>
+
+    <div class="article-body">
+      
+<details class="toc" open>
+  <summary>On this page</summary>
+  <nav aria-label="Table of contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#programming-language">Programming Language</a></li>
+    <li><a href="#linux">Linux</a></li>
+    <li><a href="#git-and-github">Git and GitHub</a>
+      <ul>
+        <li><a href="#git">Git</a></li>
+        <li><a href="#github">GitHub</a></li>
+      </ul>
+    </li>
+    <li><a href="#docker">Docker</a></li>
+    <li><a href="#aws">AWS</a></li>
+    <li><a href="#terraform">Terraform</a></li>
+    <li><a href="#kubernetes">Kubernetes</a>
+      <ul>
+        <li><a href="#core-objects">Core Objects</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#common-errors">Common Errors</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#requests-and-limits">Requests and Limits</a></li>
+        <li><a href="#managed-vs-vanilla-kubernetes">Managed vs Vanilla Kubernetes</a></li>
+      </ul>
+    </li>
+    <li><a href="#cicd">CI/CD</a></li>
+    <li><a href="#observability">Observability</a></li>
+    <li><a href="#this-is-a-starting-point-not-a-guarantee">This is a starting point, not a guarantee.</a></li>
+    <li><a href="#the-only-advice-that-matters">The only advice that matters</a></li>
+  </ul>
+</nav></nav>
+</details>
+
+      <div class="prose">
+        <h2 id="stop-asking-for-a-devops-roadmap-read-this-instead">Stop Asking for a DevOps Roadmap. Read This Instead<a class="heading-anchor" href="#stop-asking-for-a-devops-roadmap-read-this-instead" aria-label="Link to this section"></a>
+</h2>
+<p>People who reach out to me and ask &ldquo;give us a roadmap of becoming a DevOps engineer&rdquo; or &ldquo;what was your roadmap&rdquo; - I go blank. What was my roadmap? I end up saying: learn Docker, K8s, Terraform, or AWS.</p>
+<p>So I sat down and wrote my thoughts. If I needed to start again with no memory of being a DevOps engineer and read this blog, I should be able to get all the skills required to be good enough.</p>
+<p>A job is an outcome of being a good engineer and problem solver. Learn to become that, not to get a job. That&rsquo;s the first thing I would have told my 21-year-old self.</p>
+<hr>
+<h2 id="programming-language">Programming Language<a class="heading-anchor" href="#programming-language" aria-label="Link to this section"></a>
+</h2>
+<p>Start with <strong>Go</strong>.</p>
+<p>Docker, K8s, and Terraform are all written in Go - it makes sense. But don&rsquo;t just learn the syntax.</p>
+<ul>
+<li>
+<p>Build an HTTP server from scratch</p>
+</li>
+<li>
+<p>Understand what a request is: HTTP methods (GET, POST, PUT, DELETE), error codes, rate limiting, exponential backoffs, API contracts</p>
+</li>
+<li>
+<p>Packages, dependencies, supply chains</p>
+</li>
+<li>
+<p>Queuing, caching, goroutines, concurrency, graceful shutdown</p>
+</li>
+<li>
+<p>Observability: logging, traces (APM), profiling</p>
+</li>
+<li>
+<p>Performance testing, load testing, requests per second</p>
+</li>
+</ul>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://go.dev/tour/">A Tour of Go</a> - the official interactive intro. Start here.</li>
+<li><a href="https://gobyexample.com/">Go by Example</a> - annotated examples for every concept. Keep this open as a reference.</li>
+<li><a href="https://www.ibm.com/think/topics/test-driven-development">Test-Driven Development</a> - understand TDD before you write real Go code.</li>
+<li><a href="https://gist.github.com/stefanbirkner/835b7d0c498b4026f65a">Effective Go patterns</a> - patterns worth knowing once you have the basics down.</li>
+</ul>
+<hr>
+<h2 id="linux">Linux<a class="heading-anchor" href="#linux" aria-label="Link to this section"></a>
+</h2>
+<p>You will live in the terminal. Get comfortable here.</p>
+<p><strong>Basic navigation:</strong></p>
+<p><code>cd</code>, <code>ls</code>, <code>pwd</code>, <code>mkdir</code>, <code>rm</code>, <code>cp</code>, <code>mv</code>, <code>find</code>, <code>grep</code>, <code>cat</code>, <code>less</code>, <code>head</code>, <code>tail</code></p>
+<p><strong>File system:</strong></p>
+<p>Linux organizes everything under <code>/</code>. Know the key directories:</p>
+<ul>
+<li><code>/etc</code> - configs</li>
+<li><code>/var</code> - logs</li>
+<li><code>/home</code> - users</li>
+<li><code>/tmp</code> - throwaway stuff</li>
+</ul>
+<p><strong>User space vs kernel space:</strong></p>
+<p>User space is where your applications run. Kernel space is where the OS does the heavy lifting. Understanding this boundary helps you debug problems that feel invisible.</p>
+<p><strong>File permissions:</strong></p>
+<p>Create, edit, <code>chmod</code>, <code>chown</code>. Know what <code>755</code> and <code>644</code> mean.</p>
+<p><strong>Streams:</strong></p>
+<p><code>stdout</code>, <code>stdin</code>, <code>stderr</code> - three streams. Redirect with <code>&gt;</code>, <code>2&gt;</code>, and pipe with <code>|</code>. This is how you compose commands.</p>
+<p><strong>Bash:</strong></p>
+<p>Write shell scripts. Not because bash is elegant, but because every server you will ever touch has it.</p>
+<p><strong>Networking:</strong></p>
+<ul>
+<li>IP addresses, subnets, DNS</li>
+<li>Know what happens when you type a URL and hit enter</li>
+<li>Ports: 80 is HTTP, 443 is HTTPS, 22 is SSH</li>
+</ul>
+<p><strong>SSH:</strong></p>
+<p>How you talk to remote servers. Learn key-based auth, not passwords. You will SSH into things thousands of times in your career.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://roadmap.sh/linux">Linux Roadmap</a> - a structured visual guide covering everything above and more.</li>
+</ul>
+<hr>
+<h2 id="git-and-github">Git and GitHub<a class="heading-anchor" href="#git-and-github" aria-label="Link to this section"></a>
+</h2>
+<h3 id="git">Git<a class="heading-anchor" href="#git" aria-label="Link to this section"></a>
+</h3>
+<p>Git is version control. It tracks every change you make to your code. You can go back in time, work on features without breaking things, and merge it all together.</p>
+<ul>
+<li>
+<p><code>.gitignore</code> - tells Git what not to track: node modules, <code>.env</code> files, build artifacts. Set this up first.</p>
+</li>
+<li>
+<p><code>git stash</code> - save work temporarily without committing</p>
+</li>
+<li>
+<p><code>git log</code>, <code>git diff</code>, <code>git blame</code> - your debugging friends: who changed what, when, and why</p>
+</li>
+<li>
+<p><code>git reset</code> - undo commits. <code>--soft</code> keeps changes staged, <code>--hard</code> throws everything away. Know the difference before you run it.</p>
+</li>
+<li>
+<p><code>git revert</code> - creates a new commit that undoes a previous one. Safer than reset because it doesn&rsquo;t rewrite history.</p>
+</li>
+<li>
+<p><code>git cherry-pick</code> - grab a specific commit from another branch and apply it to yours</p>
+</li>
+<li>
+<p><code>git bisect</code> - binary search through commit history to find which commit broke something. Criminally underused.</p>
+</li>
+<li>
+<p>Squashing commits - combine messy commits into one clean one before merging</p>
+</li>
+<li>
+<p>Hooks - scripts that run on Git events. Pre-commit for linting, pre-push for tests.</p>
+</li>
+<li>
+<p>Interactive rebase (<code>git rebase -i</code>) - reorder, squash, edit, drop commits before anyone else sees them</p>
+</li>
+<li>
+<p>Tags - mark releases: <code>v1.0.0</code>, <code>v1.1.0</code>. Know semantic versioning.</p>
+</li>
+<li>
+<p>Upstream vs origin - origin is your fork, upstream is the original repo. Keep them in sync.</p>
+</li>
+<li>
+<p>Detached HEAD - you checked out a commit instead of a branch. Not broken, just confusing the first time.</p>
+</li>
+</ul>
+<p>Git is not hard. It&rsquo;s just badly explained. Practice by breaking things in a throwaway repo. Learn it from the terminal, not a GUI - GUIs hide what&rsquo;s actually happening.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://git-scm.com/learn">Learn Git</a> - the official book and resources. Free, thorough, authoritative.</li>
+</ul>
+<h3 id="github">GitHub<a class="heading-anchor" href="#github" aria-label="Link to this section"></a>
+</h3>
+<p>Git is the tool. GitHub is the platform where your code lives.</p>
+<ul>
+<li>
+<p><strong>Commits</strong> - small, meaningful save points with good messages. Not &ldquo;fixed stuff.&rdquo;</p>
+</li>
+<li>
+<p><strong>Branches</strong> - work on features in isolation. Main stays clean and always deployable.</p>
+</li>
+<li>
+<p><strong>Pull requests</strong> - how code gets reviewed before it goes into main. No one pushes to main directly. Ever.</p>
+</li>
+<li>
+<p><strong>Merge vs rebase</strong> - two ways to combine branches. Learn both, have an opinion on when to use which.</p>
+</li>
+<li>
+<p><strong>Merge conflicts</strong> - they will happen. Don&rsquo;t panic. Read the diff, pick the right changes, move on.</p>
+</li>
+</ul>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://learn.github.com/">GitHub Learning</a> - official GitHub courses covering PRs, Actions, and more.</li>
+</ul>
+<hr>
+<h2 id="docker">Docker<a class="heading-anchor" href="#docker" aria-label="Link to this section"></a>
+</h2>
+<ul>
+<li>
+<p><strong>Containers</strong> - a way to package your application with everything it needs to run, so it works the same everywhere. No more &ldquo;it works on my machine.&rdquo;</p>
+</li>
+<li>
+<p><strong>How Docker works</strong> - it uses Linux kernel features (namespaces and cgroups) to isolate processes. It&rsquo;s not a VM; it shares the host kernel.</p>
+</li>
+<li>
+<p><strong>Dockerfile</strong> - a recipe that tells Docker how to build your image. Every line is an instruction.</p>
+</li>
+<li>
+<p><strong>Multi-stage builds</strong> - use multiple <code>FROM</code> statements to keep your final image small. Build in one stage, copy only what you need into the next.</p>
+</li>
+<li>
+<p><strong>Layers</strong> - every instruction in your Dockerfile creates a layer. Layers are cached. Order your Dockerfile smartly and builds get fast.</p>
+</li>
+<li>
+<p><strong>Networking</strong> - containers can talk to each other. Learn bridge networks, host networking, and how to expose ports.</p>
+</li>
+<li>
+<p><strong>Container registries</strong> - where your images live. Docker Hub is public. ECR, GCR, ACR are private.</p>
+</li>
+<li>
+<p><strong>Docker Compose</strong> - define and run multi-container applications with a single YAML file. Your local dev environment lives here.</p>
+</li>
+</ul>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://www.docker.com/101-tutorial/">Docker 101 Tutorial</a> - hands-on intro, runs a real container from minute one.</li>
+<li><a href="https://www.docker.com/learning-paths/learning-basics/">Docker Learning Basics</a> - official learning path covering the full basics.</li>
+</ul>
+<hr>
+<h2 id="aws">AWS<a class="heading-anchor" href="#aws" aria-label="Link to this section"></a>
+</h2>
+<p><strong>What is AWS:</strong></p>
+<p>Amazon needed infrastructure for itself, built way more than it needed, and started selling the rest. That&rsquo;s literally how AWS was born.</p>
+<p><strong>How AWS is designed:</strong></p>
+<ul>
+<li>Regions are geographic locations (Mumbai, Virginia, Frankfurt)</li>
+<li>Each region has multiple availability zones (AZs)</li>
+<li>Each AZ is one or more physical data centres</li>
+<li>This is how AWS gives you redundancy - if one AZ goes down, your app stays up</li>
+</ul>
+<p><strong>Start with the building blocks:</strong> VPC, IAM, EC2, ECR, Lambda, S3. Everything else is built on top of these.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>IAM</strong></td>
+<td>Who can do what. Users, roles, policies. Bad IAM is how companies get hacked.</td>
+</tr>
+<tr>
+<td><strong>S3</strong></td>
+<td>Object storage. Versioning, lifecycle policies, bucket policies. Deceptively simple, incredibly powerful.</td>
+</tr>
+<tr>
+<td><strong>EC2</strong></td>
+<td>A virtual machine in the cloud. Pick your OS, pick your size, SSH in.</td>
+</tr>
+<tr>
+<td><strong>ECR</strong></td>
+<td>A private Docker registry on AWS. Push images here, services pull from here.</td>
+</tr>
+<tr>
+<td><strong>Lambda</strong></td>
+<td>Run code without managing servers. Triggered on events. You pay only when it runs.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>VPC (go deeper):</strong></p>
+<ul>
+<li>
+<p><strong>Subnets</strong> - public subnets can reach the internet, private subnets cannot. Databases go in private, load balancers go in public.</p>
+</li>
+<li>
+<p><strong>Internet gateway</strong> - the door between your VPC and the internet</p>
+</li>
+<li>
+<p><strong>NAT gateway</strong> - lets private subnets reach the internet (for updates, API calls) without being reachable from the internet</p>
+</li>
+<li>
+<p><strong>Route tables</strong> - rules that decide where traffic goes. Every subnet has one.</p>
+</li>
+<li>
+<p><strong>VPC PrivateLink</strong> - lets services talk to each other without traffic ever leaving the AWS network</p>
+</li>
+</ul>
+<p>Understand how services interact: How does an EC2 instance in a private subnet pull an image from ECR? How does a Lambda write to S3? How does traffic flow from a browser to your app and back? Trace the path. Draw it out. This is how a list of services becomes a system.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://www.bloodraven.in/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/">The Most Practical Way to Get Started on AWS</a> - build a production-grade cloud setup from scratch.</li>
+</ul>
+<hr>
+<h2 id="terraform">Terraform<a class="heading-anchor" href="#terraform" aria-label="Link to this section"></a>
+</h2>
+<p><strong>What is Terraform:</strong></p>
+<p>You write code that describes your infrastructure, run it, and Terraform builds it for you. Infrastructure as Code. No more clicking around in the AWS console.</p>
+<ul>
+<li>
+<p><strong>HCL</strong> - HashiCorp Configuration Language. Not a programming language, just a way to describe what you want.</p>
+</li>
+<li>
+<p><strong>Providers</strong> - plugins that let Terraform talk to cloud platforms: AWS, GCP, Kubernetes. One tool, many clouds.</p>
+</li>
+<li>
+<p><strong>Resources</strong> - the actual things you&rsquo;re creating: an EC2 instance, a VPC, an S3 bucket.</p>
+</li>
+<li>
+<p><strong>State</strong> - Terraform tracks what it has created in a state file. Lose it and you&rsquo;re in trouble. Store it remotely (S3 + DynamoDB) from day one.</p>
+</li>
+<li>
+<p><strong>Plan and Apply</strong> - <code>terraform plan</code> shows what will change. <code>terraform apply</code> makes it happen. Always plan before you apply.</p>
+</li>
+<li>
+<p><strong>Modules</strong> - reusable chunks of Terraform code. Write your VPC setup once, use it across every project.</p>
+</li>
+<li>
+<p><strong>Variables and Outputs</strong> - variables are inputs, outputs are values you extract after creation. Keep things dynamic, not hardcoded.</p>
+</li>
+<li>
+<p><strong>Workspaces</strong> - separate dev, staging, and production infrastructure. Same code, different state.</p>
+</li>
+<li>
+<p><strong><code>terraform destroy</code></strong> - tears everything down. Powerful and terrifying. Respect it.</p>
+</li>
+</ul>
+<p>The real skill with Terraform isn&rsquo;t writing it - it&rsquo;s structuring it so a team can work on it without stepping on each other.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://developer.hashicorp.com/terraform/tutorials">Terraform Tutorials</a> - official HashiCorp tutorials, hands-on from day one.</li>
+</ul>
+<hr>
+<h2 id="kubernetes">Kubernetes<a class="heading-anchor" href="#kubernetes" aria-label="Link to this section"></a>
+</h2>
+<p><strong>What is Kubernetes:</strong></p>
+<p>A container orchestrator. You tell it what you want running, how many copies, and it figures out the rest - scheduling, scaling, restarting, networking.</p>
+<p><strong>Why it&rsquo;s used:</strong></p>
+<p>Running one container is easy. Running hundreds across multiple servers, keeping them healthy, scaling them up and down, routing traffic between them - that&rsquo;s the hard part. Kubernetes solves that.</p>
+<h3 id="core-objects">Core Objects<a class="heading-anchor" href="#core-objects" aria-label="Link to this section"></a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Pod</strong></td>
+<td>Smallest unit. One or more containers running together.</td>
+</tr>
+<tr>
+<td><strong>ReplicaSet</strong></td>
+<td>Ensures a specific number of pods are always running.</td>
+</tr>
+<tr>
+<td><strong>Deployment</strong></td>
+<td>Manages ReplicaSets. Rolling updates, rollbacks, scaling.</td>
+</tr>
+<tr>
+<td><strong>DaemonSet</strong></td>
+<td>Runs one pod on every node. Used for log collectors, monitoring agents.</td>
+</tr>
+<tr>
+<td><strong>StatefulSet</strong></td>
+<td>Like a Deployment but for stateful workloads (databases, brokers). Pods get predictable names and persistent storage.</td>
+</tr>
+<tr>
+<td><strong>ConfigMap</strong></td>
+<td>Key-value pairs for configuration. Keep config out of your container image.</td>
+</tr>
+<tr>
+<td><strong>Secrets</strong></td>
+<td>Like ConfigMap but for sensitive data. Base64 encoded by default - that&rsquo;s not encryption.</td>
+</tr>
+<tr>
+<td><strong>External Secrets</strong></td>
+<td>Pulls secrets from AWS Secrets Manager or HashiCorp Vault into Kubernetes. This is how you do secrets properly.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="services">Services<a class="heading-anchor" href="#services" aria-label="Link to this section"></a>
+</h3>
+<ul>
+<li>
+<p><strong>ClusterIP</strong> - internal only. Other pods inside the cluster can reach it, nothing outside can.</p>
+</li>
+<li>
+<p><strong>NodePort</strong> - exposes the service on a port on every node. Quick and dirty, not for production.</p>
+</li>
+<li>
+<p><strong>LoadBalancer</strong> - provisions a cloud load balancer (AWS ALB/NLB) and routes external traffic to your pods.</p>
+</li>
+</ul>
+<h3 id="common-errors">Common Errors<a class="heading-anchor" href="#common-errors" aria-label="Link to this section"></a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Cause</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CrashLoopBackOff</code></td>
+<td>Container starts, crashes, restarts, crashes again. Check logs.</td>
+</tr>
+<tr>
+<td><code>ImagePullBackOff</code></td>
+<td>Kubernetes can&rsquo;t pull your image. Wrong name, wrong tag, or missing registry credentials.</td>
+</tr>
+<tr>
+<td><code>OOMKilled</code></td>
+<td>Container used more memory than allowed. Increase limits or fix the memory leak.</td>
+</tr>
+<tr>
+<td><code>Pending</code></td>
+<td>Pod is stuck. Usually means the cluster doesn&rsquo;t have enough resources.</td>
+</tr>
+</tbody>
+</table>
+<p>When something breaks, run <code>kubectl describe</code> and look at events first. Always.</p>
+<h3 id="architecture">Architecture<a class="heading-anchor" href="#architecture" aria-label="Link to this section"></a>
+</h3>
+<p><strong>Control plane</strong> (the brain - makes decisions, doesn&rsquo;t run your app):</p>
+<ul>
+<li>
+<p><strong>API Server</strong> - the front door to Kubernetes. Every <code>kubectl</code> command, every component request, goes through here. Nothing talks to anything else directly.</p>
+</li>
+<li>
+<p><strong>etcd</strong> - a key-value store holding the entire cluster state. If etcd dies and you have no backup, your cluster is gone. Treat it like a database because it is one.</p>
+</li>
+<li>
+<p><strong>Scheduler</strong> - watches for pods with no node assigned. Looks at resource requests, affinity rules, taints, tolerations, and picks the best node.</p>
+</li>
+<li>
+<p><strong>Controller Manager</strong> - runs control loops in the background. ReplicaSet controller, Node controller, Job controller. Watches desired state in etcd and works to make reality match.</p>
+</li>
+<li>
+<p><strong>Cloud Controller Manager</strong> - talks to your cloud provider. When you create a <code>LoadBalancer</code> service, this is what actually provisions the AWS/GCP load balancer.</p>
+</li>
+</ul>
+<p><strong>Worker node</strong> (runs your actual workloads):</p>
+<ul>
+<li>
+<p><strong>kubelet</strong> - agent on every worker node. API server tells it what pods should run; kubelet makes it happen.</p>
+</li>
+<li>
+<p><strong>kube-proxy</strong> - handles networking on each node. Maintains rules so traffic to a Service reaches the right pod.</p>
+</li>
+<li>
+<p><strong>Container runtime</strong> - the thing that actually runs containers (<code>containerd</code>, <code>CRI-O</code>). Kubelet talks to it through the CRI.</p>
+</li>
+</ul>
+<p><strong>How it all fits together:</strong></p>
+<p>You run <code>kubectl apply -f deployment.yaml</code>. That hits the API Server → stored in etcd → Controller Manager creates a ReplicaSet → ReplicaSet creates pod objects → Scheduler picks nodes → kubelet on each node pulls the image and starts the container → kube-proxy updates network rules.</p>
+<p>That entire flow, from <code>kubectl apply</code> to a running container, is Kubernetes.</p>
+<h3 id="requests-and-limits">Requests and Limits<a class="heading-anchor" href="#requests-and-limits" aria-label="Link to this section"></a>
+</h3>
+<ul>
+<li>
+<p><strong>Requests</strong> - minimum resources guaranteed. The scheduler uses this to decide where to place your pod.</p>
+</li>
+<li>
+<p><strong>Limits</strong> - maximum a pod can use. Exceed the memory limit and you get <code>OOMKilled</code>.</p>
+</li>
+</ul>
+<p>Without requests and limits, one greedy pod can starve everything else on a node. Set them. Always.</p>
+<h3 id="managed-vs-vanilla-kubernetes">Managed vs Vanilla Kubernetes<a class="heading-anchor" href="#managed-vs-vanilla-kubernetes" aria-label="Link to this section"></a>
+</h3>
+<ul>
+<li>
+<p><strong>Vanilla Kubernetes</strong> - you set up everything: control plane, networking, upgrades. Great for learning, painful for production.</p>
+</li>
+<li>
+<p><strong>EKS / GKE</strong> - they manage the control plane. You worry about worker nodes and workloads. The Kubernetes API is identical.</p>
+</li>
+</ul>
+<p>Pick managed. Learn the concepts on vanilla if you want, but run production on managed. Life is too short to babysit etcd.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://kubernetes.io/docs/tutorials/kubernetes-basics/">Kubernetes Basics</a> - official interactive tutorial. Covers deployments, scaling, and updates.</li>
+</ul>
+<hr>
+<h2 id="cicd">CI/CD<a class="heading-anchor" href="#cicd" aria-label="Link to this section"></a>
+</h2>
+<p><strong>Why it exists:</strong></p>
+<p>You don&rsquo;t want humans manually building, testing, and deploying code. Humans make mistakes. CI/CD is how code goes from a developer&rsquo;s laptop to production without someone SSHing into a server and running commands.</p>
+<p><strong>Common pipeline steps:</strong></p>
+<ol>
+<li>
+<p><strong>Lint</strong> - catch style issues and obvious bugs before anything else runs</p>
+</li>
+<li>
+<p><strong>Test</strong> - unit tests, integration tests. If tests fail, the pipeline stops. Nothing broken gets further.</p>
+</li>
+<li>
+<p><strong>Security / quality scans</strong> - tools like SonarQube check for vulnerabilities and code smells</p>
+</li>
+<li>
+<p><strong>Build the Docker image</strong> - package your application. Tag it properly. Use multi-stage builds to keep it lean.</p>
+</li>
+<li>
+<p><strong>Push to a registry</strong> - ECR, GCR, Docker Hub. The image needs to live somewhere your deployment target can pull from.</p>
+</li>
+<li>
+<p><strong>Deploy</strong> - to Kubernetes, ECS, Lambda, EC2, whatever your setup is. The pipeline deploys, not you.</p>
+</li>
+</ol>
+<p><strong>The important part:</strong></p>
+<p>Don&rsquo;t learn just Jenkins or just GitHub Actions. Learn what CI/CD is trying to achieve - code change, validate, build, ship. The tool just executes that flow. Jenkins, GitHub Actions, GitLab CI, CircleCI all do the same thing differently. Understand the &ldquo;what&rdquo; and &ldquo;why&rdquo; and picking up any tool takes a day.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://www.freecodecamp.org/news/learn-continuous-integration-delivery-and-deployment/">Learn CI/CD</a> - freeCodeCamp&rsquo;s guide covering CI, CD, and deployment end to end.</li>
+</ul>
+<hr>
+<h2 id="observability">Observability<a class="heading-anchor" href="#observability" aria-label="Link to this section"></a>
+</h2>
+<p><strong>What is observability:</strong></p>
+<p>The ability to understand what is happening inside your system by looking at what it outputs. When something breaks at 3 AM, observability is the difference between fixing it in 10 minutes and staring at a screen for 3 hours.</p>
+<p><strong>Three pillars:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Pillar</th>
+<th>What it tells you</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Logs</strong></td>
+<td>What happened and when. Use structured logs (JSON) - makes searching and filtering possible.</td>
+</tr>
+<tr>
+<td><strong>Metrics</strong></td>
+<td>Numbers over time: CPU, memory, request count, error rate, latency. Tells you <em>something</em> is wrong.</td>
+</tr>
+<tr>
+<td><strong>Traces</strong></td>
+<td>Follow a single request across multiple services. Shows you <em>where</em> the slowdown or failure is.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tools:</strong></p>
+<ul>
+<li>
+<p><strong>Prometheus</strong> - collects and stores metrics. Pull-based, scrapes your services at intervals.</p>
+</li>
+<li>
+<p><strong>Grafana</strong> - visualizes everything. Dashboards for metrics, logs, traces.</p>
+</li>
+<li>
+<p><strong>ELK stack</strong> (Elasticsearch, Logstash, Kibana) - log aggregation. Collect logs from everywhere, search in one place.</p>
+</li>
+<li>
+<p><strong>Loki</strong> - like ELK but lighter. Pairs well with Grafana.</p>
+</li>
+<li>
+<p><strong>Jaeger / Tempo</strong> - distributed tracing. Follow requests across services.</p>
+</li>
+</ul>
+<p><strong>Alerting:</strong></p>
+<p>Set up smart alerts. Alert on symptoms (high error rate, high latency), not on causes (CPU at 80%). Noisy alerts get ignored - and ignored alerts kill production.</p>
+<p>Don&rsquo;t add observability after things break. Build it in from day one. If you can&rsquo;t see inside your system, you don&rsquo;t understand your system.</p>
+<p><strong>Resources to get started:</strong></p>
+<ul>
+<li><a href="https://signoz.io/blog/o11y/">What is Observability?</a> - a solid primer on the concepts before you touch any tooling.</li>
+</ul>
+<hr>
+<h2 id="this-is-a-starting-point-not-a-guarantee">This is a starting point, not a guarantee.<a class="heading-anchor" href="#this-is-a-starting-point-not-a-guarantee" aria-label="Link to this section"></a>
+</h2>
+<p>You can read every word here and still freeze when a production system goes down at 2 AM. You can know what etcd is and still not know why your pods are pending. You can understand CI/CD in theory and still ship
+broken code to production.</p>
+<p>Reading doesn&rsquo;t build the muscle doing does.</p>
+<p>The engineers who are actually good at this aren&rsquo;t the ones who had the best roadmap. They&rsquo;re the ones who shipped things, broke things, got paged at odd hours, fixed things, and kept going. They Googled the same
+errors you will. They felt lost in the same Kubernetes docs you will.</p>
+<p>This blog can point you in a direction. It cannot replace the hours you have to put in. It cannot replace the frustration of something not working and having to figure out why. It cannot replace the moment
+something finally clicks after you&rsquo;ve stared at it long enough.</p>
+<p>The map is not the territory. Go touch some grass and by grass, I mean a terminal.</p>
+<hr>
+<h2 id="the-only-advice-that-matters">The only advice that matters<a class="heading-anchor" href="#the-only-advice-that-matters" aria-label="Link to this section"></a>
+</h2>
+<p>Take your laptop. Start building, breaking, and documenting. That&rsquo;s how you&rsquo;ll know how things actually work.</p>
+
+      </div>
+    </div>
+
+    <footer class="article-footer">
+      <p class="share-links">
+        <a class="res-link"
+           href="https://x.com/intent/tweet?text=Stop&#43;Asking&#43;for&#43;a&#43;DevOps&#43;Roadmap.&#43;Read&#43;This&#43;Instead&url=http%3A%2F%2Flocalhost%3A1313%2Fwriting%2Fstop-asking-for-a-devops-roadmap.-read-this-instead%2F"
+           rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>Share</a>
+      </p>
+    </footer>
+
+    
+<nav class="pager" aria-label="More in this section">
+  <a class="pager__link pager__link--prev" href="/writing/the-curious-case-of-docker-hardend-images/">
+    <span class="pager__dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Older</span>
+    <span class="pager__title">The Curious Case of Docker Hardened Images</span>
+  </a>
+  <a class="pager__link pager__link--next" href="/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/">
+    <span class="pager__dir">Newer<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+    <span class="pager__title">One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</span>
+  </a>
+</nav>
+
+  </div>
+</article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <h2>Let&rsquo;s connect</h2>
+        <ul class="footer-links">
+  <li>
+    <a href="https://github.com/bloodraven21" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>GitHub</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://linkedin.com/in/ishan-jain21" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg><span>LinkedIn</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://x.com/bloodravendev" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg><span>Twitter</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://www.instagram.com/bloodraven.2112" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0Zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03Zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324ZM12 16c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4Zm7.846-10.405a1.441 1.441 0 0 1-2.881 0 1.44 1.44 0 0 1 2.881 0Z"/></svg><span>Instagram</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0Zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02Zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2Zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3Z"/></svg><span>Spotify</span>
+    </a>
+  </li>
+</ul>
+      </div>
+      <div class="footer-col">
+        <h2>Explore</h2>
+        <ul class="footer-links">
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/talks/">Talks</a></li>
+          <li><a href="/recommendations/">Recommendations</a></li>
+          <li><a href="/socials/">Socials</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>Built with</h2>
+        <ul class="footer-links">
+          <li>
+            <a href="https://gohugo.io/" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hugo</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.xml">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg><span>RSS feed</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://calendly.com/ishanij10115" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Book a 15-minute fireside chat</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ishan Jain</span>
+      <span class="footer-meta">
+        <a href="/sitemap.xml">Sitemap</a>
+        <a href="/index.xml">RSS</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>

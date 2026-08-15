@@ -1,77 +1,634 @@
-<!doctype html><html lang=en-us data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(){var e,t=document.documentElement;t.classList.add("js");try{e=localStorage.getItem("theme"),(e==="light"||e==="dark")&&t.setAttribute("data-theme",e)}catch{}})()</script><title>The Curious Case of Request and Limit on AWS EKS Fargate | Ishan Jain</title>
-<meta name=description content="If you’re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers: The Scenario You …"><meta name=author content="Ishan Jain"><link rel=canonical href=https://www.bloodraven.in/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/><meta property="og:site_name" content="Ishan Jain"><meta property="og:type" content="article"><meta property="og:title" content="The Curious Case of Request and Limit on AWS EKS Fargate"><meta property="og:description" content="If you’re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers: The Scenario You …"><meta property="og:url" content="https://www.bloodraven.in/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://www.bloodraven.in/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Ishan Jain — Cloud & Platform Engineer"><meta property="article:published_time" content="2025-11-02T14:53:00+05:30"><meta property="article:modified_time" content="2025-11-02T14:53:00+05:30"><meta property="article:author" content="Ishan Jain"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="The Curious Case of Request and Limit on AWS EKS Fargate"><meta name=twitter:description content="If you’re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers: The Scenario You …"><meta name=twitter:image content="https://www.bloodraven.in/og-image.png"><meta name=twitter:creator content="@bloodravendev"><meta name=theme-color content="#080810" media="(prefers-color-scheme: dark)"><meta name=theme-color content="#fbfafd" media="(prefers-color-scheme: light)"><link rel=icon href=/favicon.ico sizes=32x32><link rel=icon href=/favicon.svg type=image/svg+xml><link rel=apple-touch-icon href=/apple-touch-icon.png><link rel=alternate type=application/rss+xml href=https://www.bloodraven.in/index.xml title="Ishan Jain"><link rel=preload href=/fonts/inter-latin.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=/fonts/space-grotesk-latin.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=/css/main.min.9750529ca4caf81fb9cb6388413340235f6a03e93698fa4c88f4428a0ba6581b.css integrity="sha256-l1BSnKTK+B+5y2OIQTNAI19qA+k2mPpMiPRCigumWBs=" crossorigin=anonymous><script type=application/ld+json>"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"author\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\",\"url\":\"https://www.bloodraven.in/\"},\"dateModified\":\"2025-11-02\",\"datePublished\":\"2025-11-02\",\"headline\":\"The Curious Case of Request and Limit on AWS EKS Fargate\",\"inLanguage\":\"en\",\"mainEntityOfPage\":\"https://www.bloodraven.in/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/\",\"publisher\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\"},\"url\":\"https://www.bloodraven.in/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/\"}"</script></head><body><a class=skip-link href=#main>Skip to content</a><header class=site-header><div class="container header-inner"><a class=brand href=/><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-<span>BLOODRAVEN</span>
-</a><button class="icon-btn nav-toggle" type=button data-nav-toggle aria-expanded=false aria-controls=site-nav aria-label=Menu><svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><nav class=header-nav id=site-nav aria-label=Primary><ul class=nav-list><li><a class=nav-link href=/>Home</a></li><li><a class=nav-link href=/writing/ aria-current=true>Writing</a></li><li><a class=nav-link href=/talks/>Talks</a></li></ul><span class=header-divider aria-hidden=true></span><div class=header-actions><a class=icon-btn href=https://github.com/bloodraven21 rel="me noopener" target=_blank aria-label="GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63.0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577.0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93.0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176.0.0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22.0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22.0 1.606-.015 2.896-.015 3.286.0.315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-<a class=icon-btn href=https://linkedin.com/in/ishan-jain21 rel="me noopener" target=_blank aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853.0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601.0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433A2.062 2.062.0 013.274 5.368a2.064 2.064.0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225.0H1.771C.792.0.0.774.0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2.0 22.222.0h.003z"/></svg></a>
-<button class="icon-btn theme-toggle" type=button data-theme-toggle aria-pressed=false aria-label="Switch to light theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 009 9 9 9 0 11-9-9z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button></div></nav></div></header><main id=main class=site-main tabindex=-1><article><div class="container container--prose"><header class=article-header><h1>The Curious Case of Request and Limit on AWS EKS Fargate</h1><p class=article-meta><time datetime=2025-11-02>November 2, 2025</time>
-<span class=sep aria-hidden=true>·</span>
-<span>8 min read</span></p></header><div class=article-body><details class=toc open><summary>On this page</summary><nav aria-label="Table of contents"><nav id=TableOfContents><ul><li><a href=#the-scenario>The Scenario</a></li><li><a href=#how-fargate-billing-actually-works>How Fargate Billing Actually Works</a><ul><li><a href=#the-reality-check>The Reality Check</a></li><li><a href=#fargates-pod-size-calculation>Fargate&rsquo;s Pod Size Calculation</a></li><li><a href=#what-you-actually-pay-for>What You Actually Pay For</a></li></ul></li><li><a href=#the-limit-doesnt-matter-for-billing>The Limit Doesn&rsquo;t Matter (For Billing)</a><ul><li><a href=#performance-impact>Performance Impact</a></li></ul></li><li><a href=#best-practices-for-fargate>Best Practices for Fargate</a><ul><li><a href=#1-set-requests--limits>1. <strong>Set Requests = Limits</strong></a></li><li><a href=#2-understand-the-rounding>2. <strong>Understand the Rounding</strong></a></li><li><a href=#3-right-size-your-pods>3. <strong>Right-Size Your Pods</strong></a></li><li><a href=#4-consider-multiple-containers>4. <strong>Consider Multiple Containers</strong></a></li></ul></li><li><a href=#the-cost-implication>The Cost Implication</a></li><li><a href=#when-should-you-actually-use-eks-fargate>When Should You Actually Use EKS Fargate?</a><ul><li><a href=#-perfect-use-cases-for-fargate>✅ Perfect Use Cases for Fargate</a></li><li><a href=#-where-fargate-doesnt-make-sense>❌ Where Fargate Doesn&rsquo;t Make Sense</a></li></ul></li><li><a href=#decision-framework-fargate-vs-ec2-nodes>Decision Framework: Fargate vs EC2 Nodes</a></li><li><a href=#hybrid-approach-best-of-both-worlds>Hybrid Approach: Best of Both Worlds</a></li><li><a href=#conclusion>Conclusion</a></li></ul></nav></nav></details><div class=prose><p>If you&rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:</p><h2 id=the-scenario>The Scenario<a class=heading-anchor href=#the-scenario aria-label="Link to this section"></a></h2><p>You have a pod with the following resource specifications:</p><pre tabindex=0><code class=language-yamlThe data-lang=yamlThe>resources:
+<!DOCTYPE html>
+<html lang="en-us" data-theme="dark">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark"){d.setAttribute("data-theme",t)}}catch(e){}})();</script>
+<title>The Curious Case of Request and Limit on AWS EKS Fargate | Ishan Jain</title>
+<meta name="description" content="If you’re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers: The Scenario You …">
+<meta name="author" content="Ishan Jain">
+<link rel="canonical" href="http://localhost:1313/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/">
+
+<meta property="og:site_name" content="Ishan Jain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Curious Case of Request and Limit on AWS EKS Fargate">
+<meta property="og:description" content="If you’re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers: The Scenario You …">
+<meta property="og:url" content="http://localhost:1313/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://localhost:1313/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ishan Jain — Cloud &amp; Platform Engineer">
+<meta property="article:published_time" content="2025-11-02T14:53:00&#43;05:30">
+<meta property="article:modified_time" content="2025-11-02T14:53:00&#43;05:30">
+<meta property="article:author" content="Ishan Jain">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Curious Case of Request and Limit on AWS EKS Fargate">
+<meta name="twitter:description" content="If you’re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers: The Scenario You …">
+<meta name="twitter:image" content="http://localhost:1313/og-image.png">
+<meta name="twitter:creator" content="@bloodravendev">
+
+<meta name="theme-color" content="#080810" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbfafd" media="(prefers-color-scheme: light)">
+
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Ishan Jain">
+
+<link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/main.css">
+<script type="application/ld+json">"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"author\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\",\"url\":\"http://localhost:1313/\"},\"dateModified\":\"2025-11-02\",\"datePublished\":\"2025-11-02\",\"headline\":\"The Curious Case of Request and Limit on AWS EKS Fargate\",\"inLanguage\":\"en\",\"mainEntityOfPage\":\"http://localhost:1313/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/\",\"publisher\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\"},\"url\":\"http://localhost:1313/writing/the-curious-case-of-request-and-limit-on-aws-eks-fargate/\"}"</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>BLOODRAVEN</span>
+    </a>
+
+    <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+            aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+
+    <nav class="header-nav" id="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li>
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/writing/" aria-current="true">Writing</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/talks/">Talks</a>
+        </li>
+      </ul>
+
+      <span class="header-divider" aria-hidden="true"></span>
+
+      <div class="header-actions">
+        <a class="icon-btn" href="https://github.com/bloodraven21" rel="me noopener" target="_blank"
+           aria-label="GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+        <a class="icon-btn" href="https://linkedin.com/in/ishan-jain21" rel="me noopener" target="_blank"
+           aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle
+                aria-pressed="false" aria-label="Switch to light theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+</header>
+
+
+<main id="main" class="site-main" tabindex="-1"><article>
+  <div class="container container--prose">
+    <header class="article-header">
+      <h1>The Curious Case of Request and Limit on AWS EKS Fargate</h1>
+
+      <p class="article-meta">
+        <time datetime="2025-11-02">November 2, 2025</time>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>8 min read</span>
+      </p>
+    </header>
+
+    <div class="article-body">
+      
+<details class="toc" open>
+  <summary>On this page</summary>
+  <nav aria-label="Table of contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-scenario">The Scenario</a></li>
+    <li><a href="#how-fargate-billing-actually-works">How Fargate Billing Actually Works</a>
+      <ul>
+        <li><a href="#the-reality-check">The Reality Check</a></li>
+        <li><a href="#fargates-pod-size-calculation">Fargate&rsquo;s Pod Size Calculation</a></li>
+        <li><a href="#what-you-actually-pay-for">What You Actually Pay For</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-limit-doesnt-matter-for-billing">The Limit Doesn&rsquo;t Matter (For Billing)</a>
+      <ul>
+        <li><a href="#performance-impact">Performance Impact</a></li>
+      </ul>
+    </li>
+    <li><a href="#best-practices-for-fargate">Best Practices for Fargate</a>
+      <ul>
+        <li><a href="#1-set-requests--limits">1. <strong>Set Requests = Limits</strong></a></li>
+        <li><a href="#2-understand-the-rounding">2. <strong>Understand the Rounding</strong></a></li>
+        <li><a href="#3-right-size-your-pods">3. <strong>Right-Size Your Pods</strong></a></li>
+        <li><a href="#4-consider-multiple-containers">4. <strong>Consider Multiple Containers</strong></a></li>
+      </ul>
+    </li>
+    <li><a href="#the-cost-implication">The Cost Implication</a></li>
+    <li><a href="#when-should-you-actually-use-eks-fargate">When Should You Actually Use EKS Fargate?</a>
+      <ul>
+        <li><a href="#-perfect-use-cases-for-fargate">✅ Perfect Use Cases for Fargate</a></li>
+        <li><a href="#-where-fargate-doesnt-make-sense">❌ Where Fargate Doesn&rsquo;t Make Sense</a></li>
+      </ul>
+    </li>
+    <li><a href="#decision-framework-fargate-vs-ec2-nodes">Decision Framework: Fargate vs EC2 Nodes</a></li>
+    <li><a href="#hybrid-approach-best-of-both-worlds">Hybrid Approach: Best of Both Worlds</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
+  </ul>
+</nav></nav>
+</details>
+
+      <div class="prose">
+        <p>If you&rsquo;re running containers on AWS EKS with Fargate, you might have encountered a surprising reality about how billing works. Let me share a scenario that trips up many engineers:</p>
+<h2 id="the-scenario">The Scenario<a class="heading-anchor" href="#the-scenario" aria-label="Link to this section"></a>
+</h2>
+<p>You have a pod with the following resource specifications:</p>
+<pre tabindex="0"><code class="language-yamlThe" data-lang="yamlThe">resources:
   requests:
     cpu: 100m
     memory: 500Mi
   limits:
     cpu: 4000m
     memory: 8000Mi
-</code></pre><p>At first glance, you might think: &ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.&rdquo;</p><p><strong>But here&rsquo;s the twist</strong>: On AWS Fargate, you don&rsquo;t pay for what you use—you pay for what you <em>request</em>.</p><h2 id=how-fargate-billing-actually-works>How Fargate Billing Actually Works<a class=heading-anchor href=#how-fargate-billing-actually-works aria-label="Link to this section"></a></h2><p>Unlike traditional Kubernetes nodes where you pay for the entire EC2 instance, Fargate billing is based on the vCPU and memory resources <strong>requested</strong> by your pod. Here&rsquo;s what makes it curious:</p><h3 id=the-reality-check>The Reality Check<a class=heading-anchor href=#the-reality-check aria-label="Link to this section"></a></h3><p>With the configuration above:</p><ul><li><strong>Request</strong>: 100m CPU (0.1 vCPU), 500Mi memory</li><li><strong>Limit</strong>: 4000m CPU (4 vCPU), 8000Mi memory</li></ul><p>You might expect to pay for 0.1 vCPU and 500Mi of memory. However, Fargate has a catch.</p><h3 id=fargates-pod-size-calculation>Fargate&rsquo;s Pod Size Calculation<a class=heading-anchor href=#fargates-pod-size-calculation aria-label="Link to this section"></a></h3><p>Fargate doesn&rsquo;t provision resources based on individual container requests. Instead, it:</p><ol><li><strong>Sums up all container requests</strong> in your pod</li><li><strong>Rounds up to the nearest supported Fargate configuration</strong></li></ol><p>The supported configurations follow specific vCPU and memory combinations:</p><table><thead><tr><th>vCPU</th><th>Memory Options</th></tr></thead><tbody><tr><td>0.25 vCPU</td><td>0.5 GB, 1 GB, 2 GB</td></tr><tr><td>0.5 vCPU</td><td>1 GB - 4 GB (1 GB increments)</td></tr><tr><td>1 vCPU</td><td>2 GB - 8 GB (1 GB increments)</td></tr><tr><td>2 vCPU</td><td>4 GB - 16 GB (1 GB increments)</td></tr><tr><td>4 vCPU</td><td>8 GB - 30 GB (1 GB increments)</td></tr></tbody></table><h3 id=what-you-actually-pay-for>What You Actually Pay For<a class=heading-anchor href=#what-you-actually-pay-for aria-label="Link to this section"></a></h3><p>In our example:</p><ul><li>CPU request: 100m = 0.1 vCPU → <strong>Rounds up to 0.25 vCPU</strong></li><li>Memory request: 500Mi ≈ 0.5 GB → <strong>0.5 GB</strong></li></ul><p><strong>You&rsquo;ll be billed for</strong>: 0.25 vCPU and 0.5 GB memory</p><p>But here&rsquo;s where it gets interesting&mldr;</p><h2 id=the-limit-doesnt-matter-for-billing>The Limit Doesn&rsquo;t Matter (For Billing)<a class=heading-anchor href=#the-limit-doesnt-matter-for-billing aria-label="Link to this section"></a></h2><p>Your limit of 4 vCPU and 8GB memory is essentially <strong>ignored for billing purposes</strong>. Fargate provisions based on requests, not limits.</p><p>However, there&rsquo;s an important implication:</p><h3 id=performance-impact>Performance Impact<a class=heading-anchor href=#performance-impact aria-label="Link to this section"></a></h3><p>Since Fargate provisions 0.25 vCPU for your pod, even though you set a limit of 4 vCPU:</p><ul><li>Your container <strong>cannot</strong> actually use 4 vCPUs</li><li>It&rsquo;s constrained by what Fargate provisioned (0.25 vCPU)</li><li>The limit becomes effectively meaningless</li></ul><p>The same applies to memory:</p><ul><li>Fargate provisions 0.5 GB</li><li>Your 8GB limit won&rsquo;t help if the pod tries to use more than provisioned</li><li>OOMKilled errors will occur at the provisioned boundary, not your limit</li></ul><h2 id=best-practices-for-fargate>Best Practices for Fargate<a class=heading-anchor href=#best-practices-for-fargate aria-label="Link to this section"></a></h2><h3 id=1-set-requests--limits>1. <strong>Set Requests = Limits</strong><a class=heading-anchor href=#1-set-requests--limits aria-label="Link to this section"></a></h3><p>Since limits don&rsquo;t give you burst capacity on Fargate, it&rsquo;s cleaner to set them equal:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>resources</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>requests</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>cpu</span><span class=p>:</span><span class=w> </span><span class=l>250m     </span><span class=w> </span><span class=c># 0.25 vCPU</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>memory</span><span class=p>:</span><span class=w> </span><span class=l>512Mi </span><span class=w> </span><span class=c># 0.5 GB</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>limits</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>cpu</span><span class=p>:</span><span class=w> </span><span class=l>250m</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>memory</span><span class=p>:</span><span class=w> </span><span class=l>512Mi</span><span class=w>
-</span></span></span></code></pre></div><h3 id=2-understand-the-rounding>2. <strong>Understand the Rounding</strong><a class=heading-anchor href=#2-understand-the-rounding aria-label="Link to this section"></a></h3><p>Always check which Fargate configuration your requests will round up to. A request of 251m CPU will round up to 0.5 vCPU, doubling your cost.</p><h3 id=3-right-size-your-pods>3. <strong>Right-Size Your Pods</strong><a class=heading-anchor href=#3-right-size-your-pods aria-label="Link to this section"></a></h3><p>Monitor actual resource usage and set requests accordingly. Over-requesting wastes money; under-requesting causes performance issues or OOM errors.</p><h3 id=4-consider-multiple-containers>4. <strong>Consider Multiple Containers</strong><a class=heading-anchor href=#4-consider-multiple-containers aria-label="Link to this section"></a></h3><p>If your pod has multiple containers, Fargate sums all their requests:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Container 1: 100m CPU, 256Mi memory</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Container 2: 100m CPU, 256Mi memory</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Total: 200m CPU, 512Mi memory</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Fargate provisions: 0.25 vCPU, 1 GB (rounds up memory to nearest supported config)</span><span class=w>
-</span></span></span></code></pre></div><h2 id=the-cost-implication>The Cost Implication<a class=heading-anchor href=#the-cost-implication aria-label="Link to this section"></a></h2><p>Let&rsquo;s look at a real cost scenario (using approximate US East pricing):</p><p><strong>Scenario 1: Optimal Configuration</strong></p><ul><li>Request/Limit: 0.25 vCPU, 0.5 GB</li><li>Cost: ~$0.012/hour per pod</li></ul><p><strong>Scenario 2: Misunderstood Configuration</strong></p><ul><li>Request: 0.1 vCPU, 0.5 GB (thinking you&rsquo;re optimizing)</li><li>Actual Fargate provision: 0.25 vCPU, 0.5 GB</li><li>Cost: ~$0.012/hour per pod (same as Scenario 1!)</li></ul><p><strong>Scenario 3: Accidental Waste</strong></p><ul><li>Request: 0.3 vCPU, 0.6 GB</li><li>Actual Fargate provision: 0.5 vCPU, 1 GB (rounds up!)</li><li>Cost: ~$0.024/hour per pod (2x more!)</li></ul><h2 id=when-should-you-actually-use-eks-fargate>When Should You Actually Use EKS Fargate?<a class=heading-anchor href=#when-should-you-actually-use-eks-fargate aria-label="Link to this section"></a></h2><p>Given Fargate&rsquo;s unique billing model, it&rsquo;s not a one-size-fits-all solution. Here are the scenarios where Fargate shines and where it doesn&rsquo;t:</p><h3 id=-perfect-use-cases-for-fargate>✅ Perfect Use Cases for Fargate<a class=heading-anchor href=#-perfect-use-cases-for-fargate aria-label="Link to this section"></a></h3><h4 id=1-batch-jobs-with-predictable-resource-needs>1. <strong>Batch Jobs with Predictable Resource Needs</strong><a class=heading-anchor href=#1-batch-jobs-with-predictable-resource-needs aria-label="Link to this section"></a></h4><p>Fargate is ideal for batch processing workloads where you know exactly how much CPU and memory you need:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Example: Nightly ETL job</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>batch/v1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Job</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>data-processing-job</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>template</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>spec</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>containers</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>      </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>processor</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>resources</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>requests</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>cpu</span><span class=p>:</span><span class=w> </span><span class=l>1000m</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>memory</span><span class=p>:</span><span class=w> </span><span class=l>2Gi</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>          </span><span class=nt>limits</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>cpu</span><span class=p>:</span><span class=w> </span><span class=l>1000m</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=nt>memory</span><span class=p>:</span><span class=w> </span><span class=l>2Gi</span><span class=w>
-</span></span></span></code></pre></div><p><strong>Why it works:</strong></p><ul><li>Jobs run to completion and terminate</li><li>You pay only for the duration of execution</li><li>No idle infrastructure costs</li><li>Predictable resource usage = no wasted provisioning</li></ul><h4 id=2-self-hosted-cicd-runners>2. <strong>Self-Hosted CI/CD Runners</strong><a class=heading-anchor href=#2-self-hosted-cicd-runners aria-label="Link to this section"></a></h4><p>Jenkins agents, GitLab runners, GitHub Actions runners, or Argo Workflows on Fargate are excellent choices:</p><p><strong>Benefits:</strong></p><ul><li>Runners spin up on-demand for each build</li><li>Terminate immediately after job completion</li><li>No need to maintain a pool of idle EC2 instances</li><li>Each build gets isolated, dedicated resources</li><li>Perfect for security-sensitive environments</li></ul><p><strong>Example use case:</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Ephemeral CI runner</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>resources</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>requests</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>cpu</span><span class=p>:</span><span class=w> </span><span class=l>2000m     </span><span class=w> </span><span class=c># 2 vCPU for fast builds</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>memory</span><span class=p>:</span><span class=w> </span><span class=l>4Gi    </span><span class=w> </span><span class=c># 4 GB for build artifacts</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>limits</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>cpu</span><span class=p>:</span><span class=w> </span><span class=l>2000m</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>memory</span><span class=p>:</span><span class=w> </span><span class=l>4Gi</span><span class=w>
-</span></span></span></code></pre></div><p>A typical build might take 5-10 minutes, so you only pay for that duration rather than keeping an EC2 instance running 24/7.</p><h4 id=3-microservices-with-predictable-steady-load>3. <strong>Microservices with Predictable, Steady Load</strong><a class=heading-anchor href=#3-microservices-with-predictable-steady-load aria-label="Link to this section"></a></h4><p>If your service has consistent traffic patterns without significant bursts:</p><p><strong>Characteristics:</strong></p><ul><li>Stable request rates throughout the day</li><li>Predictable resource consumption</li><li>No need for aggressive autoscaling</li><li>Clear understanding of CPU/memory requirements</li></ul><p><strong>Example:</strong> Internal APIs, admin dashboards, scheduled report generators</p><h4 id=4-isolated-secure-workloads>4. <strong>Isolated, Secure Workloads</strong><a class=heading-anchor href=#4-isolated-secure-workloads aria-label="Link to this section"></a></h4><p>When you need strong workload isolation:</p><ul><li>Multi-tenant applications requiring tenant-level isolation</li><li>Compliance-heavy workloads (each pod gets its own VM boundary)</li><li>Different customers&rsquo; workloads with security requirements</li></ul><h4 id=5-development-and-staging-environments>5. <strong>Development and Staging Environments</strong><a class=heading-anchor href=#5-development-and-staging-environments aria-label="Link to this section"></a></h4><p>For non-production environments where:</p><ul><li>You want to minimize operational overhead</li><li>Resource requirements are well-understood</li><li>Cost predictability matters more than absolute cost optimization</li><li>You can terminate pods during non-business hours</li></ul><h3 id=-where-fargate-doesnt-make-sense>❌ Where Fargate Doesn&rsquo;t Make Sense<a class=heading-anchor href=#-where-fargate-doesnt-make-sense aria-label="Link to this section"></a></h3><h4 id=1-highly-variable-or-bursty-workloads>1. <strong>Highly Variable or Bursty Workloads</strong><a class=heading-anchor href=#1-highly-variable-or-bursty-workloads aria-label="Link to this section"></a></h4><p>If your application has unpredictable spikes:</p><p><strong>Problem:</strong> You must request resources for peak load, meaning you overpay during low-traffic periods.</p><p><strong>Better alternative:</strong> EC2-based node groups with Cluster Autoscaler or Karpenter, where you can:</p><ul><li>Set low requests with high limits</li><li>Burst into available node capacity</li><li>Scale nodes down during off-peak</li></ul><p><strong>Example of bad fit:</strong></p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># E-commerce site with 10x traffic during flash sales</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># You&#39;d need to request for peak (expensive)</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># Or risk OOMKills during spikes (unreliable)</span><span class=w>
-</span></span></span></code></pre></div><h4 id=2-long-running-services-with-consistent-traffic>2. <strong>Long-Running Services with Consistent Traffic</strong><a class=heading-anchor href=#2-long-running-services-with-consistent-traffic aria-label="Link to this section"></a></h4><p>For services running 24/7 with steady usage:</p><p><strong>Cost comparison:</strong></p><ul><li><strong>Fargate:</strong> 0.25 vCPU, 0.5 GB = ~$8.76/month per pod</li><li><strong>EC2 t3.small:</strong> 2 vCPU, 2 GB = ~$15/month (can run 8+ pods efficiently)</li></ul><p>At scale, EC2 nodes with efficient bin-packing become more cost-effective.</p><h4 id=3-stateful-applications-requiring-node-level-access>3. <strong>Stateful Applications Requiring Node-Level Access</strong><a class=heading-anchor href=#3-stateful-applications-requiring-node-level-access aria-label="Link to this section"></a></h4><p>Fargate limitations:</p><ul><li>No daemonsets (can&rsquo;t run node-level agents)</li><li>No privileged containers by default</li><li>Limited access to underlying infrastructure</li><li>No direct EBS volume mounting (only EFS)</li></ul><p><strong>Not suitable for:</strong></p><ul><li>Databases requiring local SSD access</li><li>Monitoring agents that need node-level metrics</li><li>Custom networking or storage drivers</li></ul><h4 id=4-gpu-or-specialized-hardware-workloads>4. <strong>GPU or Specialized Hardware Workloads</strong><a class=heading-anchor href=#4-gpu-or-specialized-hardware-workloads aria-label="Link to this section"></a></h4><p>Fargate doesn&rsquo;t support:</p><ul><li>GPU instances</li><li>High-performance networking requirements</li><li>Custom instance types</li></ul><p>Machine learning training, rendering, or HPC workloads need EC2-based nodes.</p><h4 id=5-cost-sensitive-high-density-workloads>5. <strong>Cost-Sensitive, High-Density Workloads</strong><a class=heading-anchor href=#5-cost-sensitive-high-density-workloads aria-label="Link to this section"></a></h4><p>If you&rsquo;re running hundreds of small microservices:</p><p><strong>The math:</strong></p><ul><li>100 pods × 0.25 vCPU × 0.5 GB on Fargate = high cost</li><li>Same workload on 3-4 optimized EC2 instances = significant savings</li></ul><p>Bin-packing efficiency matters at scale.</p><h2 id=decision-framework-fargate-vs-ec2-nodes>Decision Framework: Fargate vs EC2 Nodes<a class=heading-anchor href=#decision-framework-fargate-vs-ec2-nodes aria-label="Link to this section"></a></h2><p>Ask yourself these questions:</p><table><thead><tr><th>Question</th><th>Fargate If&mldr;</th><th>EC2 Nodes If&mldr;</th></tr></thead><tbody><tr><td><strong>Workload Duration</strong></td><td>Short-lived, intermittent</td><td>Long-running, 24/7</td></tr><tr><td><strong>Resource Patterns</strong></td><td>Predictable, steady</td><td>Variable, bursty</td></tr><tr><td><strong>Scale</strong></td><td>&lt;50 pods</td><td>>100 pods</td></tr><tr><td><strong>Operational Overhead</strong></td><td>Want zero node management</td><td>Have ops team/automation</td></tr><tr><td><strong>Cost Priority</strong></td><td>Simplicity > absolute cost</td><td>Optimize every dollar</td></tr><tr><td><strong>Isolation Needs</strong></td><td>Strong isolation required</td><td>Standard Kubernetes isolation OK</td></tr><tr><td><strong>Startup Speed</strong></td><td>Can tolerate 30-60s cold start</td><td>Need &lt;10s pod scheduling</td></tr></tbody></table><h2 id=hybrid-approach-best-of-both-worlds>Hybrid Approach: Best of Both Worlds<a class=heading-anchor href=#hybrid-approach-best-of-both-worlds aria-label="Link to this section"></a></h2><p>Many organizations use both:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># Fargate for CI/CD and batch jobs</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Pod</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>workload</span><span class=p>:</span><span class=w> </span><span class=l>batch</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>nodeSelector</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>eks.amazonaws.com/compute-type</span><span class=p>:</span><span class=w> </span><span class=l>fargate</span><span class=w>
-</span></span></span></code></pre></div><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># EC2 nodes for core services</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>apiVersion</span><span class=p>:</span><span class=w> </span><span class=l>v1</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>kind</span><span class=p>:</span><span class=w> </span><span class=l>Pod</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>metadata</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>labels</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>workload</span><span class=p>:</span><span class=w> </span><span class=l>production</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>spec</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>nodeSelector</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=nt>node.kubernetes.io/instance-type</span><span class=p>:</span><span class=w> </span><span class=l>t3.large</span><span class=w>
-</span></span></span></code></pre></div><p>This gives you:</p><ul><li>Cost efficiency for steady workloads (EC2)</li><li>Operational simplicity for ephemeral workloads (Fargate)</li><li>Flexibility to optimize each workload type</li></ul><h2 id=conclusion>Conclusion<a class=heading-anchor href=#conclusion aria-label="Link to this section"></a></h2><p>The curious case of requests and limits on AWS EKS Fargate teaches us an important lesson: <strong>requests are king</strong>. Unlike traditional Kubernetes where limits provide burst capacity, Fargate provisions based solely on requests and rounds up to supported configurations.</p><p>Understanding this behavior is crucial for:</p><ul><li><strong>Cost optimization</strong>: Avoiding unnecessary rounding up</li><li><strong>Performance tuning</strong>: Setting realistic expectations for your pods</li><li><strong>Capacity planning</strong>: Knowing exactly what resources your applications have<br></li></ul><p><strong>When to use Fargate:</strong></p><ul><li>Batch jobs with fixed, predictable resource needs</li><li>Self-hosted CI/CD runners that spin up on-demand</li><li>Deployments with steady, predictable load patterns</li><li>Workloads requiring strong isolation</li><li>When operational simplicity outweighs cost optimization<br></li></ul><p><strong>When to avoid Fargate:</strong></p><ul><li>Highly variable or bursty workloads</li><li>Long-running services at scale</li><li>Cost-sensitive, high-density deployments</li><li>Stateful apps requiring node-level access<br></li></ul><p>Remember: On Fargate, your limits are more of a documentation tool than a functional resource boundary. Set your requests wisely, choose the right compute type for each workload, and you&rsquo;ll master the art of Fargate cost management.</p><hr></div></div><footer class=article-footer><p class=share-links><a class=res-link href="https://x.com/intent/tweet?text=The+Curious+Case+of+Request+and+Limit+on+AWS+EKS+Fargate&url=https%3A%2F%2Fwww.bloodraven.in%2Fwriting%2Fthe-curious-case-of-request-and-limit-on-aws-eks-fargate%2F" rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>Share</a></p></footer><nav class=pager aria-label="More in this section"><a class="pager__link pager__link--prev" href=/writing/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/><span class=pager__dir><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Older</span>
-<span class=pager__title>The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</span>
-</a><a class="pager__link pager__link--next" href=/writing/the-curious-case-of-docker-hardend-images/><span class=pager__dir>Newer<svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-<span class=pager__title>The Curious Case of Docker Hardened Images</span></a></nav></div></article></main><footer class=site-footer><div class=container><div class=footer-grid><div class=footer-col><h2>Let&rsquo;s connect</h2><ul class=footer-links><li><a href=https://github.com/bloodraven21 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63.0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577.0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93.0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176.0.0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22.0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22.0 1.606-.015 2.896-.015 3.286.0.315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>GitHub</span></a></li><li><a href=https://linkedin.com/in/ishan-jain21 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853.0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601.0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433A2.062 2.062.0 013.274 5.368a2.064 2.064.0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225.0H1.771C.792.0.0.774.0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2.0 22.222.0h.003z"/></svg><span>LinkedIn</span></a></li><li><a href=https://x.com/bloodravendev rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg><span>Twitter</span></a></li><li><a href=https://www.instagram.com/bloodraven.2112 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 0C8.74.0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333.0 8.74.0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26.0 12 0zm0 2.16c3.203.0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211.0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844.0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162.0 100 12.324 6.162 6.162.0 100-12.324zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm7.846-10.405a1.441 1.441.0 01-2.881.0 1.44 1.44.0 012.881.0z"/></svg><span>Instagram</span></a></li><li><a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 0C5.4.0.0 5.4.0 12s5.4 12 12 12 12-5.4 12-12S18.66.0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6s.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg><span>Spotify</span></a></li></ul></div><div class=footer-col><h2>Explore</h2><ul class=footer-links><li><a href=/writing/>Writing</a></li><li><a href=/talks/>Talks</a></li><li><a href=/recommendations/>Recommendations</a></li><li><a href=/socials/>Socials</a></li></ul></div><div class=footer-col><h2>Built with</h2><ul class=footer-links><li><a href=https://gohugo.io/ rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hugo</span></a></li><li><a href=/index.xml><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg><span>RSS feed</span></a></li><li><a href=https://calendly.com/ishanij10115 rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Book a 15-minute fireside chat</span></a></li></ul></div></div><div class=footer-bottom><span>&copy; 2026 Ishan Jain</span>
-<span class=footer-meta><a href=/sitemap.xml>Sitemap</a>
-<a href=/index.xml>RSS</a></span></div></div></footer><script src=/js/site.min.22f99032ce880ee1515d818caebe231f8b13f5964603b245a708295e3a823875.js integrity="sha256-IvmQMs6IDuFRXYGMrr4jH4sT9ZZGA7JFpwgpXjqCOHU=" crossorigin=anonymous defer></script></body></html>
+</code></pre><p>At first glance, you might think: &ldquo;Great! My pod will use minimal resources (100m CPU, 500Mi memory) but can burst up to 4 vCPUs and 8GB when needed.&rdquo;</p>
+<p><strong>But here&rsquo;s the twist</strong>: On AWS Fargate, you don&rsquo;t pay for what you use—you pay for what you <em>request</em>.</p>
+<h2 id="how-fargate-billing-actually-works">How Fargate Billing Actually Works<a class="heading-anchor" href="#how-fargate-billing-actually-works" aria-label="Link to this section"></a>
+</h2>
+<p>Unlike traditional Kubernetes nodes where you pay for the entire EC2 instance, Fargate billing is based on the vCPU and memory resources <strong>requested</strong> by your pod. Here&rsquo;s what makes it curious:</p>
+<h3 id="the-reality-check">The Reality Check<a class="heading-anchor" href="#the-reality-check" aria-label="Link to this section"></a>
+</h3>
+<p>With the configuration above:</p>
+<ul>
+<li><strong>Request</strong>: 100m CPU (0.1 vCPU), 500Mi memory</li>
+<li><strong>Limit</strong>: 4000m CPU (4 vCPU), 8000Mi memory</li>
+</ul>
+<p>You might expect to pay for 0.1 vCPU and 500Mi of memory. However, Fargate has a catch.</p>
+<h3 id="fargates-pod-size-calculation">Fargate&rsquo;s Pod Size Calculation<a class="heading-anchor" href="#fargates-pod-size-calculation" aria-label="Link to this section"></a>
+</h3>
+<p>Fargate doesn&rsquo;t provision resources based on individual container requests. Instead, it:</p>
+<ol>
+<li><strong>Sums up all container requests</strong> in your pod</li>
+<li><strong>Rounds up to the nearest supported Fargate configuration</strong></li>
+</ol>
+<p>The supported configurations follow specific vCPU and memory combinations:</p>
+<table>
+<thead>
+<tr>
+<th>vCPU</th>
+<th>Memory Options</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.25 vCPU</td>
+<td>0.5 GB, 1 GB, 2 GB</td>
+</tr>
+<tr>
+<td>0.5 vCPU</td>
+<td>1 GB - 4 GB (1 GB increments)</td>
+</tr>
+<tr>
+<td>1 vCPU</td>
+<td>2 GB - 8 GB (1 GB increments)</td>
+</tr>
+<tr>
+<td>2 vCPU</td>
+<td>4 GB - 16 GB (1 GB increments)</td>
+</tr>
+<tr>
+<td>4 vCPU</td>
+<td>8 GB - 30 GB (1 GB increments)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-you-actually-pay-for">What You Actually Pay For<a class="heading-anchor" href="#what-you-actually-pay-for" aria-label="Link to this section"></a>
+</h3>
+<p>In our example:</p>
+<ul>
+<li>CPU request: 100m = 0.1 vCPU → <strong>Rounds up to 0.25 vCPU</strong></li>
+<li>Memory request: 500Mi ≈ 0.5 GB → <strong>0.5 GB</strong></li>
+</ul>
+<p><strong>You&rsquo;ll be billed for</strong>: 0.25 vCPU and 0.5 GB memory</p>
+<p>But here&rsquo;s where it gets interesting&hellip;</p>
+<h2 id="the-limit-doesnt-matter-for-billing">The Limit Doesn&rsquo;t Matter (For Billing)<a class="heading-anchor" href="#the-limit-doesnt-matter-for-billing" aria-label="Link to this section"></a>
+</h2>
+<p>Your limit of 4 vCPU and 8GB memory is essentially <strong>ignored for billing purposes</strong>. Fargate provisions based on requests, not limits.</p>
+<p>However, there&rsquo;s an important implication:</p>
+<h3 id="performance-impact">Performance Impact<a class="heading-anchor" href="#performance-impact" aria-label="Link to this section"></a>
+</h3>
+<p>Since Fargate provisions 0.25 vCPU for your pod, even though you set a limit of 4 vCPU:</p>
+<ul>
+<li>Your container <strong>cannot</strong> actually use 4 vCPUs</li>
+<li>It&rsquo;s constrained by what Fargate provisioned (0.25 vCPU)</li>
+<li>The limit becomes effectively meaningless</li>
+</ul>
+<p>The same applies to memory:</p>
+<ul>
+<li>Fargate provisions 0.5 GB</li>
+<li>Your 8GB limit won&rsquo;t help if the pod tries to use more than provisioned</li>
+<li>OOMKilled errors will occur at the provisioned boundary, not your limit</li>
+</ul>
+<h2 id="best-practices-for-fargate">Best Practices for Fargate<a class="heading-anchor" href="#best-practices-for-fargate" aria-label="Link to this section"></a>
+</h2>
+<h3 id="1-set-requests--limits">1. <strong>Set Requests = Limits</strong><a class="heading-anchor" href="#1-set-requests--limits" aria-label="Link to this section"></a>
+</h3>
+<p>Since limits don&rsquo;t give you burst capacity on Fargate, it&rsquo;s cleaner to set them equal:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">250m     </span><span class="w"> </span><span class="c"># 0.25 vCPU</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">512Mi </span><span class="w"> </span><span class="c"># 0.5 GB</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">250m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">512Mi</span><span class="w">
+</span></span></span></code></pre></div><h3 id="2-understand-the-rounding">2. <strong>Understand the Rounding</strong><a class="heading-anchor" href="#2-understand-the-rounding" aria-label="Link to this section"></a>
+</h3>
+<p>Always check which Fargate configuration your requests will round up to. A request of 251m CPU will round up to 0.5 vCPU, doubling your cost.</p>
+<h3 id="3-right-size-your-pods">3. <strong>Right-Size Your Pods</strong><a class="heading-anchor" href="#3-right-size-your-pods" aria-label="Link to this section"></a>
+</h3>
+<p>Monitor actual resource usage and set requests accordingly. Over-requesting wastes money; under-requesting causes performance issues or OOM errors.</p>
+<h3 id="4-consider-multiple-containers">4. <strong>Consider Multiple Containers</strong><a class="heading-anchor" href="#4-consider-multiple-containers" aria-label="Link to this section"></a>
+</h3>
+<p>If your pod has multiple containers, Fargate sums all their requests:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Container 1: 100m CPU, 256Mi memory</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Container 2: 100m CPU, 256Mi memory</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Total: 200m CPU, 512Mi memory</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Fargate provisions: 0.25 vCPU, 1 GB (rounds up memory to nearest supported config)</span><span class="w">
+</span></span></span></code></pre></div><h2 id="the-cost-implication">The Cost Implication<a class="heading-anchor" href="#the-cost-implication" aria-label="Link to this section"></a>
+</h2>
+<p>Let&rsquo;s look at a real cost scenario (using approximate US East pricing):</p>
+<p><strong>Scenario 1: Optimal Configuration</strong></p>
+<ul>
+<li>Request/Limit: 0.25 vCPU, 0.5 GB</li>
+<li>Cost: ~$0.012/hour per pod</li>
+</ul>
+<p><strong>Scenario 2: Misunderstood Configuration</strong></p>
+<ul>
+<li>Request: 0.1 vCPU, 0.5 GB (thinking you&rsquo;re optimizing)</li>
+<li>Actual Fargate provision: 0.25 vCPU, 0.5 GB</li>
+<li>Cost: ~$0.012/hour per pod (same as Scenario 1!)</li>
+</ul>
+<p><strong>Scenario 3: Accidental Waste</strong></p>
+<ul>
+<li>Request: 0.3 vCPU, 0.6 GB</li>
+<li>Actual Fargate provision: 0.5 vCPU, 1 GB (rounds up!)</li>
+<li>Cost: ~$0.024/hour per pod (2x more!)</li>
+</ul>
+<h2 id="when-should-you-actually-use-eks-fargate">When Should You Actually Use EKS Fargate?<a class="heading-anchor" href="#when-should-you-actually-use-eks-fargate" aria-label="Link to this section"></a>
+</h2>
+<p>Given Fargate&rsquo;s unique billing model, it&rsquo;s not a one-size-fits-all solution. Here are the scenarios where Fargate shines and where it doesn&rsquo;t:</p>
+<h3 id="-perfect-use-cases-for-fargate">✅ Perfect Use Cases for Fargate<a class="heading-anchor" href="#-perfect-use-cases-for-fargate" aria-label="Link to this section"></a>
+</h3>
+<h4 id="1-batch-jobs-with-predictable-resource-needs">1. <strong>Batch Jobs with Predictable Resource Needs</strong><a class="heading-anchor" href="#1-batch-jobs-with-predictable-resource-needs" aria-label="Link to this section"></a>
+</h4>
+<p>Fargate is ideal for batch processing workloads where you know exactly how much CPU and memory you need:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Example: Nightly ETL job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">data-processing-job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">processor</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">1000m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">2Gi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">1000m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">2Gi</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Why it works:</strong></p>
+<ul>
+<li>Jobs run to completion and terminate</li>
+<li>You pay only for the duration of execution</li>
+<li>No idle infrastructure costs</li>
+<li>Predictable resource usage = no wasted provisioning</li>
+</ul>
+<h4 id="2-self-hosted-cicd-runners">2. <strong>Self-Hosted CI/CD Runners</strong><a class="heading-anchor" href="#2-self-hosted-cicd-runners" aria-label="Link to this section"></a>
+</h4>
+<p>Jenkins agents, GitLab runners, GitHub Actions runners, or Argo Workflows on Fargate are excellent choices:</p>
+<p><strong>Benefits:</strong></p>
+<ul>
+<li>Runners spin up on-demand for each build</li>
+<li>Terminate immediately after job completion</li>
+<li>No need to maintain a pool of idle EC2 instances</li>
+<li>Each build gets isolated, dedicated resources</li>
+<li>Perfect for security-sensitive environments</li>
+</ul>
+<p><strong>Example use case:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Ephemeral CI runner</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">2000m     </span><span class="w"> </span><span class="c"># 2 vCPU for fast builds</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">4Gi    </span><span class="w"> </span><span class="c"># 4 GB for build artifacts</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="l">2000m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="l">4Gi</span><span class="w">
+</span></span></span></code></pre></div><p>A typical build might take 5-10 minutes, so you only pay for that duration rather than keeping an EC2 instance running 24/7.</p>
+<h4 id="3-microservices-with-predictable-steady-load">3. <strong>Microservices with Predictable, Steady Load</strong><a class="heading-anchor" href="#3-microservices-with-predictable-steady-load" aria-label="Link to this section"></a>
+</h4>
+<p>If your service has consistent traffic patterns without significant bursts:</p>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>Stable request rates throughout the day</li>
+<li>Predictable resource consumption</li>
+<li>No need for aggressive autoscaling</li>
+<li>Clear understanding of CPU/memory requirements</li>
+</ul>
+<p><strong>Example:</strong> Internal APIs, admin dashboards, scheduled report generators</p>
+<h4 id="4-isolated-secure-workloads">4. <strong>Isolated, Secure Workloads</strong><a class="heading-anchor" href="#4-isolated-secure-workloads" aria-label="Link to this section"></a>
+</h4>
+<p>When you need strong workload isolation:</p>
+<ul>
+<li>Multi-tenant applications requiring tenant-level isolation</li>
+<li>Compliance-heavy workloads (each pod gets its own VM boundary)</li>
+<li>Different customers&rsquo; workloads with security requirements</li>
+</ul>
+<h4 id="5-development-and-staging-environments">5. <strong>Development and Staging Environments</strong><a class="heading-anchor" href="#5-development-and-staging-environments" aria-label="Link to this section"></a>
+</h4>
+<p>For non-production environments where:</p>
+<ul>
+<li>You want to minimize operational overhead</li>
+<li>Resource requirements are well-understood</li>
+<li>Cost predictability matters more than absolute cost optimization</li>
+<li>You can terminate pods during non-business hours</li>
+</ul>
+<h3 id="-where-fargate-doesnt-make-sense">❌ Where Fargate Doesn&rsquo;t Make Sense<a class="heading-anchor" href="#-where-fargate-doesnt-make-sense" aria-label="Link to this section"></a>
+</h3>
+<h4 id="1-highly-variable-or-bursty-workloads">1. <strong>Highly Variable or Bursty Workloads</strong><a class="heading-anchor" href="#1-highly-variable-or-bursty-workloads" aria-label="Link to this section"></a>
+</h4>
+<p>If your application has unpredictable spikes:</p>
+<p><strong>Problem:</strong> You must request resources for peak load, meaning you overpay during low-traffic periods.</p>
+<p><strong>Better alternative:</strong> EC2-based node groups with Cluster Autoscaler or Karpenter, where you can:</p>
+<ul>
+<li>Set low requests with high limits</li>
+<li>Burst into available node capacity</li>
+<li>Scale nodes down during off-peak</li>
+</ul>
+<p><strong>Example of bad fit:</strong></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># E-commerce site with 10x traffic during flash sales</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># You&#39;d need to request for peak (expensive)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c"># Or risk OOMKills during spikes (unreliable)</span><span class="w">
+</span></span></span></code></pre></div><h4 id="2-long-running-services-with-consistent-traffic">2. <strong>Long-Running Services with Consistent Traffic</strong><a class="heading-anchor" href="#2-long-running-services-with-consistent-traffic" aria-label="Link to this section"></a>
+</h4>
+<p>For services running 24/7 with steady usage:</p>
+<p><strong>Cost comparison:</strong></p>
+<ul>
+<li><strong>Fargate:</strong> 0.25 vCPU, 0.5 GB = ~$8.76/month per pod</li>
+<li><strong>EC2 t3.small:</strong> 2 vCPU, 2 GB = ~$15/month (can run 8+ pods efficiently)</li>
+</ul>
+<p>At scale, EC2 nodes with efficient bin-packing become more cost-effective.</p>
+<h4 id="3-stateful-applications-requiring-node-level-access">3. <strong>Stateful Applications Requiring Node-Level Access</strong><a class="heading-anchor" href="#3-stateful-applications-requiring-node-level-access" aria-label="Link to this section"></a>
+</h4>
+<p>Fargate limitations:</p>
+<ul>
+<li>No daemonsets (can&rsquo;t run node-level agents)</li>
+<li>No privileged containers by default</li>
+<li>Limited access to underlying infrastructure</li>
+<li>No direct EBS volume mounting (only EFS)</li>
+</ul>
+<p><strong>Not suitable for:</strong></p>
+<ul>
+<li>Databases requiring local SSD access</li>
+<li>Monitoring agents that need node-level metrics</li>
+<li>Custom networking or storage drivers</li>
+</ul>
+<h4 id="4-gpu-or-specialized-hardware-workloads">4. <strong>GPU or Specialized Hardware Workloads</strong><a class="heading-anchor" href="#4-gpu-or-specialized-hardware-workloads" aria-label="Link to this section"></a>
+</h4>
+<p>Fargate doesn&rsquo;t support:</p>
+<ul>
+<li>GPU instances</li>
+<li>High-performance networking requirements</li>
+<li>Custom instance types</li>
+</ul>
+<p>Machine learning training, rendering, or HPC workloads need EC2-based nodes.</p>
+<h4 id="5-cost-sensitive-high-density-workloads">5. <strong>Cost-Sensitive, High-Density Workloads</strong><a class="heading-anchor" href="#5-cost-sensitive-high-density-workloads" aria-label="Link to this section"></a>
+</h4>
+<p>If you&rsquo;re running hundreds of small microservices:</p>
+<p><strong>The math:</strong></p>
+<ul>
+<li>100 pods × 0.25 vCPU × 0.5 GB on Fargate = high cost</li>
+<li>Same workload on 3-4 optimized EC2 instances = significant savings</li>
+</ul>
+<p>Bin-packing efficiency matters at scale.</p>
+<h2 id="decision-framework-fargate-vs-ec2-nodes">Decision Framework: Fargate vs EC2 Nodes<a class="heading-anchor" href="#decision-framework-fargate-vs-ec2-nodes" aria-label="Link to this section"></a>
+</h2>
+<p>Ask yourself these questions:</p>
+<table>
+<thead>
+<tr>
+<th>Question</th>
+<th>Fargate If&hellip;</th>
+<th>EC2 Nodes If&hellip;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Workload Duration</strong></td>
+<td>Short-lived, intermittent</td>
+<td>Long-running, 24/7</td>
+</tr>
+<tr>
+<td><strong>Resource Patterns</strong></td>
+<td>Predictable, steady</td>
+<td>Variable, bursty</td>
+</tr>
+<tr>
+<td><strong>Scale</strong></td>
+<td>&lt;50 pods</td>
+<td>&gt;100 pods</td>
+</tr>
+<tr>
+<td><strong>Operational Overhead</strong></td>
+<td>Want zero node management</td>
+<td>Have ops team/automation</td>
+</tr>
+<tr>
+<td><strong>Cost Priority</strong></td>
+<td>Simplicity &gt; absolute cost</td>
+<td>Optimize every dollar</td>
+</tr>
+<tr>
+<td><strong>Isolation Needs</strong></td>
+<td>Strong isolation required</td>
+<td>Standard Kubernetes isolation OK</td>
+</tr>
+<tr>
+<td><strong>Startup Speed</strong></td>
+<td>Can tolerate 30-60s cold start</td>
+<td>Need &lt;10s pod scheduling</td>
+</tr>
+</tbody>
+</table>
+<h2 id="hybrid-approach-best-of-both-worlds">Hybrid Approach: Best of Both Worlds<a class="heading-anchor" href="#hybrid-approach-best-of-both-worlds" aria-label="Link to this section"></a>
+</h2>
+<p>Many organizations use both:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># Fargate for CI/CD and batch jobs</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">workload</span><span class="p">:</span><span class="w"> </span><span class="l">batch</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">nodeSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">eks.amazonaws.com/compute-type</span><span class="p">:</span><span class="w"> </span><span class="l">fargate</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># EC2 nodes for core services</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">workload</span><span class="p">:</span><span class="w"> </span><span class="l">production</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">nodeSelector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">node.kubernetes.io/instance-type</span><span class="p">:</span><span class="w"> </span><span class="l">t3.large</span><span class="w">
+</span></span></span></code></pre></div><p>This gives you:</p>
+<ul>
+<li>Cost efficiency for steady workloads (EC2)</li>
+<li>Operational simplicity for ephemeral workloads (Fargate)</li>
+<li>Flexibility to optimize each workload type</li>
+</ul>
+<h2 id="conclusion">Conclusion<a class="heading-anchor" href="#conclusion" aria-label="Link to this section"></a>
+</h2>
+<p>The curious case of requests and limits on AWS EKS Fargate teaches us an important lesson: <strong>requests are king</strong>. Unlike traditional Kubernetes where limits provide burst capacity, Fargate provisions based solely on requests and rounds up to supported configurations.</p>
+<p>Understanding this behavior is crucial for:</p>
+<ul>
+<li><strong>Cost optimization</strong>: Avoiding unnecessary rounding up</li>
+<li><strong>Performance tuning</strong>: Setting realistic expectations for your pods</li>
+<li><strong>Capacity planning</strong>: Knowing exactly what resources your applications have
+<br></li>
+</ul>
+<p><strong>When to use Fargate:</strong></p>
+<ul>
+<li>Batch jobs with fixed, predictable resource needs</li>
+<li>Self-hosted CI/CD runners that spin up on-demand</li>
+<li>Deployments with steady, predictable load patterns</li>
+<li>Workloads requiring strong isolation</li>
+<li>When operational simplicity outweighs cost optimization
+<br></li>
+</ul>
+<p><strong>When to avoid Fargate:</strong></p>
+<ul>
+<li>Highly variable or bursty workloads</li>
+<li>Long-running services at scale</li>
+<li>Cost-sensitive, high-density deployments</li>
+<li>Stateful apps requiring node-level access
+<br></li>
+</ul>
+<p>Remember: On Fargate, your limits are more of a documentation tool than a functional resource boundary. Set your requests wisely, choose the right compute type for each workload, and you&rsquo;ll master the art of Fargate cost management.</p>
+<hr>
+
+      </div>
+    </div>
+
+    <footer class="article-footer">
+      <p class="share-links">
+        <a class="res-link"
+           href="https://x.com/intent/tweet?text=The&#43;Curious&#43;Case&#43;of&#43;Request&#43;and&#43;Limit&#43;on&#43;AWS&#43;EKS&#43;Fargate&url=http%3A%2F%2Flocalhost%3A1313%2Fwriting%2Fthe-curious-case-of-request-and-limit-on-aws-eks-fargate%2F"
+           rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>Share</a>
+      </p>
+    </footer>
+
+    
+<nav class="pager" aria-label="More in this section">
+  <a class="pager__link pager__link--prev" href="/writing/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/">
+    <span class="pager__dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Older</span>
+    <span class="pager__title">The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup</span>
+  </a>
+  <a class="pager__link pager__link--next" href="/writing/the-curious-case-of-docker-hardend-images/">
+    <span class="pager__dir">Newer<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+    <span class="pager__title">The Curious Case of Docker Hardened Images</span>
+  </a>
+</nav>
+
+  </div>
+</article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <h2>Let&rsquo;s connect</h2>
+        <ul class="footer-links">
+  <li>
+    <a href="https://github.com/bloodraven21" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>GitHub</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://linkedin.com/in/ishan-jain21" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg><span>LinkedIn</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://x.com/bloodravendev" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg><span>Twitter</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://www.instagram.com/bloodraven.2112" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0Zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03Zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324ZM12 16c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4Zm7.846-10.405a1.441 1.441 0 0 1-2.881 0 1.44 1.44 0 0 1 2.881 0Z"/></svg><span>Instagram</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0Zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02Zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2Zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3Z"/></svg><span>Spotify</span>
+    </a>
+  </li>
+</ul>
+      </div>
+      <div class="footer-col">
+        <h2>Explore</h2>
+        <ul class="footer-links">
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/talks/">Talks</a></li>
+          <li><a href="/recommendations/">Recommendations</a></li>
+          <li><a href="/socials/">Socials</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>Built with</h2>
+        <ul class="footer-links">
+          <li>
+            <a href="https://gohugo.io/" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hugo</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.xml">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg><span>RSS feed</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://calendly.com/ishanij10115" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Book a 15-minute fireside chat</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ishan Jain</span>
+      <span class="footer-meta">
+        <a href="/sitemap.xml">Sitemap</a>
+        <a href="/index.xml">RSS</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>

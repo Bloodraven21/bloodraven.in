@@ -25,16 +25,41 @@ hero:
     url: "/talks/"
 
 # Professional identities. Keep this row short.
+# A `url` makes the pill a link that opens in a new tab; drop it for a plain
+# pill, or write the entry as a bare string.
 credentials:
-  - "Docker Captain"
-  - "AWS Community Builder"
+  - label: "Docker Captain"
+    url: "https://www.docker.com/contributors/ishan-jain/"
+  - label: "AWS Community Builder"
+    url: "https://builder.aws.com/community/@ishan"
 
 techTags:
   - "Kubernetes"
-  - "Cloud"
+  - "AWS"
+  - "Docker"
   - "DevOps"
-  - "Observability"
-  - "Go"
+  - "CI/CD"
+  - "GoLang"
+  - "Github"
+  - "Linux"
+  - "Git"
+  - "Valkey"
+  - "Helm"
+  - "Grafana"
+  - "Prometheus"
+  - "Loki"
+  - "ElasticSearch"
+  - "Kibana"
+  - "Logstash"
+  - "Postgres" 
+  - "ArgoCD"
+  - "Redis"
+  - "Datadog"
+  - "Bitbucket"
+  - "OpenTelemetry"
+  - "Terraform"
+  - "Flyway"
+  - "Python"
 
 # Optional terminal card beside the hero. Delete this block to remove it.
 terminal:

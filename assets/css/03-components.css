@@ -226,6 +226,20 @@ a.tag:hover {
   flex-shrink: 0;
 }
 
+/* A badge carrying a `url` renders as an anchor. Drop the link underline the
+   base stylesheet gives every <a> and let the pill itself signal the hover. */
+a.badge {
+  text-decoration: none;
+  transition: border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+a.badge:hover {
+  border-color: var(--purple);
+  background: color-mix(in srgb, var(--purple) 20%, var(--surface));
+  color: var(--text);
+}
+
 /* Status pill (talks) */
 .status {
   display: inline-flex;

@@ -1,1 +1,68 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Talks on Ishan Jain</title><link>https://www.bloodraven.in/talks/</link><description>Recent content in Talks on Ishan Jain</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Sat, 25 Jul 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.bloodraven.in/talks/index.xml" rel="self" type="application/rss+xml"/><item><title>Caching Fire: Running Valkey on Kubernetes</title><link>https://www.bloodraven.in/talks/caching-fire-running-valkey-on-kubernetes/</link><pubDate>Sat, 25 Jul 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/caching-fire-running-valkey-on-kubernetes/</guid><description/></item><item><title>The Curious Case of Valkey Deployments</title><link>https://www.bloodraven.in/talks/the-curious-case-of-valkey-deployments/</link><pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/the-curious-case-of-valkey-deployments/</guid><description/></item><item><title>From Replication to Partition: Inside Loki’s Architectural Rewrite</title><link>https://www.bloodraven.in/talks/from-replication-to-partition-inside-lokis-architectural-rewrite/</link><pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/from-replication-to-partition-inside-lokis-architectural-rewrite/</guid><description/></item><item><title>Spot is a Lie for Stateful Containers</title><link>https://www.bloodraven.in/talks/spot-is-a-lie-for-stateful-containers/</link><pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/spot-is-a-lie-for-stateful-containers/</guid><description/></item><item><title>The Most Practical Way to Get Started on AWS</title><link>https://www.bloodraven.in/talks/the-most-practical-way-to-get-started-on-aws/</link><pubDate>Sat, 28 Mar 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/the-most-practical-way-to-get-started-on-aws/</guid><description/></item><item><title>Reverse GitOps for Grafana</title><link>https://www.bloodraven.in/talks/reverse-gitops-for-grafana/</link><pubDate>Sat, 24 Jan 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/reverse-gitops-for-grafana/</guid><description/></item><item><title>Making Kafka Observable</title><link>https://www.bloodraven.in/talks/making-kafka-observable/</link><pubDate>Mon, 15 Dec 2025 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/making-kafka-observable/</guid><description/></item><item><title>Intro to Containers, Cloud and Community</title><link>https://www.bloodraven.in/talks/intro-to-containers-cloud-and-community/</link><pubDate>Sat, 13 Dec 2025 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/talks/intro-to-containers-cloud-and-community/</guid><description/></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Talks on Ishan Jain</title>
+    <link>http://localhost:1313/talks/</link>
+    <description>Recent content in Talks on Ishan Jain</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 25 Jul 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/talks/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Caching Fire: Running Valkey on Kubernetes</title>
+      <link>http://localhost:1313/talks/caching-fire-running-valkey-on-kubernetes/</link>
+      <pubDate>Sat, 25 Jul 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/caching-fire-running-valkey-on-kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>The Curious Case of Valkey Deployments</title>
+      <link>http://localhost:1313/talks/the-curious-case-of-valkey-deployments/</link>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/the-curious-case-of-valkey-deployments/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>From Replication to Partition: Inside Loki’s Architectural Rewrite</title>
+      <link>http://localhost:1313/talks/from-replication-to-partition-inside-lokis-architectural-rewrite/</link>
+      <pubDate>Sat, 30 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/from-replication-to-partition-inside-lokis-architectural-rewrite/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Spot is a Lie for Stateful Containers</title>
+      <link>http://localhost:1313/talks/spot-is-a-lie-for-stateful-containers/</link>
+      <pubDate>Thu, 28 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/spot-is-a-lie-for-stateful-containers/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>The Most Practical Way to Get Started on AWS</title>
+      <link>http://localhost:1313/talks/the-most-practical-way-to-get-started-on-aws/</link>
+      <pubDate>Sat, 28 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/the-most-practical-way-to-get-started-on-aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Reverse GitOps for Grafana</title>
+      <link>http://localhost:1313/talks/reverse-gitops-for-grafana/</link>
+      <pubDate>Sat, 24 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/reverse-gitops-for-grafana/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Making Kafka Observable</title>
+      <link>http://localhost:1313/talks/making-kafka-observable/</link>
+      <pubDate>Mon, 15 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/making-kafka-observable/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Intro to Containers, Cloud and Community</title>
+      <link>http://localhost:1313/talks/intro-to-containers-cloud-and-community/</link>
+      <pubDate>Sat, 13 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/talks/intro-to-containers-cloud-and-community/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

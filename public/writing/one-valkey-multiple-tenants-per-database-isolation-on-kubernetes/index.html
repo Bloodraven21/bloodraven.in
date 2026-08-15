@@ -1,14 +1,180 @@
-<!doctype html><html lang=en-us data-theme=dark><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(){var e,t=document.documentElement;t.classList.add("js");try{e=localStorage.getItem("theme"),(e==="light"||e==="dark")&&t.setAttribute("data-theme",e)}catch{}})()</script><title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes | Ishan Jain</title>
-<meta name=description content="How Valkey 9.1.0's per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them."><meta name=author content="Ishan Jain"><link rel=canonical href=https://www.bloodraven.in/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/><meta property="og:site_name" content="Ishan Jain"><meta property="og:type" content="article"><meta property="og:title" content="One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes"><meta property="og:description" content="How Valkey 9.1.0's per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them."><meta property="og:url" content="https://www.bloodraven.in/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://www.bloodraven.in/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Ishan Jain — Cloud & Platform Engineer"><meta property="article:published_time" content="2026-05-27T00:00:00Z"><meta property="article:modified_time" content="2026-05-27T00:00:00Z"><meta property="article:author" content="Ishan Jain"><meta property="article:tag" content="valkey"><meta property="article:tag" content="kubernetes"><meta property="article:tag" content="redis"><meta property="article:tag" content="caching"><meta property="article:tag" content="multitenancy"><meta property="article:tag" content="golang"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes"><meta name=twitter:description content="How Valkey 9.1.0's per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them."><meta name=twitter:image content="https://www.bloodraven.in/og-image.png"><meta name=twitter:creator content="@bloodravendev"><meta name=theme-color content="#080810" media="(prefers-color-scheme: dark)"><meta name=theme-color content="#fbfafd" media="(prefers-color-scheme: light)"><link rel=icon href=/favicon.ico sizes=32x32><link rel=icon href=/favicon.svg type=image/svg+xml><link rel=apple-touch-icon href=/apple-touch-icon.png><link rel=alternate type=application/rss+xml href=https://www.bloodraven.in/index.xml title="Ishan Jain"><link rel=preload href=/fonts/inter-latin.woff2 as=font type=font/woff2 crossorigin><link rel=preload href=/fonts/space-grotesk-latin.woff2 as=font type=font/woff2 crossorigin><link rel=stylesheet href=/css/main.min.9750529ca4caf81fb9cb6388413340235f6a03e93698fa4c88f4428a0ba6581b.css integrity="sha256-l1BSnKTK+B+5y2OIQTNAI19qA+k2mPpMiPRCigumWBs=" crossorigin=anonymous><script type=application/ld+json>"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"articleSection\":\"infrastructure\",\"author\":{\"@type\":\"Person\",\"name\":\"Ishan\",\"url\":\"https://www.bloodraven.in/\"},\"dateModified\":\"2026-05-27\",\"datePublished\":\"2026-05-27\",\"headline\":\"One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes\",\"inLanguage\":\"en\",\"keywords\":\"valkey, kubernetes, redis, caching, multitenancy, golang\",\"mainEntityOfPage\":\"https://www.bloodraven.in/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/\",\"publisher\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\"},\"url\":\"https://www.bloodraven.in/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/\"}"</script></head><body><a class=skip-link href=#main>Skip to content</a><header class=site-header><div class="container header-inner"><a class=brand href=/><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-<span>BLOODRAVEN</span>
-</a><button class="icon-btn nav-toggle" type=button data-nav-toggle aria-expanded=false aria-controls=site-nav aria-label=Menu><svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg><svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button><nav class=header-nav id=site-nav aria-label=Primary><ul class=nav-list><li><a class=nav-link href=/>Home</a></li><li><a class=nav-link href=/writing/ aria-current=true>Writing</a></li><li><a class=nav-link href=/talks/>Talks</a></li></ul><span class=header-divider aria-hidden=true></span><div class=header-actions><a class=icon-btn href=https://github.com/bloodraven21 rel="me noopener" target=_blank aria-label="GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63.0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577.0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93.0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176.0.0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22.0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22.0 1.606-.015 2.896-.015 3.286.0.315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
-<a class=icon-btn href=https://linkedin.com/in/ishan-jain21 rel="me noopener" target=_blank aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853.0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601.0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433A2.062 2.062.0 013.274 5.368a2.064 2.064.0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225.0H1.771C.792.0.0.774.0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2.0 22.222.0h.003z"/></svg></a>
-<button class="icon-btn theme-toggle" type=button data-theme-toggle aria-pressed=false aria-label="Switch to light theme"><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 009 9 9 9 0 11-9-9z"/></svg><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button></div></nav></div></header><main id=main class=site-main tabindex=-1><article><div class="container container--prose"><header class=article-header><p class=eyebrow>infrastructure</p><h1>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</h1><p class=article-meta><time datetime=2026-05-27>May 27, 2026</time>
-<span class=sep aria-hidden=true>·</span>
-<span>6 min read</span>
-<span class=sep aria-hidden=true>·</span>
-<span>With Gourav Sharma</span></p></header><div class=article-body><details class=toc open><summary>On this page</summary><nav aria-label="Table of contents"><nav id=TableOfContents><ul><li><a href=#the-problem-with-one-instance-per-service>The problem with one instance per service</a></li><li><a href=#why-a-single-instance-can-handle-the-load>Why a single instance can handle the load</a></li><li><a href=#how-per-database-acl-works>How per-database ACL works</a></li><li><a href=#architecture>Architecture</a></li><li><a href=#the-app>The app</a></li><li><a href=#kubernetes-deployment>Kubernetes deployment</a></li><li><a href=#load-test-results>Load test results</a><ul><li><a href=#steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services>Steady load: 1 000 RPS per service (10 000 RPS total across 10 services)</a></li><li><a href=#ramp-10-to-1-000-rps-per-service>Ramp: 10 to 1 000 RPS per service</a></li><li><a href=#spike-4-services-at-1-000-rps-6-at-100-rps>Spike: 4 services at 1 000 RPS, 6 at 100 RPS</a></li></ul></li><li><a href=#the-honest-caveat>The honest caveat</a></li><li><a href=#wrapping-up>Wrapping up</a></li></ul></nav></nav></details><div class=prose><p>The default answer when a microservice needs a cache is to give it its own Redis or Valkey instance. It works, it is simple, and it never surprises you. It also means that a cluster running multiple services has one cache instance per service, most of them sitting at 2% utilisation.</p><p>Valkey 9.1.0, released May 2026, adds a feature that makes consolidation practical: <strong>per-database ACL selectors</strong>. You can lock an ACL user to a single logical database with one directive. A service that authenticates as <code>app3</code> physically cannot read or write database 4. The server rejects the attempt at the protocol level. That is the story this post tells.</p><hr><h2 id=the-problem-with-one-instance-per-service>The problem with one instance per service<a class=heading-anchor href=#the-problem-with-one-instance-per-service aria-label="Link to this section"></a></h2><p>Valkey is fast and lightweight, but running a separate instance per service carries real overhead:</p><ul><li>Each instance needs its own memory headroom, CPU reservation, and PersistentVolumeClaim.</li><li>Helm releases, Secrets, and Service objects multiply with every new tenant.</li><li>Operating many small instances is not cheaper than one medium instance. It is just more fragile.</li></ul><p>The consolidation argument is simple: if the working sets are small and the access patterns are independent, one instance can serve all your services at acceptable performance and lower operational cost.</p><p>The blocker has always been isolation. Without it, a bug in one service can read or corrupt another service&rsquo;s keys. Valkey&rsquo;s new <code>db=</code> ACL selector removes that blocker.</p><hr><h2 id=why-a-single-instance-can-handle-the-load>Why a single instance can handle the load<a class=heading-anchor href=#why-a-single-instance-can-handle-the-load aria-label="Link to this section"></a></h2><p>Before getting into isolation, it is worth addressing the obvious question: can one Valkey instance actually keep up?</p><p>Valkey 8.0 redesigned its I/O threading model. Rather than a single thread handling reads, writes, and event polling, it distributes that work across multiple I/O threads while keeping command execution single-threaded (preserving data-safety guarantees). The result is a <a href=https://valkey.io/blog/unlock-one-million-rps/>230% throughput increase over Redis 7.2, reaching 1.19 million requests per second</a> on a single instance, with latency dropping by nearly 70%.</p><p>Thread count scales dynamically with load, and thread affinity is maintained for cache locality. The upshot: a single well-sized Valkey instance is no longer a bottleneck concern for most consolidation scenarios.</p><hr><h2 id=how-per-database-acl-works>How per-database ACL works<a class=heading-anchor href=#how-per-database-acl-works aria-label="Link to this section"></a></h2><p>A standalone Valkey instance supports 16 logical databases by default, indexed 0 through 15. <code>SELECT 3</code> switches a connection to database 3. Keys in database 3 are invisible from database 4.</p><p>One important constraint before going further: <strong>databases are addressed by number only</strong>. There is no way to assign a human-readable name like <code>payments</code> or <code>inventory</code> to a database. Your ACL config maps a user to a number, and your service config maps to that same number. If you are planning this setup, that naming limitation is worth factoring in early.</p><p>With DB 0 reserved for admin use, a single instance gives you 15 databases for services (indices 1 through 15).</p><p>What was missing until 9.1.0 was an ACL primitive to enforce the database boundary at the user level. Valkey 9.1.0 adds the <code>db=</code> selector:</p><pre tabindex=0><code>user app3 on &gt;password3 ~* +@all db=3
-</code></pre><p>This user:</p><ul><li>Can only authenticate with <code>password3</code></li><li>Has full read/write access to all keys and commands, but only within database 3</li><li>If it issues <code>SELECT 4</code>, the server responds with <code>NOPERM user app3 has no permissions to access database 4</code></li></ul><p>That last line is the proof the demo is built around. One instance, hard per-service boundaries, enforced by the server.</p><hr><h2 id=architecture>Architecture<a class=heading-anchor href=#architecture aria-label="Link to this section"></a></h2><pre tabindex=0><code>                     Kubernetes namespace
+<!DOCTYPE html>
+<html lang="en-us" data-theme="dark">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark"){d.setAttribute("data-theme",t)}}catch(e){}})();</script>
+<title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes | Ishan Jain</title>
+<meta name="description" content="How Valkey 9.1.0&#39;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.">
+<meta name="author" content="Ishan Jain">
+<link rel="canonical" href="http://localhost:1313/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/">
+
+<meta property="og:site_name" content="Ishan Jain">
+<meta property="og:type" content="article">
+<meta property="og:title" content="One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes">
+<meta property="og:description" content="How Valkey 9.1.0&#39;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.">
+<meta property="og:url" content="http://localhost:1313/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://localhost:1313/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ishan Jain — Cloud &amp; Platform Engineer">
+<meta property="article:published_time" content="2026-05-27T00:00:00Z">
+<meta property="article:modified_time" content="2026-05-27T00:00:00Z">
+<meta property="article:author" content="Ishan Jain">
+<meta property="article:tag" content="valkey">
+<meta property="article:tag" content="kubernetes">
+<meta property="article:tag" content="redis">
+<meta property="article:tag" content="caching">
+<meta property="article:tag" content="multitenancy">
+<meta property="article:tag" content="golang">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes">
+<meta name="twitter:description" content="How Valkey 9.1.0&#39;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.">
+<meta name="twitter:image" content="http://localhost:1313/og-image.png">
+<meta name="twitter:creator" content="@bloodravendev">
+
+<meta name="theme-color" content="#080810" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbfafd" media="(prefers-color-scheme: light)">
+
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/index.xml" title="Ishan Jain">
+
+<link rel="preload" href="/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/space-grotesk-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/main.css">
+<script type="application/ld+json">"{\"@context\":\"https://schema.org\",\"@type\":\"BlogPosting\",\"articleSection\":\"infrastructure\",\"author\":{\"@type\":\"Person\",\"name\":\"Ishan\",\"url\":\"http://localhost:1313/\"},\"dateModified\":\"2026-05-27\",\"datePublished\":\"2026-05-27\",\"headline\":\"One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes\",\"inLanguage\":\"en\",\"keywords\":\"valkey, kubernetes, redis, caching, multitenancy, golang\",\"mainEntityOfPage\":\"http://localhost:1313/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/\",\"publisher\":{\"@type\":\"Person\",\"name\":\"Ishan Jain\"},\"url\":\"http://localhost:1313/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/\"}"</script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="container header-inner">
+
+    <a class="brand" href="/">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>BLOODRAVEN</span>
+    </a>
+
+    <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+            aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+
+    <nav class="header-nav" id="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        <li>
+          <a class="nav-link" href="/">Home</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/writing/" aria-current="true">Writing</a>
+        </li>
+        <li>
+          <a class="nav-link" href="/talks/">Talks</a>
+        </li>
+      </ul>
+
+      <span class="header-divider" aria-hidden="true"></span>
+
+      <div class="header-actions">
+        <a class="icon-btn" href="https://github.com/bloodraven21" rel="me noopener" target="_blank"
+           aria-label="GitHub (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+        <a class="icon-btn" href="https://linkedin.com/in/ishan-jain21" rel="me noopener" target="_blank"
+           aria-label="LinkedIn (opens in a new tab)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle
+                aria-pressed="false" aria-label="Switch to light theme">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+</header>
+
+
+<main id="main" class="site-main" tabindex="-1"><article>
+  <div class="container container--prose">
+    <header class="article-header"><p class="eyebrow">infrastructure</p>
+      <h1>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</h1>
+
+      <p class="article-meta">
+        <time datetime="2026-05-27">May 27, 2026</time>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>6 min read</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>With Gourav Sharma</span>
+      </p>
+    </header>
+
+    <div class="article-body">
+      
+<details class="toc" open>
+  <summary>On this page</summary>
+  <nav aria-label="Table of contents"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#the-problem-with-one-instance-per-service">The problem with one instance per service</a></li>
+    <li><a href="#why-a-single-instance-can-handle-the-load">Why a single instance can handle the load</a></li>
+    <li><a href="#how-per-database-acl-works">How per-database ACL works</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#the-app">The app</a></li>
+    <li><a href="#kubernetes-deployment">Kubernetes deployment</a></li>
+    <li><a href="#load-test-results">Load test results</a>
+      <ul>
+        <li><a href="#steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services">Steady load: 1 000 RPS per service (10 000 RPS total across 10 services)</a></li>
+        <li><a href="#ramp-10-to-1-000-rps-per-service">Ramp: 10 to 1 000 RPS per service</a></li>
+        <li><a href="#spike-4-services-at-1-000-rps-6-at-100-rps">Spike: 4 services at 1 000 RPS, 6 at 100 RPS</a></li>
+      </ul>
+    </li>
+    <li><a href="#the-honest-caveat">The honest caveat</a></li>
+    <li><a href="#wrapping-up">Wrapping up</a></li>
+  </ul>
+</nav></nav>
+</details>
+
+      <div class="prose">
+        <p>The default answer when a microservice needs a cache is to give it its own Redis or Valkey instance. It works, it is simple, and it never surprises you. It also means that a cluster running multiple services has one cache instance per service, most of them sitting at 2% utilisation.</p>
+<p>Valkey 9.1.0, released May 2026, adds a feature that makes consolidation practical: <strong>per-database ACL selectors</strong>. You can lock an ACL user to a single logical database with one directive. A service that authenticates as <code>app3</code> physically cannot read or write database 4. The server rejects the attempt at the protocol level. That is the story this post tells.</p>
+<hr>
+<h2 id="the-problem-with-one-instance-per-service">The problem with one instance per service<a class="heading-anchor" href="#the-problem-with-one-instance-per-service" aria-label="Link to this section"></a>
+</h2>
+<p>Valkey is fast and lightweight, but running a separate instance per service carries real overhead:</p>
+<ul>
+<li>Each instance needs its own memory headroom, CPU reservation, and PersistentVolumeClaim.</li>
+<li>Helm releases, Secrets, and Service objects multiply with every new tenant.</li>
+<li>Operating many small instances is not cheaper than one medium instance. It is just more fragile.</li>
+</ul>
+<p>The consolidation argument is simple: if the working sets are small and the access patterns are independent, one instance can serve all your services at acceptable performance and lower operational cost.</p>
+<p>The blocker has always been isolation. Without it, a bug in one service can read or corrupt another service&rsquo;s keys. Valkey&rsquo;s new <code>db=</code> ACL selector removes that blocker.</p>
+<hr>
+<h2 id="why-a-single-instance-can-handle-the-load">Why a single instance can handle the load<a class="heading-anchor" href="#why-a-single-instance-can-handle-the-load" aria-label="Link to this section"></a>
+</h2>
+<p>Before getting into isolation, it is worth addressing the obvious question: can one Valkey instance actually keep up?</p>
+<p>Valkey 8.0 redesigned its I/O threading model. Rather than a single thread handling reads, writes, and event polling, it distributes that work across multiple I/O threads while keeping command execution single-threaded (preserving data-safety guarantees). The result is a <a href="https://valkey.io/blog/unlock-one-million-rps/">230% throughput increase over Redis 7.2, reaching 1.19 million requests per second</a> on a single instance, with latency dropping by nearly 70%.</p>
+<p>Thread count scales dynamically with load, and thread affinity is maintained for cache locality. The upshot: a single well-sized Valkey instance is no longer a bottleneck concern for most consolidation scenarios.</p>
+<hr>
+<h2 id="how-per-database-acl-works">How per-database ACL works<a class="heading-anchor" href="#how-per-database-acl-works" aria-label="Link to this section"></a>
+</h2>
+<p>A standalone Valkey instance supports 16 logical databases by default, indexed 0 through 15. <code>SELECT 3</code> switches a connection to database 3. Keys in database 3 are invisible from database 4.</p>
+<p>One important constraint before going further: <strong>databases are addressed by number only</strong>. There is no way to assign a human-readable name like <code>payments</code> or <code>inventory</code> to a database. Your ACL config maps a user to a number, and your service config maps to that same number. If you are planning this setup, that naming limitation is worth factoring in early.</p>
+<p>With DB 0 reserved for admin use, a single instance gives you 15 databases for services (indices 1 through 15).</p>
+<p>What was missing until 9.1.0 was an ACL primitive to enforce the database boundary at the user level. Valkey 9.1.0 adds the <code>db=</code> selector:</p>
+<pre tabindex="0"><code>user app3 on &gt;password3 ~* +@all db=3
+</code></pre><p>This user:</p>
+<ul>
+<li>Can only authenticate with <code>password3</code></li>
+<li>Has full read/write access to all keys and commands, but only within database 3</li>
+<li>If it issues <code>SELECT 4</code>, the server responds with <code>NOPERM user app3 has no permissions to access database 4</code></li>
+</ul>
+<p>That last line is the proof the demo is built around. One instance, hard per-service boundaries, enforced by the server.</p>
+<hr>
+<h2 id="architecture">Architecture<a class="heading-anchor" href="#architecture" aria-label="Link to this section"></a>
+</h2>
+<pre tabindex="0"><code>                     Kubernetes namespace
   +-----------------------------------------------------------+
   |                                                           |
   |   hit-service-1 (DB 1, user app1) ---\                   |
@@ -18,30 +184,295 @@
   |   hit-service-N (DB N, user appN) ----/                  |
   |                                                           |
   +-----------------------------------------------------------+
-</code></pre><p>One Valkey instance. Multiple services. Same container image across all services; only config differs per deployment. Each service connects with its own ACL user and is physically locked to its own logical database.</p><hr><h2 id=the-app>The app<a class=heading-anchor href=#the-app aria-label="Link to this section"></a></h2><p>The service is a minimal Go HTTP server (Gin + OpenTelemetry). One endpoint:</p><pre tabindex=0><code>GET /hit
+</code></pre><p>One Valkey instance. Multiple services. Same container image across all services; only config differs per deployment. Each service connects with its own ACL user and is physically locked to its own logical database.</p>
+<hr>
+<h2 id="the-app">The app<a class="heading-anchor" href="#the-app" aria-label="Link to this section"></a>
+</h2>
+<p>The service is a minimal Go HTTP server (Gin + OpenTelemetry). One endpoint:</p>
+<pre tabindex="0"><code>GET /hit
   -&gt; generate a random 8-character alphanumeric key
   -&gt; SETEX hit:&lt;value&gt; &lt;HOT_TTL&gt; &lt;value&gt;
   -&gt; return { &#34;value&#34;: &#34;...&#34;, &#34;db&#34;: N, &#34;service&#34;: &#34;hit-service-N&#34; }
-</code></pre><p>Connection details come from environment variables injected by Helm:</p><table><thead><tr><th>Variable</th><th>Example</th></tr></thead><tbody><tr><td><code>VALKEY_HOST</code></td><td><code>valkey</code></td></tr><tr><td><code>VALKEY_DB</code></td><td><code>3</code></td></tr><tr><td><code>VALKEY_USER</code></td><td><code>app3</code></td></tr><tr><td><code>VALKEY_PASS</code></td><td>from a Secret</td></tr><tr><td><code>HOT_TTL</code></td><td><code>60</code></td></tr></tbody></table><p>The client authenticates with <code>AUTH app3 password3</code> and selects database 3. Because the user is ACL-locked to that database, any attempt to <code>SELECT</code> a different index is rejected, which is exactly the isolation boundary the demo proves.</p><hr><h2 id=kubernetes-deployment>Kubernetes deployment<a class=heading-anchor href=#kubernetes-deployment aria-label="Link to this section"></a></h2><p>Valkey is deployed via the official <code>valkey-io/valkey-helm</code> chart with the image overridden to <code>9.1.0-trixie</code> (the chart&rsquo;s default <code>appVersion</code> is 8.x, which does not have the <code>db=</code> selector). The full ACL config is supplied through <code>auth.aclConfig</code>:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nt>image</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>tag</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;9.1.0-trixie&#34;</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>auth</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class=kc>true</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>aclConfig</span><span class=p>:</span><span class=w> </span><span class=p>|</span><span class=sd>
-</span></span></span><span class=line><span class=cl><span class=sd>    user default on nopass ~* +@all
-</span></span></span><span class=line><span class=cl><span class=sd>    user admin  on &gt;SUPERSECRET_ADMIN ~* +@all alldbs
-</span></span></span><span class=line><span class=cl><span class=sd>    user app1   on &gt;password1  ~* +@all db=1
-</span></span></span><span class=line><span class=cl><span class=sd>    user app2   on &gt;password2  ~* +@all db=2
-</span></span></span><span class=line><span class=cl><span class=sd>    # ... up to db=15</span><span class=w>    
-</span></span></span></code></pre></div><p>Each service is deployed with the same Helm chart, differing only in its values file:</p><div class=highlight><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># values-svc3.yaml</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>serviceName</span><span class=p>:</span><span class=w> </span><span class=l>hit-service-3</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w></span><span class=nt>valkey</span><span class=p>:</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>db</span><span class=p>:</span><span class=w> </span><span class=m>3</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>user</span><span class=p>:</span><span class=w> </span><span class=l>app3</span><span class=w>
-</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>existingSecret</span><span class=p>:</span><span class=w> </span><span class=l>valkey-app3</span><span class=w>
-</span></span></span></code></pre></div><p>Multiple releases, one chart, one image, one Valkey instance.</p><hr><h2 id=load-test-results>Load test results<a class=heading-anchor href=#load-test-results aria-label="Link to this section"></a></h2><p>All tests were run with k6 as an in-cluster pod targeting services via cluster DNS. Full results are in <a href=test_log.md><code>test_log.md</code></a>.</p><h3 id=steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services>Steady load: 1 000 RPS per service (10 000 RPS total across 10 services)<a class=heading-anchor href=#steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services aria-label="Link to this section"></a></h3><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total requests</td><td>599 374</td></tr><tr><td>Actual RPS</td><td>9 987 /s</td></tr><tr><td>p(95) latency</td><td>33.98 ms</td></tr><tr><td>p(99) latency</td><td>84.86 ms</td></tr><tr><td>Error rate</td><td>0.00 %</td></tr></tbody></table><p>All thresholds passed. The instance handled the load with p95 under 34 ms.</p><h3 id=ramp-10-to-1-000-rps-per-service>Ramp: 10 to 1 000 RPS per service<a class=heading-anchor href=#ramp-10-to-1-000-rps-per-service aria-label="Link to this section"></a></h3><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total requests</td><td>902 361</td></tr><tr><td>Average RPS</td><td>7 519 /s</td></tr><tr><td>p(95) latency</td><td>36.03 ms</td></tr><tr><td>Error rate</td><td>0.00 %</td></tr></tbody></table><p>Ramped up over 30 s, held at peak for 60 s, ramped back down. Zero errors across the entire arc.</p><h3 id=spike-4-services-at-1-000-rps-6-at-100-rps>Spike: 4 services at 1 000 RPS, 6 at 100 RPS<a class=heading-anchor href=#spike-4-services-at-1-000-rps-6-at-100-rps aria-label="Link to this section"></a></h3><table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody><tr><td>Total requests</td><td>276 006</td></tr><tr><td>Actual RPS</td><td>4 599 /s</td></tr><tr><td>p(95) latency</td><td>1.63 ms</td></tr><tr><td>p(99) latency</td><td>6.26 ms</td></tr><tr><td>Error rate</td><td>0.00 %</td></tr></tbody></table><p><strong>Zero errors across all three runs. 1 777 741 total requests.</strong></p><hr><h2 id=the-honest-caveat>The honest caveat<a class=heading-anchor href=#the-honest-caveat aria-label="Link to this section"></a></h2><p><code>db=N</code> gives you <strong>access isolation</strong>, not <strong>resource isolation</strong>.</p><p>There is no fair CPU or memory sharing between logical databases. A service that floods the instance with large keys or expensive commands will raise latency for every other tenant. The spike test confirms this at the aggregate level, and per-service Prometheus metrics (exported via the OpenTelemetry pipeline) would show the per-tenant effect more clearly.</p><p>This is the right trade-off for most small-to-medium services: consolidation wins operationally, and the noisy-neighbour risk is manageable as long as you monitor per-tenant throughput. If you need hard resource guarantees, you need separate instances, or you wait for fair-scheduling primitives that are on the Valkey roadmap.</p><hr><h2 id=wrapping-up>Wrapping up<a class=heading-anchor href=#wrapping-up aria-label="Link to this section"></a></h2><p>Valkey 9.1.0&rsquo;s <code>db=</code> ACL selector is a small directive with a large operational payoff. Multiple services, one instance, zero cross-tenant key access. The consolidation argument is proven; the caveat is honest.</p><p>Two things to keep in mind before adopting this pattern: databases are numbered, not named, and a single standalone instance gives you 15 slots for services. Both constraints are workable for most teams but worth planning around from the start.</p><p>The full source (Go service, Helm chart, k6 scripts, and deployment guide) is at <a href=https://github.com/Bloodraven21/multitenant_valkey>github.com/Bloodraven21/multitenant_valkey</a>.</p></div></div><footer class=article-footer><ul class=tag-list><li><a class=tag href=/tags/valkey/>valkey</a></li><li><a class=tag href=/tags/kubernetes/>kubernetes</a></li><li><a class=tag href=/tags/redis/>redis</a></li><li><a class=tag href=/tags/caching/>caching</a></li><li><a class=tag href=/tags/multitenancy/>multitenancy</a></li><li><a class=tag href=/tags/golang/>golang</a></li></ul><p class=share-links><a class=res-link href="https://x.com/intent/tweet?text=One+Valkey%2C+Multiple+Tenants%3A+Per-Database+Isolation+on+Kubernetes&url=https%3A%2F%2Fwww.bloodraven.in%2Fwriting%2Fone-valkey-multiple-tenants-per-database-isolation-on-kubernetes%2F" rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>Share</a></p></footer><nav class=pager aria-label="More in this section"><a class="pager__link pager__link--prev" href=/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/><span class=pager__dir><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Older</span>
-<span class=pager__title>Stop Asking for a DevOps Roadmap. Read This Instead</span>
-</a><a class="pager__link pager__link--next" href=/writing/from-huffman-to-openobserve-why-your-10gb-log-file-fits-in-3gb/><span class=pager__dir>Newer<svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-<span class=pager__title>From Huffman to OpenObserve: Why Your 10GB Log File Fits in 3GB</span></a></nav></div></article></main><footer class=site-footer><div class=container><div class=footer-grid><div class=footer-col><h2>Let&rsquo;s connect</h2><ul class=footer-links><li><a href=https://github.com/bloodraven21 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63.0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577.0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93.0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176.0.0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22.0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22.0 1.606-.015 2.896-.015 3.286.0.315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>GitHub</span></a></li><li><a href=https://linkedin.com/in/ishan-jain21 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853.0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601.0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433A2.062 2.062.0 013.274 5.368a2.064 2.064.0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225.0H1.771C.792.0.0.774.0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2.0 22.222.0h.003z"/></svg><span>LinkedIn</span></a></li><li><a href=https://x.com/bloodravendev rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg><span>Twitter</span></a></li><li><a href=https://www.instagram.com/bloodraven.2112 rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 0C8.74.0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333.0 8.74.0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26.0 12 0zm0 2.16c3.203.0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211.0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844.0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162.0 100 12.324 6.162 6.162.0 100-12.324zM12 16c-2.209.0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm7.846-10.405a1.441 1.441.0 01-2.881.0 1.44 1.44.0 012.881.0z"/></svg><span>Instagram</span></a></li><li><a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" rel="me noopener" target=_blank><svg viewBox="0 0 24 24" fill="currentcolor" aria-hidden="true" focusable="false"><path d="M12 0C5.4.0.0 5.4.0 12s5.4 12 12 12 12-5.4 12-12S18.66.0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6s.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg><span>Spotify</span></a></li></ul></div><div class=footer-col><h2>Explore</h2><ul class=footer-links><li><a href=/writing/>Writing</a></li><li><a href=/talks/>Talks</a></li><li><a href=/recommendations/>Recommendations</a></li><li><a href=/socials/>Socials</a></li></ul></div><div class=footer-col><h2>Built with</h2><ul class=footer-links><li><a href=https://gohugo.io/ rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hugo</span></a></li><li><a href=/index.xml><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1.5"/></svg><span>RSS feed</span></a></li><li><a href=https://calendly.com/ishanij10115 rel=noopener target=_blank><svg viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Book a 15-minute fireside chat</span></a></li></ul></div></div><div class=footer-bottom><span>&copy; 2026 Ishan Jain</span>
-<span class=footer-meta><a href=/sitemap.xml>Sitemap</a>
-<a href=/index.xml>RSS</a></span></div></div></footer><script src=/js/site.min.22f99032ce880ee1515d818caebe231f8b13f5964603b245a708295e3a823875.js integrity="sha256-IvmQMs6IDuFRXYGMrr4jH4sT9ZZGA7JFpwgpXjqCOHU=" crossorigin=anonymous defer></script></body></html>
+</code></pre><p>Connection details come from environment variables injected by Helm:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VALKEY_HOST</code></td>
+<td><code>valkey</code></td>
+</tr>
+<tr>
+<td><code>VALKEY_DB</code></td>
+<td><code>3</code></td>
+</tr>
+<tr>
+<td><code>VALKEY_USER</code></td>
+<td><code>app3</code></td>
+</tr>
+<tr>
+<td><code>VALKEY_PASS</code></td>
+<td>from a Secret</td>
+</tr>
+<tr>
+<td><code>HOT_TTL</code></td>
+<td><code>60</code></td>
+</tr>
+</tbody>
+</table>
+<p>The client authenticates with <code>AUTH app3 password3</code> and selects database 3. Because the user is ACL-locked to that database, any attempt to <code>SELECT</code> a different index is rejected, which is exactly the isolation boundary the demo proves.</p>
+<hr>
+<h2 id="kubernetes-deployment">Kubernetes deployment<a class="heading-anchor" href="#kubernetes-deployment" aria-label="Link to this section"></a>
+</h2>
+<p>Valkey is deployed via the official <code>valkey-io/valkey-helm</code> chart with the image overridden to <code>9.1.0-trixie</code> (the chart&rsquo;s default <code>appVersion</code> is 8.x, which does not have the <code>db=</code> selector). The full ACL config is supplied through <code>auth.aclConfig</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">image</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;9.1.0-trixie&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">auth</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">aclConfig</span><span class="p">:</span><span class="w"> </span><span class="p">|</span><span class="sd">
+</span></span></span><span class="line"><span class="cl"><span class="sd">    user default on nopass ~* +@all
+</span></span></span><span class="line"><span class="cl"><span class="sd">    user admin  on &gt;SUPERSECRET_ADMIN ~* +@all alldbs
+</span></span></span><span class="line"><span class="cl"><span class="sd">    user app1   on &gt;password1  ~* +@all db=1
+</span></span></span><span class="line"><span class="cl"><span class="sd">    user app2   on &gt;password2  ~* +@all db=2
+</span></span></span><span class="line"><span class="cl"><span class="sd">    # ... up to db=15</span><span class="w">    
+</span></span></span></code></pre></div><p>Each service is deployed with the same Helm chart, differing only in its values file:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="c"># values-svc3.yaml</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">hit-service-3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">valkey</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">db</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">app3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">existingSecret</span><span class="p">:</span><span class="w"> </span><span class="l">valkey-app3</span><span class="w">
+</span></span></span></code></pre></div><p>Multiple releases, one chart, one image, one Valkey instance.</p>
+<hr>
+<h2 id="load-test-results">Load test results<a class="heading-anchor" href="#load-test-results" aria-label="Link to this section"></a>
+</h2>
+<p>All tests were run with k6 as an in-cluster pod targeting services via cluster DNS. Full results are in <a href="test_log.md"><code>test_log.md</code></a>.</p>
+<h3 id="steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services">Steady load: 1 000 RPS per service (10 000 RPS total across 10 services)<a class="heading-anchor" href="#steady-load-1-000-rps-per-service-10-000-rps-total-across-10-services" aria-label="Link to this section"></a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total requests</td>
+<td>599 374</td>
+</tr>
+<tr>
+<td>Actual RPS</td>
+<td>9 987 /s</td>
+</tr>
+<tr>
+<td>p(95) latency</td>
+<td>33.98 ms</td>
+</tr>
+<tr>
+<td>p(99) latency</td>
+<td>84.86 ms</td>
+</tr>
+<tr>
+<td>Error rate</td>
+<td>0.00 %</td>
+</tr>
+</tbody>
+</table>
+<p>All thresholds passed. The instance handled the load with p95 under 34 ms.</p>
+<h3 id="ramp-10-to-1-000-rps-per-service">Ramp: 10 to 1 000 RPS per service<a class="heading-anchor" href="#ramp-10-to-1-000-rps-per-service" aria-label="Link to this section"></a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total requests</td>
+<td>902 361</td>
+</tr>
+<tr>
+<td>Average RPS</td>
+<td>7 519 /s</td>
+</tr>
+<tr>
+<td>p(95) latency</td>
+<td>36.03 ms</td>
+</tr>
+<tr>
+<td>Error rate</td>
+<td>0.00 %</td>
+</tr>
+</tbody>
+</table>
+<p>Ramped up over 30 s, held at peak for 60 s, ramped back down. Zero errors across the entire arc.</p>
+<h3 id="spike-4-services-at-1-000-rps-6-at-100-rps">Spike: 4 services at 1 000 RPS, 6 at 100 RPS<a class="heading-anchor" href="#spike-4-services-at-1-000-rps-6-at-100-rps" aria-label="Link to this section"></a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Total requests</td>
+<td>276 006</td>
+</tr>
+<tr>
+<td>Actual RPS</td>
+<td>4 599 /s</td>
+</tr>
+<tr>
+<td>p(95) latency</td>
+<td>1.63 ms</td>
+</tr>
+<tr>
+<td>p(99) latency</td>
+<td>6.26 ms</td>
+</tr>
+<tr>
+<td>Error rate</td>
+<td>0.00 %</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Zero errors across all three runs. 1 777 741 total requests.</strong></p>
+<hr>
+<h2 id="the-honest-caveat">The honest caveat<a class="heading-anchor" href="#the-honest-caveat" aria-label="Link to this section"></a>
+</h2>
+<p><code>db=N</code> gives you <strong>access isolation</strong>, not <strong>resource isolation</strong>.</p>
+<p>There is no fair CPU or memory sharing between logical databases. A service that floods the instance with large keys or expensive commands will raise latency for every other tenant. The spike test confirms this at the aggregate level, and per-service Prometheus metrics (exported via the OpenTelemetry pipeline) would show the per-tenant effect more clearly.</p>
+<p>This is the right trade-off for most small-to-medium services: consolidation wins operationally, and the noisy-neighbour risk is manageable as long as you monitor per-tenant throughput. If you need hard resource guarantees, you need separate instances, or you wait for fair-scheduling primitives that are on the Valkey roadmap.</p>
+<hr>
+<h2 id="wrapping-up">Wrapping up<a class="heading-anchor" href="#wrapping-up" aria-label="Link to this section"></a>
+</h2>
+<p>Valkey 9.1.0&rsquo;s <code>db=</code> ACL selector is a small directive with a large operational payoff. Multiple services, one instance, zero cross-tenant key access. The consolidation argument is proven; the caveat is honest.</p>
+<p>Two things to keep in mind before adopting this pattern: databases are numbered, not named, and a single standalone instance gives you 15 slots for services. Both constraints are workable for most teams but worth planning around from the start.</p>
+<p>The full source (Go service, Helm chart, k6 scripts, and deployment guide) is at <a href="https://github.com/Bloodraven21/multitenant_valkey">github.com/Bloodraven21/multitenant_valkey</a>.</p>
+
+      </div>
+    </div>
+
+    <footer class="article-footer">
+      <ul class="tag-list">
+        <li><a class="tag" href="/tags/valkey/">valkey</a></li>
+        <li><a class="tag" href="/tags/kubernetes/">kubernetes</a></li>
+        <li><a class="tag" href="/tags/redis/">redis</a></li>
+        <li><a class="tag" href="/tags/caching/">caching</a></li>
+        <li><a class="tag" href="/tags/multitenancy/">multitenancy</a></li>
+        <li><a class="tag" href="/tags/golang/">golang</a></li>
+      </ul>
+      <p class="share-links">
+        <a class="res-link"
+           href="https://x.com/intent/tweet?text=One&#43;Valkey%2C&#43;Multiple&#43;Tenants%3A&#43;Per-Database&#43;Isolation&#43;on&#43;Kubernetes&url=http%3A%2F%2Flocalhost%3A1313%2Fwriting%2Fone-valkey-multiple-tenants-per-database-isolation-on-kubernetes%2F"
+           rel="noopener" target="_blank"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg>Share</a>
+      </p>
+    </footer>
+
+    
+<nav class="pager" aria-label="More in this section">
+  <a class="pager__link pager__link--prev" href="/writing/stop-asking-for-a-devops-roadmap.-read-this-instead/">
+    <span class="pager__dir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>Older</span>
+    <span class="pager__title">Stop Asking for a DevOps Roadmap. Read This Instead</span>
+  </a>
+  <a class="pager__link pager__link--next" href="/writing/from-huffman-to-openobserve-why-your-10gb-log-file-fits-in-3gb/">
+    <span class="pager__dir">Newer<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+    <span class="pager__title">From Huffman to OpenObserve: Why Your 10GB Log File Fits in 3GB</span>
+  </a>
+</nav>
+
+  </div>
+</article>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <h2>Let&rsquo;s connect</h2>
+        <ul class="footer-links">
+  <li>
+    <a href="https://github.com/bloodraven21" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg><span>GitHub</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://linkedin.com/in/ishan-jain21" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg><span>LinkedIn</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://x.com/bloodravendev" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.451-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z"/></svg><span>Twitter</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://www.instagram.com/bloodraven.2112" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0Zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03Zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 1 0 0-12.324ZM12 16c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4Zm7.846-10.405a1.441 1.441 0 0 1-2.881 0 1.44 1.44 0 0 1 2.881 0Z"/></svg><span>Instagram</span>
+    </a>
+  </li>
+  <li>
+    <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" rel="me noopener" target="_blank">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0Zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02Zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2Zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3Z"/></svg><span>Spotify</span>
+    </a>
+  </li>
+</ul>
+      </div>
+      <div class="footer-col">
+        <h2>Explore</h2>
+        <ul class="footer-links">
+          <li><a href="/writing/">Writing</a></li>
+          <li><a href="/talks/">Talks</a></li>
+          <li><a href="/recommendations/">Recommendations</a></li>
+          <li><a href="/socials/">Socials</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h2>Built with</h2>
+        <ul class="footer-links">
+          <li>
+            <a href="https://gohugo.io/" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Hugo</span>
+            </a>
+          </li>
+          <li>
+            <a href="/index.xml">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1.5"/></svg><span>RSS feed</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://calendly.com/ishanij10115" rel="noopener" target="_blank">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg><span>Book a 15-minute fireside chat</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; 2026 Ishan Jain</span>
+      <span class="footer-meta">
+        <a href="/sitemap.xml">Sitemap</a>
+        <a href="/index.xml">RSS</a>
+      </span>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>
