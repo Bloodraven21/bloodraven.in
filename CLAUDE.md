@@ -11,44 +11,75 @@ hugo server
 # Build the site (outputs to public/)
 hugo
 
-# Create a new blog post
-hugo new blogs/my-post-title.md
+# Production build
+hugo --gc --minify
 
-# Create a new recommendation
+# New content
+hugo new writing/my-post-title.md
+hugo new talks/my-talk.md
+hugo new projects/my-project.md
 hugo new recommendations/my-recommendation.md
-
-# Build for production (no drafts)
-hugo --minify
 ```
 
-New content is created as `draft: true` by default — set `draft: false` or remove the field before publishing. To preview drafts locally, use `hugo server -D`.
+New content is created as `draft: true` — set `draft: false` before publishing. Preview drafts with `hugo server -D`.
 
-Blog filenames use spaces (e.g. `content/blogs/My Post Title.md`) — this is intentional and consistent with existing posts.
+Blog filenames use spaces (e.g. `content/writing/My Post Title.md`) — intentional and consistent with existing posts.
 
 ## Architecture
 
-This is a custom Hugo site with **no theme** — all templates are hand-written in `layouts/`.
+Custom Hugo site with **no theme** — every template is hand-written in `layouts/`.
 
-**Template hierarchy:**
-- `layouts/_default/baseof.html` — root shell (loads `style.css`, includes header/footer partials, defines `main` block)
-- `layouts/index.html` — home page (`/`)
-- `layouts/blogs/list.html` — blog index (`/blogs/`)
-- `layouts/recommendations/list.html` — recommendations index (`/recommendations/`)
-- `layouts/socials/list.html` — socials page; hardcodes social links directly in the template (not content-driven)
-- `layouts/_default/single.html` — all individual post pages
-- `layouts/partials/header.html` — nav bar with active-link detection
-- `layouts/partials/footer.html` — social links
+**Config:** `hugo.yaml` is the single config file. (The repo previously carried both
+`hugo.toml` and `config.yaml`; Hugo only ever read `hugo.toml`, so `config.yaml` — menu,
+`goldmark.unsafe` and all — was dead. They are now merged into `hugo.yaml`.) Nav order is
+`menu.main` weights; filter chips and the TOC threshold are under `params`.
 
 **Content sections** (`content/`):
-- `blogs/` — tech/cloud/devops articles; `_index.md` provides the section description
-- `recommendations/` — books, shows, tools, etc.
-- `socials/` — only `_index.md` exists; the actual links live in `layouts/socials/list.html`
-- `_index.md` — home page copy
+- `writing/` — articles, at `/writing/<slug>/`. Each post carries an `aliases` entry
+  preserving its old `/blogs/<slug>/` URL as a redirect. **Do not remove those aliases.**
+- `talks/` — one file per talk; front matter carries `event`, `event_url`, `slides`,
+  `github`, `video`, optional `location`. `status` is *derived from the date*
+  (future = upcoming) unless set explicitly. Previously `data/talks.yaml`.
+- `projects/` — empty by design; add a file and it appears on `/projects/` and in the
+  homepage "Open source" section automatically.
+- `recommendations/`, `socials/` — kept from the original site.
+- `about/` — the long-form intro that used to live in `content/_index.md`.
+- `now/` — placeholder; `lastmod` drives the "Last updated" line.
+- `_index.md` — homepage *data only*: hero copy, credentials, tech tags, terminal card
+  and the "What I work on" list all live in its front matter, not in templates.
 
-**Styling:** Single file at `static/css/style.css`. Dark theme (`#2d3748` background), monospace font, purple accent (`#c77dff`). No CSS preprocessor or build step — edit the file directly.
+**Templates:**
+- `layouts/_default/baseof.html` — shell; builds/fingerprints CSS + JS, inline no-flash theme script
+- `layouts/index.html` — homepage
+- `layouts/<section>/{list,single}.html` — per-section pages
+- `layouts/_default/{list,single,taxonomy,terms}.html` — fallbacks
+- `layouts/_default/_markup/render-{heading,image}.html` — heading anchors, lazy images
+- `layouts/partials/` — `icon.html` (inline SVG set), `hero.html`, `article-card.html`,
+  `project-card.html`, `talk-card.html`, `timeline-item.html`, `terminal-card.html`,
+  `filters.html`, `toc.html`, `pager.html`, `page-description.html`, `head/{meta,schema}.html`
 
-**Config:** `config.yaml` is the active Hugo config (`hugo.toml` exists but is minimal). `markup.goldmark.renderer.unsafe: true` is set to allow raw HTML in markdown. Nav menu order is controlled by `weight` in `config.yaml`.
+**Styling:** `assets/css/*.css`, concatenated in filename order by `baseof.html`, minified and
+fingerprinted in production. All colour, spacing, type and motion values are CSS custom
+properties in `00-tokens.css` — change the palette there, never in a component rule. Dark by
+default; the light theme is the same tokens redefined under `:root[data-theme="light"]`.
+Code panels stay dark in both themes on purpose.
 
-**Deployment:** Push to `main` triggers the GitHub Actions workflow (`.github/workflows/aws.yml`), which builds with Hugo, syncs `public/` to S3 (`ap-south-1`), and invalidates the CloudFront distribution. Secrets (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`) must be set in the GitHub repo settings.
+**JavaScript:** one file, `assets/js/site.js`, strictly progressive enhancement (theme toggle,
+mobile nav, copy-code buttons, table wrapping, filter chips). Every page works without it.
+
+**Data:** `data/social.yaml` is the single source for social links (header, footer, `/socials/`,
+JSON-LD `sameAs`).
+
+**Deployment:** push to `main` → `.github/workflows/aws.yml` builds with Hugo, syncs `public/`
+to S3 (`ap-south-1`) and invalidates CloudFront. Secrets (`AWS_ACCESS_KEY_ID`,
+`AWS_SECRET_ACCESS_KEY`, `BUCKET`, `CLOUDFRONT_DISTRIBUTION_ID`) live in repo settings.
+The workflow uses `hugo-version: latest`, so CI may build with a newer Hugo than local.
 
 **Build output:** `public/` — committed to the repo and also the source for the S3 deploy.
+Rebuild with `hugo --gc --minify --cleanDestinationDir` so stale files do not get deployed.
+
+## Content rules
+
+Article bodies, titles, dates, descriptions, tags and links are the source of truth and are not
+rewritten by template or design work. Cards fall back to a page's own Hugo summary rather than
+inventing copy; sections with no content render an empty state instead of placeholder items.
