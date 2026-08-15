@@ -1,5 +1,7 @@
 ---
 title: "Tech Blogs"
+aliases:
+  - "/blogs/"
 ---
 
 

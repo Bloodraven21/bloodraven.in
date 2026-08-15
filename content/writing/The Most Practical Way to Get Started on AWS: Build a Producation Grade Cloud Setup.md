@@ -2,6 +2,9 @@
 title: "The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup"
 date: 2025-09-17T10:00:00+05:30
 draft: false
+aliases:
+  - "/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup/"
+  - "/blogs/my-first-post/"
 ---
 
 # The Most Practical Way to Get Started on AWS: Build a Producation Grade Cloud Setup

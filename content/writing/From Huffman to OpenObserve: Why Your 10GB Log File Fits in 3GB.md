@@ -3,6 +3,8 @@ title: "From Huffman to OpenObserve: Why Your 10GB Log File Fits in 3GB"
 date: 2026-07-30
 draft: false
 tags: ["observability", "compression", "openobserve", "logs", "parquet"]
+aliases:
+  - "/blogs/from-huffman-to-openobserve-why-your-10gb-log-file-fits-in-3gb/"
 ---
 
 Every SRE has run `gzip` on a log file and watched 10GB collapse into 3GB. It feels like magic. It is not. It is a handful of very old, very simple ideas about redundancy, and once you understand them, the storage numbers behind modern observability tools stop looking like marketing and start looking like arithmetic.

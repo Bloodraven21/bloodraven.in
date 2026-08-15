@@ -12,6 +12,8 @@ coauthors:
   - name: "Gourav Sharma"
     role: "co-author"
     note: "cheerswithgourav@gmail.com"
+aliases:
+  - "/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/"
 ---
 
 The default answer when a microservice needs a cache is to give it its own Redis or Valkey instance. It works, it is simple, and it never surprises you. It also means that a cluster running multiple services has one cache instance per service, most of them sitting at 2% utilisation.

@@ -2,6 +2,8 @@
 title: "The Curious Case of Request and Limit on AWS EKS Fargate"
 date: 2025-11-02T14:53:00+05:30
 draft: false
+aliases:
+  - "/blogs/the-curious-case-of-request-and-limit-on-aws-eks-fargate/"
 ---
 
 

@@ -15,6 +15,8 @@ categories:
   - security
 description: "Docker Hardened Images went free and open source in late 2025. Here's what they actually are, why Docker built them, and whether they belong in your production stack."
 summary: "An investigative look at Docker Hardened Images: what changed in December 2025, how DHI compares to distroless and Wolfi, and what the operational tax really looks like."
+aliases:
+  - "/blogs/the-curious-case-of-docker-hardend-images/"
 ---
 
 ## Containers Were Supposed to Solve This… Right?

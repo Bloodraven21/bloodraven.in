@@ -2,6 +2,9 @@
 title: "Stop Asking for a DevOps Roadmap. Read This Instead"
 date: 2026-05-19T10:00:00+05:30
 draft: false
+aliases:
+  - "/blogs/stop-asking-for-a-devops-roadmap.-read-this-instead/"
+  - "/blogs/the-most-practical-way-to-get-started-on-aws-build-a-producation-grade-cloud-setup-copy/"
 ---
 
 # Stop Asking for a DevOps Roadmap. Read This Instead
