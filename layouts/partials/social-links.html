@@ -1,0 +1,30 @@
+{{- /* Social links from data/social.yaml.
+
+  {{ partial "social-links.html" (dict "style" "list") }}   footer column
+  {{ partial "social-links.html" (dict "style" "tiles") }}  /socials/ page
+*/ -}}
+{{- $style := .style | default "list" -}}
+
+{{- if eq $style "tiles" -}}
+<div class="social-grid">
+  {{- range site.Data.social }}
+  <a class="social-tile" href="{{ .url }}" rel="me noopener" target="_blank">
+    {{ partial "icon.html" .icon }}
+    <span>
+      <span class="social-tile__name">{{ .name }}</span>
+      <span class="social-tile__handle">{{ .handle }}</span>
+    </span>
+  </a>
+  {{- end }}
+</div>
+{{- else -}}
+<ul class="footer-links">
+  {{- range site.Data.social }}
+  <li>
+    <a href="{{ .url }}" rel="me noopener" target="_blank">
+      {{ partial "icon.html" .icon }}<span>{{ .name }}</span>
+    </a>
+  </li>
+  {{- end }}
+</ul>
+{{- end -}}

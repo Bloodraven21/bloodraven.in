@@ -1,0 +1,74 @@
+{{- /* Title, description, canonical, Open Graph, Twitter card, icons, feeds. */ -}}
+
+{{- $author := site.Params.author -}}
+
+{{- /* Page title — home gets the full identity line, everything else
+       "<Page Title> | Ishan Jain" (plan §24). */ -}}
+{{- $title := "" -}}
+{{- if .IsHome -}}
+  {{- $title = printf "%s | %s" $author site.Params.role -}}
+{{- else -}}
+  {{- $title = printf "%s | %s" .Title $author -}}
+{{- end -}}
+
+{{- /* Description — existing front matter always wins over anything generated. */ -}}
+{{- $desc := "" -}}
+{{- with .Description }}{{ $desc = . }}{{ end -}}
+{{- if not $desc }}{{ with .Params.summary }}{{ $desc = . }}{{ end }}{{ end -}}
+{{- if not $desc }}{{ if and (not .IsHome) .Content }}{{ $desc = .Summary }}{{ end }}{{ end -}}
+{{- if not $desc }}{{ $desc = site.Params.siteDescription }}{{ end -}}
+{{- $desc = $desc | plainify | htmlUnescape | replaceRE "\\s+" " " | chomp | truncate 200 -}}
+
+{{- $ogImage := absURL "og-image.png" -}}
+{{- $ogType := "website" -}}
+{{- if and .IsPage (in (slice "writing" "recommendations") .Section) }}{{ $ogType = "article" }}{{ end -}}
+
+<title>{{ $title }}</title>
+<meta name="description" content="{{ $desc }}">
+<meta name="author" content="{{ $author }}">
+<link rel="canonical" href="{{ .Permalink }}">
+
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:type" content="{{ $ogType }}">
+<meta property="og:title" content="{{ if .IsHome }}{{ $author }} — {{ site.Params.role }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:description" content="{{ $desc }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="{{ $ogImage }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ $author }} — {{ site.Params.role }}">
+{{- if eq $ogType "article" }}
+{{- with .Date }}
+<meta property="article:published_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+{{- with .Lastmod }}
+<meta property="article:modified_time" content="{{ .Format "2006-01-02T15:04:05Z07:00" }}">
+{{- end }}
+<meta property="article:author" content="{{ $author }}">
+{{- range .Params.tags }}
+<meta property="article:tag" content="{{ . }}">
+{{- end }}
+{{- end }}
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ if .IsHome }}{{ $author }} — {{ site.Params.role }}{{ else }}{{ .Title }}{{ end }}">
+<meta name="twitter:description" content="{{ $desc }}">
+<meta name="twitter:image" content="{{ $ogImage }}">
+{{- with index (where site.Data.social "icon" "x") 0 }}
+<meta name="twitter:creator" content="{{ replaceRE "^https://x\\.com/" "@" .url }}">
+{{- end }}
+
+<meta name="theme-color" content="#080810" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#fbfafd" media="(prefers-color-scheme: light)">
+
+<link rel="icon" href="{{ "favicon.ico" | relURL }}" sizes="32x32">
+<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">
+
+{{- range .AlternativeOutputFormats }}
+<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink | safeURL }}" title="{{ site.Title }} — {{ $.Title }}">
+{{- end }}
+{{- if not (or .IsHome .AlternativeOutputFormats) }}
+<link rel="alternate" type="application/rss+xml" href="{{ "index.xml" | absURL }}" title="{{ site.Title }}">
+{{- end }}

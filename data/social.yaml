@@ -1,0 +1,33 @@
+# Single source of truth for social/contact links.
+# URLs and labels are carried over verbatim from the pre-redesign
+# footer.html, socials/list.html and content/socials/_index.md.
+#
+#   icon    -> key in layouts/partials/icon.html
+#   primary -> also shown as an icon button in the site header
+
+- name: "GitHub"
+  handle: "@bloodraven21"
+  url: "https://github.com/bloodraven21"
+  icon: "github"
+  primary: true
+
+- name: "LinkedIn"
+  handle: "in/ishan-jain21"
+  url: "https://linkedin.com/in/ishan-jain21"
+  icon: "linkedin"
+  primary: true
+
+- name: "Twitter"
+  handle: "@bloodravendev"
+  url: "https://x.com/bloodravendev"
+  icon: "x"
+
+- name: "Instagram"
+  handle: "@bloodraven.2112"
+  url: "https://www.instagram.com/bloodraven.2112"
+  icon: "instagram"
+
+- name: "Spotify"
+  handle: "Listening to"
+  url: "https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg"
+  icon: "spotify"
