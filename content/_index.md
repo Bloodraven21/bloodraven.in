@@ -1,36 +1,84 @@
 ---
 title: "Welcome to BloodRaven"
+
+# ---------------------------------------------------------------------------
+# Homepage content.
+#
+# Everything the homepage renders lives here, not in the templates — edit this
+# file to change the hero, the credential row, the terminal card or the
+# "What I work on" strip.
+#
+# The long-form "About Me" copy that used to sit in this file was moved,
+# unchanged, to content/about/_index.md when the site was restructured.
+# ---------------------------------------------------------------------------
+
+hero:
+  greeting: "Hi, I'm"
+  name: "Ishan Jain."
+  role: "Cloud & Platform Engineer."
+  tagline: "Kubernetes enthusiast. Open source contributor."
+  lede: >-
+    I build, operate, and talk about reliable infrastructure, distributed
+    systems, Kubernetes, cloud platforms, and developer tooling.
+  primaryCta:
+    label: "Explore my work"
+    url: "/writing/"
+  secondaryCta:
+    label: "View my talks"
+    url: "/talks/"
+
+# Professional identities. Keep this row short.
+credentials:
+  - "Docker Captain"
+  - "AWS Community Builder"
+
+techTags:
+  - "Kubernetes"
+  - "Cloud"
+  - "DevOps"
+  - "Observability"
+  - "Go"
+
+# Optional terminal card beside the hero. Delete this block to remove it.
+terminal:
+  title: "~/ishan"
+  blocks:
+    - cmd: "whoami"
+      out: ["ishan"]
+    - cmd: "cat interests.txt"
+      out:
+        - "cloud"
+        - "kubernetes"
+        - "distributed-systems"
+        - "observability"
+        - "devops"
+        - "open-source"
+        - "coffee"
+        - "books"
+        - "movies"
+    - cmd: "echo $STATUS"
+      out: ["building things"]
+      accent: true
+
+# "What I work on". Descriptions are intentionally blank — add a sentence or
+# two per item when you want them; the card renders fine without one.
+capabilities:
+  - title: "Kubernetes"
+    icon: "hexagon"
+    description: ""
+  - title: "Cloud"
+    icon: "cloud"
+    description: ""
+  - title: "Platform Engineering"
+    icon: "layers"
+    description: ""
+  - title: "Observability"
+    icon: "activity"
+    description: ""
+  - title: "DevOps"
+    icon: "infinity"
+    description: ""
+
+# Extra output: the legacy /blogs/index.xml feed (see hugo.yaml).
+outputs: ["HTML", "RSS", "blogsrss"]
 ---
-
-# 👋 Hi, I'm Ishan Jain
-
-Welcome to **BloodRaven.in** — my little corner of the internet.  
-
----
-
-## 🧑‍💻 About Me
-
-I’m a **Software Engineer** specializing in **Cloud, DevOps and SRE**.
-Passionate about **Cloud, Containers, and Community** — always exploring ways to **build, break, and improve systems**. 
-
-Outside of work, you’ll usually find me:
-- Brewing **freshly ground coffee** with my handy Aeropress ☕  
-- Watching **movies, TV shows, and anime** 🎬  
-- Trying (and failing, sometimes 😅) to get out of a **reading slump** 📚  
-
----
-
-## 🌐 What You’ll Find Here
-
-- **📝 Blogs** → My thoughts on **Technology, Cloud, DevOps**, and beyond  
-- **⭐ Recommendations** → Books, shows, tools, and other things I think are worth sharing  
-
----
-
-## ✨ Let’s Connect
-
-This space is for sharing, learning, and connecting.  
-Feel free to explore — and don’t hesitate to reach out if something resonates with you!  
-
-📅 **Book a 15-minute fireside chat with me:**  
-[calendly.com/ishanij10115](https://calendly.com/ishanij10115)

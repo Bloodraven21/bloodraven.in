@@ -1,0 +1,26 @@
+{{ define "main" }}
+<div class="container container--prose">
+  <header class="page-header">
+    <p class="eyebrow">About</p>
+  </header>
+
+  {{- /* No <h1> here on purpose: this page's body opens with its own heading,
+         and the copy is rendered exactly as written in
+         content/about/_index.md. Adding a second H1 would break the
+         document outline. */ -}}
+  <div class="prose">
+    {{ .Content }}
+  </div>
+
+  <div class="pager" style="border-top:0;padding-top:0">
+    <a class="pager__link" href="{{ "writing/" | relURL }}">
+      <span class="pager__dir">{{ partial "icon.html" "file-text" }}Writing</span>
+      <span class="pager__title">Read the articles</span>
+    </a>
+    <a class="pager__link" href="{{ "talks/" | relURL }}">
+      <span class="pager__dir">{{ partial "icon.html" "mic" }}Talks</span>
+      <span class="pager__title">See where I&rsquo;ve spoken</span>
+    </a>
+  </div>
+</div>
+{{ end }}
