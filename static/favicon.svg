@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="BloodRaven">
+  <rect width="64" height="64" rx="14" fill="#0d0d18"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" fill="none" stroke="#3a315a" stroke-width="1.5"/>
+  <path d="M35.5 8 18 35h11l-2.5 21L46 29H34.5L35.5 8Z" fill="#9b5cff"/>
+</svg>
