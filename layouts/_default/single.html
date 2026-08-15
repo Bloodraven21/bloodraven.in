@@ -1,12 +1,38 @@
 {{ define "main" }}
 <article>
-    <header>
-        <h1>{{ .Title }}</h1>
-        <p class="date">{{ .Date.Format "January 2, 2006" }}</p>
+  <div class="container container--prose">
+
+    <header class="article-header">
+      {{- with .Section }}<p class="eyebrow">{{ humanize . }}</p>{{ end }}
+      <h1>{{ .Title }}</h1>
+      {{- with .Description }}<p class="article-header__desc">{{ . }}</p>{{ end }}
+      {{- if not .Date.IsZero }}
+      <p class="article-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        {{- if gt .ReadingTime 0 }}
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{{ .ReadingTime }} min read</span>
+        {{- end }}
+      </p>
+      {{- end }}
     </header>
-    
-    <div class="content">
-        {{ .Content }}
+
+    <div class="article-body">
+      {{ partial "toc.html" . }}
+      <div class="prose">{{ .Content }}</div>
     </div>
+
+    {{- with .Params.tags }}
+    <footer class="article-footer">
+      <ul class="tag-list">
+        {{- range . }}
+        <li>{{ partial "tech-tag.html" (dict "label" . "url" (printf "/tags/%s/" (urlize .))) }}</li>
+        {{- end }}
+      </ul>
+    </footer>
+    {{- end }}
+
+    {{ partial "pager.html" . }}
+  </div>
 </article>
 {{ end }}

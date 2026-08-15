@@ -1,0 +1,13 @@
+{{- /* Returns a talk's status slug: "upcoming" | "confirmed" | "delivered".
+
+  Derived from the talk's own date so it can never go stale. Set `status`
+  in front matter to override (e.g. "confirmed" for a scheduled talk).
+
+  {{ $status := partial "talk-status.html" $talkPage }}
+*/ -}}
+{{- $s := "" -}}
+{{- with .Params.status }}{{ $s = lower . }}{{ end -}}
+{{- if not $s -}}
+  {{- $s = cond (.Date.After now) "upcoming" "delivered" -}}
+{{- end -}}
+{{- return $s -}}

@@ -1,0 +1,457 @@
+/* ==========================================================================
+   Long-form reading — the prose container
+   ========================================================================== */
+
+.prose {
+  max-width: var(--width-prose);
+  font-size: var(--fs-md);
+  line-height: var(--lh-prose);
+  color: var(--text);
+}
+
+.prose > * + * {
+  margin-top: 1.25em;
+}
+
+.prose p,
+.prose ul,
+.prose ol,
+.prose dl {
+  color: color-mix(in srgb, var(--text) 88%, var(--text-muted));
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: var(--text);
+  scroll-margin-top: calc(var(--header-h) + 1.5rem);
+}
+
+.prose > h2 {
+  margin-top: 2.4em;
+  font-size: var(--fs-2xl);
+  line-height: 1.25;
+}
+
+.prose > h3 {
+  margin-top: 2em;
+  font-size: var(--fs-xl);
+}
+
+.prose > h4 {
+  margin-top: 1.8em;
+  font-size: var(--fs-lg);
+}
+
+.prose > h5,
+.prose > h6 {
+  margin-top: 1.6em;
+  font-size: var(--fs-base);
+  letter-spacing: 0.01em;
+}
+
+.prose > h1 {
+  margin-top: 0;
+  font-size: var(--fs-3xl);
+  line-height: 1.15;
+}
+
+.prose li + li {
+  margin-top: 0.4em;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin-top: 0.4em;
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.prose em {
+  color: var(--text);
+}
+
+.prose hr {
+  margin-block: 2.5em;
+}
+
+.prose img,
+.prose video {
+  margin-inline: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.prose figure figcaption {
+  margin-top: var(--space-3);
+  color: var(--text-subtle);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+/* --- Heading anchors ---------------------------------------------------- */
+
+.heading-anchor {
+  color: var(--text-subtle);
+  text-decoration: none;
+  font-weight: 400;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.heading-anchor::before {
+  content: "#";
+  margin-left: 0.4em;
+}
+
+.prose :is(h2, h3, h4, h5, h6):hover .heading-anchor,
+.heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+.heading-anchor:hover {
+  color: var(--purple-soft);
+}
+
+@media (hover: none) {
+  .heading-anchor {
+    opacity: 0.45;
+  }
+}
+
+/* --- Blockquote --------------------------------------------------------- */
+
+.prose blockquote {
+  padding: var(--space-1) 0 var(--space-1) var(--space-5);
+  border-left: 2px solid var(--purple);
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.prose blockquote p {
+  color: inherit;
+}
+
+/* --- Tables ------------------------------------------------------------- */
+
+/* Baseline (works with JS disabled): the table itself scrolls, so a wide
+   table can never push the page sideways. */
+.prose table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* Enhanced: site.js wraps each table so it can go back to real table layout
+   inside a scrolling container. */
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.prose .table-wrap {
+  margin-top: 1.6em;
+}
+
+.prose .table-wrap > table {
+  display: table;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.prose thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.prose th,
+.prose td {
+  padding: 0.7rem 1rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.prose tbody tr:hover td {
+  background: var(--purple-faint);
+}
+
+/* --- Inline code -------------------------------------------------------- */
+
+.prose :not(pre) > code {
+  padding: 0.15em 0.4em;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--purple-soft);
+  font-size: 0.86em;
+  word-break: break-word;
+}
+
+/* --- Code blocks -------------------------------------------------------- */
+
+.prose .highlight,
+.prose pre:not(.chroma) {
+  position: relative;
+  margin-top: 1.6em;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: var(--space-5) var(--space-5);
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  color: var(--code-fg);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  tab-size: 2;
+}
+
+.prose pre code {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.prose .highlight pre {
+  margin: 0;
+}
+
+/* Copy-to-clipboard button */
+.copy-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.9rem;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid var(--code-border);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, #ffffff 5%, var(--code-bg));
+  color: #8b8799;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease), color var(--dur) var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.copy-btn svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.copy-btn .icon-check {
+  display: none;
+}
+
+.copy-btn[data-copied="true"] {
+  color: var(--purple-soft);
+  border-color: var(--purple-dark);
+}
+
+.copy-btn[data-copied="true"] .icon-check {
+  display: block;
+}
+
+.copy-btn[data-copied="true"] .icon-copy {
+  display: none;
+}
+
+.code-block:hover .copy-btn,
+.copy-btn:focus-visible,
+.copy-btn[data-copied="true"] {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .copy-btn {
+    opacity: 1;
+  }
+}
+
+.code-block {
+  position: relative;
+  margin-top: 1.6em;
+}
+
+.code-block > .highlight,
+.code-block > pre {
+  margin-top: 0;
+}
+
+/* ==========================================================================
+   Article layout
+   ========================================================================== */
+
+.article-header {
+  padding-block: clamp(2.5rem, 1.5rem + 4vw, 4rem) var(--space-6);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-7);
+}
+
+.article-header h1 {
+  margin-top: var(--space-4);
+  font-size: var(--fs-3xl);
+  line-height: 1.12;
+}
+
+.article-header__desc {
+  margin-top: var(--space-4);
+  max-width: var(--width-prose);
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-normal);
+}
+
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.article-meta .sep {
+  opacity: 0.5;
+}
+
+.article-footer {
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.share-links {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--text-subtle);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+}
+
+/* ==========================================================================
+   Table of contents
+   ========================================================================== */
+
+.toc {
+  margin-bottom: var(--space-7);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--purple-dark);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.toc > summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  list-style: none;
+}
+
+.toc > summary::-webkit-details-marker {
+  display: none;
+}
+
+.toc > summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 0.5rem;
+  color: var(--purple);
+  transition: transform var(--dur) var(--ease);
+}
+
+.toc[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.toc nav {
+  margin-top: var(--space-4);
+  font-size: var(--fs-sm);
+}
+
+.toc ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.toc ul ul {
+  padding-left: var(--space-4);
+  border-left: 1px solid var(--border);
+  margin-top: 0.25rem;
+}
+
+.toc li {
+  margin-block: 0.25rem;
+}
+
+.toc a {
+  color: var(--text-muted);
+  text-decoration: none;
+  line-height: 1.5;
+  display: inline-block;
+}
+
+.toc a:hover {
+  color: var(--purple-soft);
+}
+
+/* The TOC stays inline above the article at every width: the reading column
+   is capped at ~46rem by design, so there is no room for a sidebar without
+   either widening the measure or misaligning it with the article header. */

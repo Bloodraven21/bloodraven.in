@@ -1,0 +1,33 @@
+{{- /* One entry in the talks timeline.
+       {{ partial "timeline-item.html" (dict "page" $talk) }} */ -}}
+{{- $p := .page -}}
+{{- $status := partial "talk-status.html" $p -}}
+<li class="timeline__item timeline__item--{{ $status }}">
+  <span class="timeline__node" aria-hidden="true"></span>
+
+  <time class="timeline__date" datetime="{{ $p.Date.Format "2006-01-02" }}">
+    {{ $p.Date.Format "January 2006" }}
+  </time>
+
+  <div class="timeline__card">
+    <div class="timeline__head">
+      <h3 class="timeline__title"><a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a></h3>
+      <span class="status status--{{ $status }}">{{ upper $status }}</span>
+    </div>
+
+    <p class="timeline__event">
+      {{- with $p.Params.event -}}
+        {{- with $p.Params.event_url -}}
+          <a href="{{ . }}" rel="noopener" target="_blank">{{ $p.Params.event }}</a>
+        {{- else -}}
+          <span>{{ . }}</span>
+        {{- end -}}
+      {{- end -}}
+      {{- with $p.Params.location }}
+      <span class="sep" aria-hidden="true">·</span><span>{{ . }}</span>
+      {{- end }}
+    </p>
+
+    {{ partial "talk-links.html" $p }}
+  </div>
+</li>

@@ -1,21 +1,46 @@
-<header>
-    <nav class="navbar">
-        <ul class="nav-menu">
-            <li class="nav-item">
-                <a href="/" class="nav-link{{ if .IsHome }} active{{ end }}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a href="/blogs/" class="nav-link{{ if eq .Section "blogs" }} active{{ end }}">Blogs</a>
-            </li>
-            <li class="nav-item">
-                <a href="/recommendations/" class="nav-link{{ if eq .Section "recommendations" }} active{{ end }}">Recommendations</a>
-            </li>
-            <li class="nav-item">
-                <a href="/talks/" class="nav-link{{ if eq .Section "talks" }} active{{ end }}">Talks</a>
-            </li>
-            <li class="nav-item">
-                <a href="/socials/" class="nav-link{{ if eq .Section "socials" }} active{{ end }}">Socials</a>
-            </li>
-        </ul>
+{{- $cur := .RelPermalink -}}
+<header class="site-header">
+  <div class="container header-inner">
+
+    <a class="brand" href="{{ "/" | relURL }}">
+      {{ partial "icon.html" "zap" }}
+      <span>BLOODRAVEN</span>
+    </a>
+
+    <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+            aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      {{ partial "icon.html" (dict "name" "menu" "class" "icon-menu") }}
+      {{ partial "icon.html" (dict "name" "close" "class" "icon-close") }}
+    </button>
+
+    <nav class="header-nav" id="site-nav" aria-label="Primary">
+      <ul class="nav-list">
+        {{- range site.Menus.main }}
+          {{- $url := .URL | relLangURL -}}
+          {{- $exact := eq $cur $url -}}
+          {{- $within := and (ne $url "/") (hasPrefix $cur $url) -}}
+          {{- if eq $url "/" }}{{ $exact = $.IsHome }}{{ end }}
+        <li>
+          <a class="nav-link" href="{{ $url }}"
+             {{- if $exact }} aria-current="page"{{ else if $within }} aria-current="true"{{ end }}>{{ .Name }}</a>
+        </li>
+        {{- end }}
+      </ul>
+
+      <span class="header-divider" aria-hidden="true"></span>
+
+      <div class="header-actions">
+        {{- range where site.Data.social "primary" true }}
+        <a class="icon-btn" href="{{ .url }}" rel="me noopener" target="_blank"
+           aria-label="{{ .name }} (opens in a new tab)">{{ partial "icon.html" .icon }}</a>
+        {{- end }}
+        <button class="icon-btn theme-toggle" type="button" data-theme-toggle
+                aria-pressed="false" aria-label="Switch to light theme">
+          {{ partial "icon.html" (dict "name" "moon" "class" "icon-moon") }}
+          {{ partial "icon.html" (dict "name" "sun" "class" "icon-sun") }}
+        </button>
+      </div>
     </nav>
+
+  </div>
 </header>

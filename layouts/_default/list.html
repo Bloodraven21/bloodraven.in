@@ -1,0 +1,25 @@
+{{ define "main" }}
+{{- /* Generic section fallback. Every section with a bespoke design has its
+       own template; this one keeps any new section usable from day one
+       (the old _default/list.html was a 0-byte file, which is why /socials/
+       once rendered blank). */ -}}
+<div class="container">
+
+  <header class="page-header">
+    <h1>{{ .Title }}</h1>
+    {{- with .Description }}<p class="page-header__lede">{{ . }}</p>{{ end }}
+    {{- with .Content }}<div class="page-header__lede">{{ . }}</div>{{ end }}
+  </header>
+
+  {{- with .RegularPages }}
+  <div class="article-list">
+    {{- range . }}
+      {{ partial "article-card.html" (dict "page" . "heading" "h2") }}
+    {{- end }}
+  </div>
+  {{- else }}
+  <div class="empty-state"><p>Nothing here yet.</p></div>
+  {{- end }}
+
+</div>
+{{ end }}

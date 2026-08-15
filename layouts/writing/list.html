@@ -1,0 +1,34 @@
+{{ define "main" }}
+{{- $pages := .RegularPages -}}
+<div class="container container--narrow">
+
+  <header class="page-header">
+    <p class="eyebrow">Writing</p>
+    {{- /* The H1 uses the section's own title from content/writing/_index.md,
+           and the lede is that file's own body — neither is rewritten here. */ -}}
+    <h1>{{ .Title }}</h1>
+    {{- with .Content }}<div class="page-header__lede">{{ . }}</div>{{ end }}
+  </header>
+
+  {{ partial "filters.html" (dict
+      "terms"  site.Params.writingFilters
+      "pages"  $pages
+      "field"  "taxonomy"
+      "target" ".article-card"
+      "label"  "Filter articles by topic") }}
+
+  {{- if $pages }}
+  <div class="article-list">
+    {{- range $pages }}
+      {{ partial "article-card.html" (dict "page" . "heading" "h2") }}
+    {{- end }}
+  </div>
+  {{- else }}
+  <div class="empty-state">
+    <p>No posts published yet.</p>
+    <p>New articles land in <code>content/writing/</code>.</p>
+  </div>
+  {{- end }}
+
+</div>
+{{ end }}

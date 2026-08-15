@@ -1,0 +1,484 @@
+/* ==========================================================================
+   Home — hero
+   ========================================================================== */
+
+.hero {
+  position: relative;
+  padding-block: clamp(2.75rem, 1.5rem + 5vw, 5rem) clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+  overflow: hidden;
+}
+
+/* A single, very soft purple wash. Not an animated background. */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  left: 50%;
+  width: min(58rem, 130%);
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    var(--purple-glow) 0%,
+    transparent 62%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__grid {
+  display: grid;
+  gap: clamp(2.5rem, 1rem + 5vw, 4.5rem);
+  align-items: center;
+}
+
+@media (min-width: 60rem) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+}
+
+.hero__greeting {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--purple-soft);
+}
+
+.hero__name {
+  margin-top: var(--space-3);
+  font-size: var(--fs-hero);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.03em;
+}
+
+.hero__role {
+  margin-top: var(--space-4);
+  font-family: var(--font-heading);
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--purple-soft);
+}
+
+.hero__sub {
+  margin-top: var(--space-2);
+  font-family: var(--font-heading);
+  font-size: var(--fs-lg);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.hero__lede {
+  margin-top: var(--space-5);
+  max-width: 34rem;
+  color: var(--text-muted);
+  font-size: var(--fs-lg);
+  line-height: 1.65;
+}
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* On the narrowest screens the two CTAs stack; make them the same width
+   instead of leaving a ragged edge. */
+@media (max-width: 26rem) {
+  .hero__cta .btn {
+    width: 100%;
+  }
+}
+
+/* --- Credentials / identity row --- */
+
+.credentials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border);
+}
+
+.credentials__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.credentials__rule {
+  width: 1px;
+  height: 1.35rem;
+  background: var(--border);
+}
+
+@media (max-width: 40rem) {
+  .credentials__rule {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Home — What I work on
+   ========================================================================== */
+
+.capabilities {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 34rem) {
+  .capabilities {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 60rem) {
+  .capabilities {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 78rem) {
+  .capabilities {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.capability {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.capability:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+}
+
+.capability__mark {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--border-hover);
+  border-radius: var(--radius);
+  background: var(--purple-faint);
+  color: var(--purple-soft);
+}
+
+.capability__mark svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.capability h3 {
+  font-size: var(--fs-base);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.capability p {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Home — featured
+   ========================================================================== */
+
+.featured-grid {
+  display: grid;
+  gap: var(--space-4);
+}
+
+@media (min-width: 56rem) {
+  .featured-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.card--feature .card__kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.card--feature .card__kicker svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--purple);
+}
+
+/* ==========================================================================
+   Writing index
+   ========================================================================== */
+
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.article-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease), transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.article-card:hover,
+.article-card:focus-within {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.article-card__title {
+  font-size: var(--fs-xl);
+  line-height: 1.28;
+}
+
+.article-card__title a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.article-card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.article-card:hover .article-card__title a {
+  color: var(--purple-soft);
+}
+
+.article-card__desc {
+  color: var(--text-muted);
+  line-height: var(--lh-normal);
+}
+
+.article-card__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+}
+
+.article-card[hidden] {
+  display: none;
+}
+
+/* ==========================================================================
+   Talks
+   ========================================================================== */
+
+.talk-meta {
+  display: grid;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--purple-dark);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+@media (min-width: 44rem) {
+  .talk-meta {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
+}
+
+.talk-meta dt {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  margin-bottom: var(--space-2);
+}
+
+.talk-meta dd {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Recommendations
+   ========================================================================== */
+
+.rec-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease), transform var(--dur) var(--ease),
+    box-shadow var(--dur) var(--ease);
+}
+
+.rec-card:hover,
+.rec-card:focus-within {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.rec-card__title {
+  font-size: var(--fs-lg);
+  line-height: 1.3;
+}
+
+.rec-card__title a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.rec-card__title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.rec-card:hover .rec-card__title a {
+  color: var(--purple-soft);
+}
+
+.rec-card__desc {
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+}
+
+.rec-card[hidden] {
+  display: none;
+}
+
+/* ==========================================================================
+   Socials page
+   ========================================================================== */
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: var(--space-4);
+}
+
+.social-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color var(--dur) var(--ease),
+    background-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.social-tile:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-2);
+  color: var(--text);
+  transform: translateY(-2px);
+}
+
+.social-tile svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--purple-soft);
+  flex-shrink: 0;
+}
+
+.social-tile__name {
+  font-weight: 600;
+}
+
+.social-tile__handle {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-subtle);
+  margin-top: 0.1rem;
+}
+
+/* ==========================================================================
+   404
+   ========================================================================== */
+
+.notfound {
+  display: grid;
+  place-items: center;
+  gap: var(--space-5);
+  min-height: 55vh;
+  text-align: center;
+  padding-block: var(--space-9);
+}
+
+.notfound__code {
+  font-family: var(--font-mono);
+  font-size: clamp(3.5rem, 2rem + 8vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--purple);
+  text-shadow: 0 0 40px var(--purple-glow);
+}
+
+.notfound p {
+  max-width: 32rem;
+  color: var(--text-muted);
+}
+
+/* Page-load motion lives in 07-motion.css. */

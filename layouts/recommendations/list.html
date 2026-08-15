@@ -1,27 +1,47 @@
 {{ define "main" }}
-<div class="post-header">
-    <h1>{{ .Title }}</h1>
-    {{ if .Content }}
-        <div class="section-description">
-            {{ .Content }}
-        </div>
-    {{ end }}
-</div>
+{{- $pages := .RegularPages -}}
+{{- /* Category chips come from whatever categories the recommendations
+       actually carry — nothing is assigned to existing entries here. */ -}}
+{{- $terms := slice "Books" "Tools" "Coffee" "Movies" "Shows" -}}
+<div class="container">
 
-{{ if .Pages }}
-<div class="post-list">
-    {{ range .Pages }}
-    <div class="post-item">
-        <time class="post-date">{{ .Date.Format "January 2, 2006" }}</time>
-        <h3 class="post-title">
-            <a href="{{ .Permalink }}">{{ .Title }}</a>
-        </h3>
-    </div>
-    {{ end }}
+  <header class="page-header">
+    <p class="eyebrow">Recommendations</p>
+    <h1>{{ .Title }}</h1>
+    {{- with .Content }}<div class="page-header__lede">{{ . }}</div>{{ end }}
+  </header>
+
+  {{ partial "filters.html" (dict
+      "terms"  $terms
+      "pages"  $pages
+      "field"  "taxonomy"
+      "target" ".rec-card"
+      "label"  "Filter recommendations") }}
+
+  {{- if $pages }}
+  <div class="grid grid--2">
+    {{- range $pages }}
+    {{- $terms := slice }}
+    {{- range (union (.Params.categories | default slice) (.Params.tags | default slice)) }}
+      {{- $terms = $terms | append (urlize .) }}
+    {{- end }}
+    <article class="rec-card" data-terms="{{ delimit $terms " " }}">
+      <div class="card__meta">
+        {{- with .Params.categories }}<span class="cat">{{ index . 0 }}</span><span class="sep" aria-hidden="true">·</span>{{ end }}
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      </div>
+      <h2 class="rec-card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      {{- with partial "page-description.html" . }}
+      <p class="rec-card__desc">{{ . | truncate 170 }}</p>
+      {{- end }}
+    </article>
+    {{- end }}
+  </div>
+  {{- else }}
+  <div class="empty-state">
+    <p>Nothing here yet.</p>
+  </div>
+  {{- end }}
+
 </div>
-{{ else }}
-<div class="no-posts">
-    <p>No posts yet. Check back soon!</p>
-</div>
-{{ end }}
 {{ end }}

@@ -1,0 +1,268 @@
+/* ==========================================================================
+   Motion — entrance choreography
+
+   Two separate mechanisms, deliberately kept apart:
+
+   1. LOAD ANIMATIONS (this stylesheet, pure CSS). Used only for chrome that
+      is always above the fold: the header, the hero, and page headers. These
+      run whenever the stylesheet parses, so they can never strand content in
+      a hidden state — there is no JavaScript in the path.
+
+   2. SCROLL REVEAL (`.reveal`, applied by site.js). Everything further down. The
+      hidden state is added by JavaScript and never by this stylesheet, so
+      with JS blocked, site.js failing to load, or IntersectionObserver
+      missing, nothing is ever hidden. That is the whole reason for the
+      split — a load animation that depends on a script is a blank page
+      waiting to happen.
+
+   Only `opacity` and `transform` are animated. Both are composited and
+   neither affects layout, so none of this contributes to layout shift.
+
+   Reduced motion is handled globally in 01-base.css (every animation is
+   collapsed to 0.01ms, so elements land on their final state immediately);
+   site.js additionally skips the reveal pass entirely.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Keyframes
+   -------------------------------------------------------------------------- */
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--enter-rise));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes enter-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Cards get a hair of scale as well — enough to read as "settling into
+   place", not enough to look like a zoom. */
+@keyframes enter-card {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* The hero's purple wash. It already carries translateX(-50%) for centring,
+   so both keyframes have to restate it or the glow jumps left. */
+@keyframes enter-glow {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.82);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Stagger
+
+   `--enter-i` is the sibling's position in the cascade and `--enter-at` is
+   an offset for the whole group, so a group can be scheduled after another
+   one without rewriting its per-child delays.
+   -------------------------------------------------------------------------- */
+
+:where(.hero__text, .page-header, .article-header, .section-header__text) > * {
+  animation: enter-rise var(--dur-enter) var(--ease-enter) backwards;
+  animation-delay: calc(var(--enter-at, 0ms) + var(--enter-i, 0) * var(--enter-step));
+}
+
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(1) { --enter-i: 0; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(2) { --enter-i: 1; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(3) { --enter-i: 2; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(4) { --enter-i: 3; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(5) { --enter-i: 4; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(6) { --enter-i: 5; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(7) { --enter-i: 6; }
+:where(.hero__text, .page-header, .article-header, .section-header__text) > *:nth-child(8) { --enter-i: 7; }
+
+/* A section header is itself a reveal target, so its children would animate
+   twice — once on load, once again when the parent reveals. The reveal wins.
+   Both classes are listed so the cancellation survives the swap; with JS off
+   neither class is ever present and the children keep the load pass. */
+.reveal .section-header__text > *,
+.reveal-in .section-header__text > * {
+  animation: none;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+
+.site-header {
+  animation: enter-drop 800ms var(--ease-enter) backwards;
+}
+
+/* The nav collapses behind a toggle below this width, where an entrance
+   animation would fight the open/close transition. */
+@media (min-width: 62rem) {
+  .site-header .nav-list > li {
+    animation: enter-fade 700ms var(--ease-enter) backwards;
+    animation-delay: calc(260ms + var(--enter-i, 0) * 70ms);
+  }
+
+  .site-header .nav-list > li:nth-child(1) { --enter-i: 0; }
+  .site-header .nav-list > li:nth-child(2) { --enter-i: 1; }
+  .site-header .nav-list > li:nth-child(3) { --enter-i: 2; }
+  .site-header .nav-list > li:nth-child(4) { --enter-i: 3; }
+  .site-header .nav-list > li:nth-child(5) { --enter-i: 4; }
+}
+
+/* --------------------------------------------------------------------------
+   Hero
+
+   The text column leads, the terminal card follows a beat later, and the
+   credential row lands last. The glow runs long and underneath everything.
+   -------------------------------------------------------------------------- */
+
+.hero::before {
+  animation: enter-glow 2200ms var(--ease-enter) backwards;
+}
+
+.hero__text > * {
+  --enter-rise: 22px;
+}
+
+.hero__aside {
+  animation: enter-card 1150ms var(--ease-enter) 320ms backwards;
+}
+
+.credentials {
+  animation: enter-rise var(--dur-enter) var(--ease-enter) 720ms backwards;
+}
+
+/* Terminal lines print rather than rise: a tighter step, no travel. The card
+   is aria-hidden, so this is decorative in the strictest sense. */
+.terminal__body code > * {
+  animation: enter-fade 340ms linear backwards;
+  animation-delay: calc(900ms + var(--enter-i, 0) * 55ms);
+}
+
+.terminal__body code > *:nth-child(1)  { --enter-i: 0; }
+.terminal__body code > *:nth-child(2)  { --enter-i: 1; }
+.terminal__body code > *:nth-child(3)  { --enter-i: 2; }
+.terminal__body code > *:nth-child(4)  { --enter-i: 3; }
+.terminal__body code > *:nth-child(5)  { --enter-i: 4; }
+.terminal__body code > *:nth-child(6)  { --enter-i: 5; }
+.terminal__body code > *:nth-child(7)  { --enter-i: 6; }
+.terminal__body code > *:nth-child(8)  { --enter-i: 7; }
+.terminal__body code > *:nth-child(9)  { --enter-i: 8; }
+.terminal__body code > *:nth-child(10) { --enter-i: 9; }
+.terminal__body code > *:nth-child(11) { --enter-i: 10; }
+.terminal__body code > *:nth-child(12) { --enter-i: 11; }
+.terminal__body code > *:nth-child(13) { --enter-i: 12; }
+.terminal__body code > *:nth-child(14) { --enter-i: 13; }
+.terminal__body code > *:nth-child(15) { --enter-i: 14; }
+.terminal__body code > *:nth-child(16) { --enter-i: 15; }
+.terminal__body code > *:nth-child(17) { --enter-i: 16; }
+.terminal__body code > *:nth-child(18) { --enter-i: 17; }
+.terminal__body code > *:nth-child(19) { --enter-i: 18; }
+.terminal__body code > *:nth-child(20) { --enter-i: 19; }
+
+/* The caret should not blink until the line it sits on has printed. */
+.terminal__caret {
+  animation-delay: 2100ms;
+}
+
+/* --------------------------------------------------------------------------
+   Page and article headers
+
+   Both are above the fold on every page that has one, so they use the load
+   pass rather than the reveal pass. The prose body underneath is revealed by
+   site.js so that a long article does not animate its whole length at once.
+   -------------------------------------------------------------------------- */
+
+.page-header > *,
+.article-header > * {
+  --enter-rise: 24px;
+}
+
+/* --------------------------------------------------------------------------
+   Scroll reveal
+
+   `.reveal` is added by site.js immediately before the element is observed;
+   `.reveal-in` is added when it intersects. The animation outranks the static
+   declarations in `.reveal`, so there is no flash between the two classes, and
+   `forwards` holds the resting state afterwards.
+   -------------------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(var(--enter-rise));
+}
+
+.reveal-in {
+  animation: enter-rise var(--dur-reveal) var(--ease-enter) forwards;
+}
+
+/* Cards and list items travel a little further than body copy. */
+.reveal {
+  --enter-rise: 18px;
+}
+
+.article-body.reveal,
+.prose.reveal {
+  --enter-rise: 14px;
+}
+
+/* --------------------------------------------------------------------------
+   Safety nets
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* 01-base.css already collapses every animation to 0.01ms, which lands
+     animated elements on their final state. `.reveal` is a static style rather
+     than an animation, so it needs saying explicitly. site.js also skips the
+     reveal pass under this setting, making this a second line of defence. */
+  .reveal,
+  .reveal-in {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
+
+/* Printing should never inherit a mid-animation state. */
+@media print {
+  .reveal,
+  .reveal-in,
+  .site-header,
+  .credentials,
+  .hero__aside,
+  .hero::before,
+  :where(.hero__text, .page-header, .article-header, .section-header__text) > * {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

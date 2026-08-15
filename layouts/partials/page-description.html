@@ -1,0 +1,24 @@
+{{- /* Resolves the blurb shown on a card, in this order:
+
+     1. the page's own `description`
+     2. its `summary`, or Hugo's summary of its own opening paragraphs
+
+  Nothing is generated beyond that — a page with no description simply shows
+  the beginning of its own text.
+
+  Several posts repeat their title as the first heading of the body, which
+  makes the generated summary open with the title again; that duplicate
+  prefix is trimmed for display only.
+
+  {{ $desc := partial "page-description.html" $page }}
+*/ -}}
+{{- $p := . -}}
+{{- $d := "" -}}
+{{- with $p.Description }}{{ $d = . }}{{ end -}}
+{{- if not $d }}{{ $d = $p.Summary | plainify | htmlUnescape | chomp }}{{ end -}}
+{{- $d = $d | replaceRE "\\s+" " " -}}
+{{- if and $d (hasPrefix $d $p.Title) -}}
+  {{- $d = strings.TrimPrefix $p.Title $d | chomp -}}
+  {{- $d = strings.TrimLeft ".:—- " $d -}}
+{{- end -}}
+{{- return $d -}}

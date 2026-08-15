@@ -1,0 +1,24 @@
+{{ define "main" }}
+<div class="container">
+
+  <header class="page-header">
+    <p class="eyebrow">Index</p>
+    <h1>{{ .Title }}</h1>
+  </header>
+
+  {{- with .Data.Terms.ByCount }}
+  <ul class="tag-list">
+    {{- range . }}
+    <li>
+      {{ partial "tech-tag.html" (dict
+          "label" (printf "%s (%d)" .Page.Title .Count)
+          "url" .Page.RelPermalink) }}
+    </li>
+    {{- end }}
+  </ul>
+  {{- else }}
+  <div class="empty-state"><p>Nothing here yet.</p></div>
+  {{- end }}
+
+</div>
+{{ end }}

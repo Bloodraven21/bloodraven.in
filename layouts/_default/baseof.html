@@ -1,18 +1,42 @@
+{{- $css := slice
+      (resources.Get "css/00-tokens.css")
+      (resources.Get "css/01-base.css")
+      (resources.Get "css/02-shell.css")
+      (resources.Get "css/03-components.css")
+      (resources.Get "css/04-prose.css")
+      (resources.Get "css/05-pages.css")
+      (resources.Get "css/06-syntax.css")
+      (resources.Get "css/07-motion.css")
+    | resources.Concat "css/main.css" -}}
+{{- $js := resources.Get "js/site.js" -}}
+{{- if hugo.IsProduction -}}
+  {{- $css = $css | minify | fingerprint "sha256" -}}
+  {{- $js = $js | minify | fingerprint "sha256" -}}
+{{- end -}}
 <!DOCTYPE html>
-<html lang="{{ .Site.LanguageCode }}">
+<html lang="{{ site.LanguageCode | default "en" }}" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} - {{ .Site.Title }}{{ end }}</title>
-    <link rel="stylesheet" href="{{ "/css/style.css" | relURL }}">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{- /* Applied before first paint so the chosen theme never flashes. */}}
+<script>(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark"){d.setAttribute("data-theme",t)}}catch(e){}})();</script>
+{{ partial "head/meta.html" . }}
+<link rel="preload" href="{{ "fonts/inter-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="{{ "fonts/space-grotesk-latin.woff2" | relURL }}" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="{{ $css.RelPermalink }}"{{ with $css.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }}>
+{{ partial "head/schema.html" . }}
 </head>
 <body>
-    {{ partial "header.html" . }}
-    
-    <main>
-        {{ block "main" . }}{{ end }}
-    </main>
-    
-    {{ partial "footer.html" . }}
+<a class="skip-link" href="#main">Skip to content</a>
+
+{{ partial "header.html" . }}
+
+<main id="main" class="site-main" tabindex="-1">
+  {{- block "main" . }}{{ end -}}
+</main>
+
+{{ partial "footer.html" . }}
+
+<script src="{{ $js.RelPermalink }}"{{ with $js.Data.Integrity }} integrity="{{ . }}" crossorigin="anonymous"{{ end }} defer></script>
 </body>
 </html>

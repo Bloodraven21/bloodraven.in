@@ -1,0 +1,20 @@
+{{- /* A credential / identity pill.
+       {{ partial "badge.html" "Docker Captain" }}
+       {{ partial "badge.html" (dict "label" "Docker Captain" "icon" "star") }}
+       {{ partial "badge.html" (dict "label" "Docker Captain" "url" "https://…") }}
+
+       A `url` turns the pill into a link that opens in a new tab. The plain
+       string form still works and still renders a non-interactive span. */ -}}
+{{- $label := . -}}
+{{- $icon := "star" -}}
+{{- $url := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- $label = .label -}}
+  {{- $icon = .icon | default "star" -}}
+  {{- $url = .url | default "" -}}
+{{- end -}}
+{{- if $url -}}
+<a class="badge" href="{{ $url }}" target="_blank" rel="noopener">{{ partial "icon.html" $icon }}{{ $label }}<span class="visually-hidden"> (opens in a new tab)</span></a>
+{{- else -}}
+<span class="badge">{{ partial "icon.html" $icon }}{{ $label }}</span>
+{{- end -}}

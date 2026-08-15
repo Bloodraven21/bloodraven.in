@@ -1,0 +1,7 @@
+{{- /* Content images keep their original source and alt text; the hook only
+       adds lazy loading. Images referenced by existing articles must stay
+       available even though the redesigned UI is otherwise image-free. */ -}}
+<img src="{{ .Destination | safeURL }}"
+     alt="{{ .Text }}"
+     {{- with .Title }} title="{{ . }}"{{ end }}
+     loading="lazy" decoding="async">

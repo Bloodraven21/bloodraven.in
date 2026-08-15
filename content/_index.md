@@ -1,36 +1,106 @@
 ---
 title: "Welcome to BloodRaven"
+
+# ---------------------------------------------------------------------------
+# Homepage content.
+#
+# Everything the homepage renders lives here, not in the templates — edit this
+# file to change the hero, the credential row, the terminal card or the
+# "What I work on" strip.
+# ---------------------------------------------------------------------------
+
+hero:
+  greeting: "Hi, I'm"
+  name: "Ishan Jain."
+  role: "Devops & SRE Engineer."
+  tagline: "Devops and Coffee enthusiast. Open source Maintainer."
+  lede: >-
+    I build, operate, and talk about reliable infrastructure, distributed
+    systems, Kubernetes, cloud platforms, and developer tooling.
+  primaryCta:
+    label: "Explore my work"
+    url: "/writing/"
+  secondaryCta:
+    label: "View my talks"
+    url: "/talks/"
+
+# Professional identities. Keep this row short.
+# A `url` makes the pill a link that opens in a new tab; drop it for a plain
+# pill, or write the entry as a bare string.
+credentials:
+  - label: "Docker Captain"
+    url: "https://www.docker.com/contributors/ishan-jain/"
+  - label: "AWS Community Builder"
+    url: "https://builder.aws.com/community/@ishan"
+
+techTags:
+  - "Kubernetes"
+  - "AWS"
+  - "Docker"
+  - "DevOps"
+  - "CI/CD"
+  - "GoLang"
+  - "Github"
+  - "Linux"
+  - "Git"
+  - "Valkey"
+  - "Helm"
+  - "Grafana"
+  - "Prometheus"
+  - "Loki"
+  - "ElasticSearch"
+  - "Kibana"
+  - "Logstash"
+  - "Postgres" 
+  - "ArgoCD"
+  - "Redis"
+  - "Datadog"
+  - "Bitbucket"
+  - "OpenTelemetry"
+  - "Terraform"
+  - "Flyway"
+  - "Python"
+
+# Optional terminal card beside the hero. Delete this block to remove it.
+terminal:
+  title: "~/ishan"
+  blocks:
+    - cmd: "whoami"
+      out: ["ishan"]
+    - cmd: "cat interests.txt"
+      out:
+        - "cloud"
+        - "kubernetes"
+        - "distributed-systems"
+        - "observability"
+        - "devops"
+        - "open-source"
+        - "coffee"
+        - "books"
+        - "movies"
+    - cmd: "echo $STATUS"
+      out: ["building things"]
+      accent: true
+
+# "What I work on". Descriptions are intentionally blank — add a sentence or
+# two per item when you want them; the card renders fine without one.
+capabilities:
+  - title: "Kubernetes"
+    icon: "hexagon"
+    description: ""
+  - title: "Cloud"
+    icon: "cloud"
+    description: ""
+  - title: "Site Reliability Engineering"
+    icon: "layers"
+    description: ""
+  - title: "Observability"
+    icon: "activity"
+    description: ""
+  - title: "DevOps"
+    icon: "infinity"
+    description: ""
+
+# Extra output: the legacy /blogs/index.xml feed (see hugo.yaml).
+outputs: ["HTML", "RSS", "blogsrss"]
 ---
-
-# 👋 Hi, I'm Ishan Jain
-
-Welcome to **BloodRaven.in** — my little corner of the internet.  
-
----
-
-## 🧑‍💻 About Me
-
-I’m a **Software Engineer** specializing in **Cloud, DevOps and SRE**.
-Passionate about **Cloud, Containers, and Community** — always exploring ways to **build, break, and improve systems**. 
-
-Outside of work, you’ll usually find me:
-- Brewing **freshly ground coffee** with my handy Aeropress ☕  
-- Watching **movies, TV shows, and anime** 🎬  
-- Trying (and failing, sometimes 😅) to get out of a **reading slump** 📚  
-
----
-
-## 🌐 What You’ll Find Here
-
-- **📝 Blogs** → My thoughts on **Technology, Cloud, DevOps**, and beyond  
-- **⭐ Recommendations** → Books, shows, tools, and other things I think are worth sharing  
-
----
-
-## ✨ Let’s Connect
-
-This space is for sharing, learning, and connecting.  
-Feel free to explore — and don’t hesitate to reach out if something resonates with you!  
-
-📅 **Book a 15-minute fireside chat with me:**  
-[calendly.com/ishanij10115](https://calendly.com/ishanij10115)

@@ -1,0 +1,42 @@
+{{- /* Filter chips.
+
+  {{ partial "filters.html" (dict
+      "terms"  site.Params.writingFilters
+      "pages"  $pages
+      "field"  "taxonomy"          "taxonomy" | "technologies"
+      "target" ".article-card"
+      "label"  "Filter articles by topic") }}
+
+  A chip is only rendered when at least one item on the page actually
+  matches it, so the bar never advertises an empty result.
+*/ -}}
+{{- $pages := .pages -}}
+{{- $field := .field | default "taxonomy" -}}
+
+{{- $present := slice -}}
+{{- range $pages -}}
+  {{- if eq $field "technologies" -}}
+    {{- range .Params.technologies }}{{ $present = $present | append (urlize .) }}{{ end -}}
+    {{- if .Params.featured }}{{ $present = $present | append "featured" }}{{ end -}}
+  {{- else -}}
+    {{- range .Params.categories }}{{ $present = $present | append (urlize .) }}{{ end -}}
+    {{- range .Params.tags }}{{ $present = $present | append (urlize .) }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $chips := slice -}}
+{{- range .terms -}}
+  {{- if in $present (urlize .) }}{{ $chips = $chips | append . }}{{ end -}}
+{{- end -}}
+
+{{- if $chips }}
+<div class="filters" role="group" aria-label="{{ .label }}"
+     data-filter-group data-filter-target="{{ .target }}"
+     data-filter-count="#filter-count">
+  <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
+  {{- range $chips }}
+  <button class="filter" type="button" data-filter="{{ urlize . }}" aria-pressed="false">{{ . }}</button>
+  {{- end }}
+  <span class="filters__count" id="filter-count" role="status" aria-live="polite"></span>
+</div>
+{{- end }}

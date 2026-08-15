@@ -1,0 +1,33 @@
+{{- /* Previous / next navigation inside a section.
+
+  Which of Hugo's PrevInSection / NextInSection is "older" depends on the
+  section's sort order, so the two candidates are placed by comparing their
+  own dates instead of trusting the names.
+
+  {{ partial "pager.html" . }}
+*/ -}}
+{{- $here := . -}}
+{{- $older := "" -}}
+{{- $newer := "" -}}
+{{- range (slice .PrevInSection .NextInSection) -}}
+  {{- with . -}}
+    {{- if .Date.Before $here.Date }}{{ $older = . }}{{ else }}{{ $newer = . }}{{ end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if or $older $newer }}
+<nav class="pager" aria-label="More in this section">
+  {{- with $older }}
+  <a class="pager__link pager__link--prev" href="{{ .RelPermalink }}">
+    <span class="pager__dir">{{ partial "icon.html" "arrow-left" }}Older</span>
+    <span class="pager__title">{{ .Title }}</span>
+  </a>
+  {{- end }}
+  {{- with $newer }}
+  <a class="pager__link pager__link--next" href="{{ .RelPermalink }}">
+    <span class="pager__dir">Newer{{ partial "icon.html" "arrow-right" }}</span>
+    <span class="pager__title">{{ .Title }}</span>
+  </a>
+  {{- end }}
+</nav>
+{{- end }}

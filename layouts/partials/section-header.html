@@ -1,0 +1,19 @@
+{{- /* {{ partial "section-header.html" (dict
+          "eyebrow" "Writing"
+          "title"   "Latest from the blog"
+          "desc"    "optional supporting line"
+          "level"   "h2"                       (default h2)
+          "linkURL" "/writing/" "linkLabel" "All posts") }} */ -}}
+{{- $level := .level | default "h2" -}}
+<div class="section-header">
+  <div class="section-header__text">
+    {{- with .eyebrow }}<p class="eyebrow">{{ . }}</p>{{ end }}
+    {{ printf `<%s%s>` $level (cond (ne (.id | default "") "") (printf ` id="%s"` (.id | default "")) "") | safeHTML }}{{ .title }}{{ printf "</%s>" $level | safeHTML }}
+    {{- with .desc }}<p>{{ . }}</p>{{ end }}
+  </div>
+  {{- with .linkURL }}
+  <a class="link-arrow" href="{{ . | relURL }}">
+    {{ $.linkLabel }} {{ partial "icon.html" "arrow-right" }}
+  </a>
+  {{- end }}
+</div>

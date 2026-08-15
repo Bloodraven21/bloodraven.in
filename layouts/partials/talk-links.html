@@ -1,0 +1,28 @@
+{{- /* Slides / recording / repo / event links for a talk.
+       Only renders links that actually exist in front matter.
+       {{ partial "talk-links.html" $talkPage }} */ -}}
+{{- $p := . -}}
+{{- $slides := $p.Params.slides -}}
+{{- $video := $p.Params.video | default $p.Params.recording -}}
+{{- $repo := $p.Params.github | default $p.Params.repository -}}
+{{- $event := $p.Params.event_url -}}
+{{- if or $slides $video $repo $event }}
+<div class="res-links">
+  {{- with $slides }}
+  <a class="res-link" href="{{ . }}" rel="noopener" target="_blank">
+    {{ partial "icon.html" "presentation" }}Slides</a>
+  {{- end }}
+  {{- with $video }}
+  <a class="res-link" href="{{ . }}" rel="noopener" target="_blank">
+    {{ partial "icon.html" "play" }}Recording</a>
+  {{- end }}
+  {{- with $repo }}
+  <a class="res-link" href="{{ . }}" rel="noopener" target="_blank">
+    {{ partial "icon.html" "github" }}Repo</a>
+  {{- end }}
+  {{- with $event }}
+  <a class="res-link" href="{{ . }}" rel="noopener" target="_blank">
+    {{ partial "icon.html" "link" }}Event page</a>
+  {{- end }}
+</div>
+{{- end }}

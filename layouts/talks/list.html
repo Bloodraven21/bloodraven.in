@@ -1,34 +1,39 @@
 {{ define "main" }}
-<div class="post-header">
-    <h1>{{ .Title }}</h1>
-</div>
+{{- $talks := .RegularPages.ByDate.Reverse -}}
+<div class="container container--narrow">
 
-{{ if site.Data.talks }}
-<div class="post-list">
-    {{ range site.Data.talks }}
-    <div class="post-item talk-item">
-        <time class="post-date">{{ dateFormat "January 2, 2006" .date }}</time>
-        <div class="talk-body">
-            <h3 class="post-title">{{ .title }}</h3>
-            <div class="talk-meta">
-                {{ if .event_url }}
-                    <a href="{{ .event_url }}" target="_blank" class="talk-event-link">{{ .event }}</a>
-                {{ else }}
-                    <span class="talk-event-name">{{ .event }}</span>
-                {{ end }}
-                <span class="talk-links">
-                    {{ if .slides }}<a href="{{ .slides }}" target="_blank" class="talk-link talk-link--slides">Slides</a>{{ end }}
-                    {{ if .github }}<a href="{{ .github }}" target="_blank" class="talk-link talk-link--github">GitHub</a>{{ end }}
-                    {{ if .video }}<a href="{{ .video }}" target="_blank" class="talk-link talk-link--video">Video</a>{{ end }}
-                </span>
-            </div>
-        </div>
-    </div>
-    {{ end }}
+  <header class="page-header">
+    <p class="eyebrow">Speaking</p>
+    <h1>{{ .Title }}</h1>
+    {{- with .Content }}<div class="page-header__lede">{{ . }}</div>{{ end }}
+  </header>
+
+  {{- if $talks }}
+  {{- $upcoming := where $talks "Date" "ge" now }}
+  {{- with $upcoming }}
+  <h2 class="eyebrow eyebrow--plain" style="margin-bottom:var(--space-4)">Upcoming</h2>
+  <ol class="timeline" style="margin-bottom:var(--space-8)">
+    {{- range .ByDate }}
+      {{ partial "timeline-item.html" (dict "page" .) }}
+    {{- end }}
+  </ol>
+  {{- end }}
+
+  {{- $past := where $talks "Date" "lt" now }}
+  {{- with $past }}
+  <h2 class="eyebrow eyebrow--plain" style="margin-bottom:var(--space-4)">Past talks</h2>
+  <ol class="timeline">
+    {{- range . }}
+      {{ partial "timeline-item.html" (dict "page" .) }}
+    {{- end }}
+  </ol>
+  {{- end }}
+  {{- else }}
+  <div class="empty-state">
+    <p>No talks listed yet.</p>
+    <p>Each talk is a file in <code>content/talks/</code>.</p>
+  </div>
+  {{- end }}
+
 </div>
-{{ else }}
-<div class="no-posts">
-    <p>No talks yet. Check back soon!</p>
-</div>
-{{ end }}
 {{ end }}

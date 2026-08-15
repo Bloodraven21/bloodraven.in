@@ -1,0 +1,20 @@
+{{ define "main" }}
+<div class="container">
+  <div class="notfound">
+    <p class="notfound__code">404</p>
+    <h1>This page doesn&rsquo;t exist</h1>
+    <p>
+      The link may be out of date, or the page may have moved. Nothing here is
+      lost &mdash; try the writing index or head back home.
+    </p>
+    <div class="hero__cta" style="justify-content:center">
+      <a class="btn btn--primary" href="{{ "/" | relURL }}">
+        Back home {{ partial "icon.html" "arrow-right" }}
+      </a>
+      <a class="btn btn--ghost" href="{{ "writing/" | relURL }}">
+        Browse writing {{ partial "icon.html" "arrow-right" }}
+      </a>
+    </div>
+  </div>
+</div>
+{{ end }}

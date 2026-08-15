@@ -1,1 +1,26 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Kubernetes on Ishan Jain</title><link>https://www.bloodraven.in/tags/kubernetes/</link><description>Recent content in Kubernetes on Ishan Jain</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Wed, 27 May 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://www.bloodraven.in/tags/kubernetes/index.xml" rel="self" type="application/rss+xml"/><item><title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</title><link>https://www.bloodraven.in/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</link><pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/blogs/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</guid><description>How Valkey 9.1.0&amp;rsquo;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.</description></item><item><title>The Curious Case of Docker Hardened Images</title><link>https://www.bloodraven.in/blogs/the-curious-case-of-docker-hardend-images/</link><pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate><guid>https://www.bloodraven.in/blogs/the-curious-case-of-docker-hardend-images/</guid><description>An investigative look at Docker Hardened Images: what changed in December 2025, how DHI compares to distroless and Wolfi, and what the operational tax really looks like.</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Kubernetes on Ishan Jain</title>
+    <link>http://localhost:1313/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on Ishan Jain</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 27 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>One Valkey, Multiple Tenants: Per-Database Isolation on Kubernetes</title>
+      <link>http://localhost:1313/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</link>
+      <pubDate>Wed, 27 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writing/one-valkey-multiple-tenants-per-database-isolation-on-kubernetes/</guid>
+      <description>How Valkey 9.1.0&amp;rsquo;s per-database ACL selector lets you run multiple microservices off one shared cache instance, with hard access boundaries between them.</description>
+    </item>
+    <item>
+      <title>The Curious Case of Docker Hardened Images</title>
+      <link>http://localhost:1313/writing/the-curious-case-of-docker-hardend-images/</link>
+      <pubDate>Sun, 10 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/writing/the-curious-case-of-docker-hardend-images/</guid>
+      <description>An investigative look at Docker Hardened Images: what changed in December 2025, how DHI compares to distroless and Wolfi, and what the operational tax really looks like.</description>
+    </item>
+  </channel>
+</rss>

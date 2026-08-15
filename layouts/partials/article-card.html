@@ -1,0 +1,41 @@
+{{- /* Text-first article card. No thumbnail, by design.
+
+  {{ partial "article-card.html" (dict "page" $p) }}
+  {{ partial "article-card.html" (dict "page" $p "heading" "h2") }}
+
+  Every value comes from the post's own front matter or body. Nothing is
+  synthesised: if a post has no description, the card falls back to Hugo's
+  summary of the post's own opening paragraphs.
+*/ -}}
+{{- $p := .page -}}
+{{- $heading := .heading | default "h3" -}}
+
+{{- $cat := "" -}}
+{{- with $p.Params.categories }}{{ $cat = index . 0 }}{{ end -}}
+{{- if not $cat }}{{ with $p.Params.tags }}{{ $cat = index . 0 }}{{ end }}{{ end -}}
+
+{{- $desc := partial "page-description.html" $p -}}
+
+{{- $terms := slice -}}
+{{- range (union ($p.Params.categories | default slice) ($p.Params.tags | default slice)) -}}
+  {{- $terms = $terms | append (urlize .) -}}
+{{- end -}}
+
+<article class="article-card" data-terms="{{ delimit $terms " " }}">
+  <div class="card__meta">
+    {{- with $cat }}<span class="cat">{{ . }}</span><span class="sep" aria-hidden="true">·</span>{{ end }}
+    <span>{{ $p.ReadingTime }} min read</span>
+  </div>
+
+  {{ printf `<%s class="article-card__title">` $heading | safeHTML }}
+    <a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
+  {{ printf "</%s>" $heading | safeHTML }}
+
+  {{- with $desc }}
+  <p class="article-card__desc">{{ . | truncate 190 }}</p>
+  {{- end }}
+
+  <div class="article-card__foot">
+    <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "January 2, 2006" }}</time>
+  </div>
+</article>

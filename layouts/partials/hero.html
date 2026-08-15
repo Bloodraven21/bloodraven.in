@@ -1,0 +1,55 @@
+{{- /* Homepage hero. All copy comes from content/_index.md front matter. */ -}}
+{{- $h := .Params.hero -}}
+<section class="hero">
+  <div class="container">
+    <div class="hero__grid">
+
+      <div class="hero__text">
+        {{- with $h.greeting }}<p class="hero__greeting">{{ . }}</p>{{ end }}
+        <h1 class="hero__name">{{ $h.name | default site.Params.author }}</h1>
+        {{- with $h.role }}<p class="hero__role">{{ . }}</p>{{ end }}
+        {{- with $h.tagline }}<p class="hero__sub">{{ . }}</p>{{ end }}
+        {{- with $h.lede }}<p class="hero__lede">{{ . }}</p>{{ end }}
+
+        {{- if or $h.primaryCta $h.secondaryCta }}
+        <div class="hero__cta">
+          {{- with $h.primaryCta }}
+          <a class="btn btn--primary" href="{{ .url | relURL }}">
+            {{ .label }} {{ partial "icon.html" "arrow-right" }}
+          </a>
+          {{- end }}
+          {{- with $h.secondaryCta }}
+          <a class="btn btn--ghost" href="{{ .url | relURL }}">
+            {{ .label }} {{ partial "icon.html" "arrow-right" }}
+          </a>
+          {{- end }}
+        </div>
+        {{- end }}
+      </div>
+
+      {{- with .Params.terminal }}
+      <div class="hero__aside">
+        {{ partial "terminal-card.html" . }}
+      </div>
+      {{- end }}
+
+    </div>
+
+    {{- if or .Params.credentials .Params.techTags }}
+    <div class="credentials">
+      {{- range .Params.credentials }}
+        {{ partial "badge.html" . }}
+      {{- end }}
+      {{- if and .Params.credentials .Params.techTags }}
+      <span class="credentials__rule" aria-hidden="true"></span>
+      {{- end }}
+      {{- with .Params.techTags }}
+      <div class="credentials__tags">
+        {{- range . }}{{ partial "tech-tag.html" . }}{{ end }}
+      </div>
+      {{- end }}
+    </div>
+    {{- end }}
+
+  </div>
+</section>

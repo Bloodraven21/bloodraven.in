@@ -1,0 +1,95 @@
+# Single Hugo config for the site.
+#
+# NOTE: this repo previously carried both `hugo.toml` and `config.yaml`.
+# Hugo only ever read `hugo.toml` (it takes precedence), so `config.yaml`
+# — including its menu and `goldmark.unsafe` setting — was dead weight.
+# Both have been merged here so there is exactly one place to look.
+#
+# `baseURL` and `title` are carried over verbatim from the config that was
+# actually live, so canonical URLs and feed titles do not change.
+
+baseURL: 'https://www.bloodraven.in/'
+languageCode: 'en-us'
+title: 'Ishan Jain'
+publishDir: "public"
+
+enableRobotsTXT: true
+
+params:
+  author: "Ishan Jain"
+  description: "My Corner of the Internet"
+  # Used for the homepage <title> and Open Graph metadata (plan §24).
+  role: "Cloud & Platform Engineer"
+  siteDescription: >-
+    Ishan Jain — Cloud & Platform Engineer writing and speaking about
+    Kubernetes, cloud platforms, observability and developer tooling.
+
+  # Category filter chips on /writing/. A chip is only rendered when at least
+  # one post actually carries that tag or category, so the bar never lies.
+  writingFilters:
+    - Kubernetes
+    - Cloud
+    - DevOps
+    - Databases
+    - Observability
+    - Valkey
+    - Kafka
+
+  # Posts longer than this get a table of contents.
+  tocMinWords: 900
+
+  # Set this to show a "Currently" column in the footer. Left unset on
+  # purpose — the redesign does not invent copy for it.
+  # currently: "Working on ..."
+
+menu:
+  main:
+    - name: "Home"
+      url: "/"
+      weight: 1
+    - name: "Writing"
+      url: "/writing/"
+      weight: 2
+    - name: "Talks"
+      url: "/talks/"
+      weight: 3
+
+markup:
+  goldmark:
+    renderer:
+      # Authored inline HTML (e.g. the <br> tags in the EKS Fargate post)
+      # renders instead of being replaced by "raw HTML omitted".
+      unsafe: true
+    parser:
+      attribute:
+        block: true
+  highlight:
+    noClasses: false
+    lineNos: false
+    tabWidth: 2
+    guessSyntax: false
+  tableOfContents:
+    startLevel: 2
+    endLevel: 3
+    ordered: false
+
+taxonomies:
+  tag: tags
+  category: categories
+
+# The section feed used to live at /blogs/index.xml. The section is now
+# /writing/, so this extra output keeps that old feed URL alive and in sync
+# instead of leaving subscribers on a 404. Rendered by
+# layouts/index.blogsrss.xml and declared in content/_index.md `outputs`.
+outputFormats:
+  blogsrss:
+    mediaType: application/rss+xml
+    baseName: index
+    path: blogs
+    rel: alternate
+    isPlainText: false
+
+sitemap:
+  changefreq: weekly
+  priority: 0.5
+  filename: sitemap.xml

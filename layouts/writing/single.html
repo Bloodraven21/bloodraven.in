@@ -1,0 +1,52 @@
+{{ define "main" }}
+{{- $cat := "" -}}
+{{- with .Params.categories }}{{ $cat = index . 0 }}{{ end -}}
+{{- if not $cat }}{{ with .Params.tags }}{{ $cat = index . 0 }}{{ end }}{{ end -}}
+
+<article>
+  <div class="container container--prose">
+    <header class="article-header">
+      {{- with $cat }}<p class="eyebrow">{{ . }}</p>{{ end }}
+      <h1>{{ .Title }}</h1>
+
+      {{- with .Description }}<p class="article-header__desc">{{ . }}</p>{{ end }}
+
+      <p class="article-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{{ .ReadingTime }} min read</span>
+        {{- with .Params.coauthors }}
+        <span class="sep" aria-hidden="true">·</span>
+        <span>With
+          {{- range $i, $c := . }}{{ if $i }},{{ end }} {{ $c.name }}{{ end -}}
+        </span>
+        {{- end }}
+      </p>
+    </header>
+
+    <div class="article-body">
+      {{ partial "toc.html" . }}
+      <div class="prose">
+        {{ .Content }}
+      </div>
+    </div>
+
+    <footer class="article-footer">
+      {{- with .Params.tags }}
+      <ul class="tag-list">
+        {{- range . }}
+        <li>{{ partial "tech-tag.html" (dict "label" . "url" (printf "/tags/%s/" (urlize .))) }}</li>
+        {{- end }}
+      </ul>
+      {{- end }}
+      <p class="share-links">
+        <a class="res-link"
+           href="https://x.com/intent/tweet?text={{ .Title | urlquery }}&url={{ .Permalink | urlquery }}"
+           rel="noopener" target="_blank">{{ partial "icon.html" "x" }}Share</a>
+      </p>
+    </footer>
+
+    {{ partial "pager.html" . }}
+  </div>
+</article>
+{{ end }}

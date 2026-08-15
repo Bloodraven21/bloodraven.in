@@ -1,0 +1,149 @@
+/* ==========================================================================
+   Design tokens
+   Single source of truth for the purple system. Change values here, never
+   hard-code a colour anywhere else in the stylesheet.
+   ========================================================================== */
+
+:root {
+  /* --- Surfaces ---------------------------------------------------------- */
+  --bg: #080810;
+  --bg-elevated: #0d0d18;
+  --surface: #11111f;
+  --surface-2: #161629;
+
+  /* --- Lines ------------------------------------------------------------- */
+  --border: #25243a;
+  --border-hover: #3a315a;
+
+  /* --- Text -------------------------------------------------------------- */
+  --text: #f2f0f7;
+  --text-muted: #a6a3b3;
+  --text-subtle: #8b8799;
+
+  /* --- Accent (the only strong colour on the site) ------------------------ */
+  --purple: #9b5cff;
+  --purple-dark: #6d35c9;
+  --purple-soft: #c39bff;
+  --purple-glow: rgba(155, 92, 255, 0.18);
+  --purple-faint: rgba(155, 92, 255, 0.08);
+
+  /* --- Code panels stay dark in both themes (deliberate) ------------------ */
+  --code-bg: #0b0b16;
+  --code-border: #222134;
+  --code-fg: #d7d3e6;
+
+  /* --- Header ------------------------------------------------------------ */
+  --header-bg: rgba(13, 13, 24, 0.82);
+  --header-h: 3.75rem;
+
+  /* --- Typography -------------------------------------------------------- */
+  --font-heading: "Space Grotesk", "Inter", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+    Consolas, "Liberation Mono", monospace;
+
+  /* Fluid type scale — min at 360px, max at 1200px */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 1rem;
+  --fs-md: 1.0625rem;
+  --fs-lg: clamp(1.0625rem, 0.99rem + 0.33vw, 1.25rem);
+  --fs-xl: clamp(1.25rem, 1.13rem + 0.5vw, 1.5rem);
+  --fs-2xl: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --fs-3xl: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
+  --fs-hero: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
+
+  --lh-tight: 1.08;
+  --lh-snug: 1.3;
+  --lh-normal: 1.6;
+  --lh-prose: 1.75;
+
+  --tracking-wide: 0.08em;
+  --tracking-wider: 0.14em;
+
+  /* --- Spacing scale ----------------------------------------------------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 2.5rem;
+  --space-8: 3rem;
+  --space-9: 4rem;
+  --space-10: 5rem;
+  --space-11: 7rem;
+
+  /* Vertical rhythm between major homepage/section blocks */
+  --section-gap: clamp(3rem, 1.6rem + 4vw, 5.5rem);
+
+  /* --- Radius ------------------------------------------------------------ */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* --- Layout ------------------------------------------------------------ */
+  --width-page: 1160px;
+  --width-narrow: 60rem;  /* single-column lists: writing, talks */
+  --width-prose: 46rem;   /* ~736px — the 720–800px reading measure */
+  --gutter: clamp(1.125rem, 0.6rem + 2.2vw, 2.5rem);
+
+  /* --- Elevation --------------------------------------------------------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 12px 32px -12px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 0 1px var(--border-hover), 0 8px 30px -12px var(--purple-glow);
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur: 200ms;
+  --dur-slow: 380ms;
+
+  /* Entrance motion is deliberately slower and softer than interaction
+     motion. The expo-out curve settles rather than stops, which is what
+     makes a page load read as calm instead of bouncy. See 07-motion.css. */
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-enter: 950ms;      /* first-paint choreography */
+  --dur-reveal: 1000ms;    /* scroll reveal, further down the page */
+  --enter-step: 110ms;     /* gap between staggered siblings */
+  --enter-rise: 20px;      /* how far an entering element travels */
+
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------------
+   Light theme — opt-in only, via the header toggle. The site is dark by
+   default because the design direction is a dark technical aesthetic.
+   Only the token values change; no component rule needs to know about this.
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  --bg: #fbfafd;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #f4f2f9;
+
+  --border: #e4e0ee;
+  --border-hover: #c3b3e6;
+
+  --text: #17141f;
+  --text-muted: #55516a;
+  --text-subtle: #6e6a82;
+
+  --purple: #6d35c9;
+  --purple-dark: #4e1f9e;
+  --purple-soft: #5b23b8;
+  --purple-glow: rgba(109, 53, 201, 0.14);
+  --purple-faint: rgba(109, 53, 201, 0.06);
+
+  --header-bg: rgba(255, 255, 255, 0.85);
+
+  --shadow-sm: 0 1px 2px rgba(23, 20, 31, 0.06);
+  --shadow: 0 12px 32px -14px rgba(23, 20, 31, 0.22);
+  --shadow-glow: 0 0 0 1px var(--border-hover), 0 8px 26px -14px var(--purple-glow);
+
+  color-scheme: light;
+}

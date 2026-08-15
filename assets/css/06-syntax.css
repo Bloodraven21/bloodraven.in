@@ -1,0 +1,118 @@
+/* ==========================================================================
+   Syntax highlighting (Chroma classes)
+
+   Code panels stay dark in both themes on purpose — a code block is a
+   terminal surface, not page chrome. The palette is deliberately narrow:
+   purple leads, with three muted support hues so highlighting stays
+   readable without turning into a rainbow.
+   ========================================================================== */
+
+.chroma {
+  color: var(--code-fg);
+  background: transparent;
+}
+
+/* Structure */
+.chroma .lnlinks { outline: none; text-decoration: none; color: inherit; }
+.chroma .lntd { vertical-align: top; padding: 0; margin: 0; border: 0; }
+.chroma .lntable { border-spacing: 0; padding: 0; margin: 0; border: 0; width: 100%; }
+.chroma .line { display: flex; }
+.chroma .cl { display: block; }
+.chroma .hl { background: rgba(155, 92, 255, 0.12); display: block; }
+.chroma .ln,
+.chroma .lnt {
+  white-space: pre;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-right: 0.9em;
+  padding: 0 0.4em;
+  color: #565270;
+}
+
+/* Keywords — purple */
+.chroma .k,
+.chroma .kp,
+.chroma .kr,
+.chroma .kd,
+.chroma .kt,
+.chroma .kn,
+.chroma .nt { color: #c39bff; }
+.chroma .kc { color: #e8b77a; }
+
+/* Names — lavender blue for anything callable/addressable */
+.chroma .na,
+.chroma .nd,
+.chroma .nf,
+.chroma .fm,
+.chroma .nb,
+.chroma .bp,
+.chroma .nl,
+.chroma .ni { color: #8fb8ff; }
+.chroma .nc,
+.chroma .no,
+.chroma .nn,
+.chroma .py,
+.chroma .ne { color: #e8b77a; }
+.chroma .nv,
+.chroma .vc,
+.chroma .vg,
+.chroma .vi,
+.chroma .vm,
+.chroma .n,
+.chroma .nx,
+.chroma .p,
+.chroma .x,
+.chroma .l,
+.chroma .ld,
+.chroma .g,
+.chroma .w { color: inherit; }
+
+/* Strings — soft teal */
+.chroma .s,
+.chroma .sb,
+.chroma .sc,
+.chroma .s2,
+.chroma .s1,
+.chroma .si,
+.chroma .sx,
+.chroma .ss,
+.chroma .sr,
+.chroma .sa { color: #7bd4b0; }
+.chroma .dl,
+.chroma .se { color: #8fb8ff; }
+.chroma .sd,
+.chroma .sh { color: #7d7896; font-style: italic; }
+
+/* Numbers — amber */
+.chroma .m,
+.chroma .mb,
+.chroma .mf,
+.chroma .mh,
+.chroma .mi,
+.chroma .il,
+.chroma .mo { color: #e8b77a; }
+
+/* Operators — deliberately quiet */
+.chroma .o,
+.chroma .ow { color: #9c97b5; }
+
+/* Comments */
+.chroma .c,
+.chroma .ch,
+.chroma .cm,
+.chroma .c1,
+.chroma .cs,
+.chroma .cp,
+.chroma .cpf { color: #7d7896; font-style: italic; }
+
+/* Diff / generic */
+.chroma .err,
+.chroma .gr,
+.chroma .gt { color: #ff8fa8; }
+.chroma .gd { color: #ff8fa8; background: rgba(255, 143, 168, 0.09); }
+.chroma .gi { color: #7bd4b0; background: rgba(123, 212, 176, 0.09); }
+.chroma .gh,
+.chroma .gu { color: #c39bff; font-weight: 600; }
+.chroma .ge { font-style: italic; }
+.chroma .gs { font-weight: 600; }
+.chroma .gl { text-decoration: underline; }

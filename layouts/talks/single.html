@@ -1,0 +1,74 @@
+{{ define "main" }}
+{{- $status := partial "talk-status.html" . -}}
+<article>
+  <div class="container container--prose">
+
+    <header class="article-header">
+      <p class="eyebrow">Talk</p>
+      <h1>{{ .Title }}</h1>
+      <p class="article-meta">
+        <span class="status status--{{ $status }}">{{ upper $status }}</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      </p>
+    </header>
+
+    <dl class="talk-meta">
+      {{- with .Params.event }}
+      <div>
+        <dt>Event</dt>
+        <dd>
+          {{- with $.Params.event_url -}}
+            <a href="{{ . }}" rel="noopener" target="_blank">{{ $.Params.event }}</a>
+          {{- else -}}
+            {{ . }}
+          {{- end -}}
+        </dd>
+      </div>
+      {{- end }}
+      {{- with .Params.location }}
+      <div><dt>Location</dt><dd>{{ . }}</dd></div>
+      {{- end }}
+      <div>
+        <dt>Date</dt>
+        <dd><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></dd>
+      </div>
+      <div><dt>Speaker</dt><dd>{{ site.Params.author }}</dd></div>
+    </dl>
+
+    {{- if .Content }}
+    <div class="prose">{{ .Content }}</div>
+    {{- end }}
+
+    {{- $hasLinks := or .Params.slides .Params.video .Params.recording
+                        .Params.github .Params.repository .Params.event_url }}
+    {{- if $hasLinks }}
+    <div style="margin-top:var(--space-6)">
+      <p class="eyebrow" style="margin-bottom:var(--space-3)">Resources</p>
+      {{ partial "talk-links.html" . }}
+    </div>
+    {{- end }}
+
+    {{- /* Related articles: posts sharing a tag with this talk. Renders
+           nothing unless the talk actually carries tags. */ -}}
+    {{- with .Params.tags }}
+      {{- $related := slice }}
+      {{- range site.RegularPages }}
+        {{- if and (eq .Section "writing") (intersect (.Params.tags | default slice) $) }}
+          {{- $related = $related | append . }}
+        {{- end }}
+      {{- end }}
+      {{- with first 3 $related }}
+      <div style="margin-top:var(--space-8)">
+        <p class="eyebrow" style="margin-bottom:var(--space-4)">Related writing</p>
+        <div class="article-list">
+          {{- range . }}{{ partial "article-card.html" (dict "page" .) }}{{ end }}
+        </div>
+      </div>
+      {{- end }}
+    {{- end }}
+
+    {{ partial "pager.html" . }}
+  </div>
+</article>
+{{ end }}

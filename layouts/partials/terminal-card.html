@@ -1,0 +1,22 @@
+{{- /* Optional hero terminal card. Driven entirely by the `terminal` block in
+       content/_index.md; delete that block to remove the card.
+       {{ partial "terminal-card.html" .Params.terminal }} */ -}}
+{{- $t := . -}}
+{{- with $t.blocks }}
+<div class="terminal" aria-hidden="true">
+  <div class="terminal__bar">
+    <span class="terminal__dot"></span>
+    <span class="terminal__dot"></span>
+    <span class="terminal__dot"></span>
+    {{- with $t.title }}<span class="terminal__title">{{ . }}</span>{{ end }}
+  </div>
+  <pre class="terminal__body"><code>{{- range $i, $b := . -}}
+{{- if $i }}<span class="terminal__spacer"></span>{{ end -}}
+<span class="terminal__line"><span class="terminal__prompt">$ </span><span class="terminal__cmd">{{ $b.cmd }}</span></span>
+{{- range $b.out -}}
+<span class="terminal__line terminal__out{{ if $b.accent }} terminal__out--accent{{ end }}">{{ . }}</span>
+{{- end -}}
+{{- end -}}
+<span class="terminal__line"><span class="terminal__prompt">$ </span><span class="terminal__caret"></span></span></code></pre>
+</div>
+{{- end }}

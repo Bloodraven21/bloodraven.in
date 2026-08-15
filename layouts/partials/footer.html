@@ -1,13 +1,64 @@
-<footer>
-    <div class="social-links">
-        <h3>Connect with me:</h3>
-        <div class="socials">
-            <a href="https://github.com/bloodraven21" target="_blank">GitHub</a>
-            <a href="https://www.instagram.com/bloodraven.2112" target="_blank">Instagram</a>
-            <a href="https://linkedin.com/in/ishan-jain21" target="_blank">LinkedIn</a>
-            <a href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target="_blank">Spotify</a>
-            <a href="https://x.com/bloodravendev" target="_blank">Twitter</a>
-            <!-- Add more social links as needed -->
-        </div>
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+
+      <div class="footer-col">
+        <h2>Let&rsquo;s connect</h2>
+        {{ partial "social-links.html" (dict "style" "list") }}
+      </div>
+
+      {{- /* "Currently" is only rendered once there is real copy to put in it
+             (set `currently` in config params). Until then the slot carries
+             site navigation rather than invented content. */ -}}
+      {{- with site.Params.currently }}
+      <div class="footer-col">
+        <h2>Currently</h2>
+        <div class="footer-note">{{ . | markdownify }}</div>
+      </div>
+      {{- else }}
+      <div class="footer-col">
+        <h2>Explore</h2>
+        <ul class="footer-links">
+          {{- range site.Menus.main }}
+            {{- if ne .URL "/" }}
+          <li><a href="{{ .URL | relLangURL }}">{{ .Name }}</a></li>
+            {{- end }}
+          {{- end }}
+          <li><a href="{{ "recommendations/" | relURL }}">Recommendations</a></li>
+          <li><a href="{{ "socials/" | relURL }}">Socials</a></li>
+        </ul>
+      </div>
+      {{- end }}
+
+      <div class="footer-col">
+        <h2>Built with</h2>
+        <ul class="footer-links">
+          <li>
+            <a href="https://gohugo.io/" rel="noopener" target="_blank">
+              {{ partial "icon.html" "zap" }}<span>Hugo</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ "index.xml" | relURL }}">
+              {{ partial "icon.html" "rss" }}<span>RSS feed</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://calendly.com/ishanij10115" rel="noopener" target="_blank">
+              {{ partial "icon.html" "calendar" }}<span>Book a 15-minute fireside chat</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
     </div>
+
+    <div class="footer-bottom">
+      <span>&copy; {{ now.Format "2006" }} {{ site.Params.author }}</span>
+      <span class="footer-meta">
+        <a href="{{ "sitemap.xml" | relURL }}">Sitemap</a>
+        <a href="{{ "index.xml" | relURL }}">RSS</a>
+      </span>
+    </div>
+  </div>
 </footer>
