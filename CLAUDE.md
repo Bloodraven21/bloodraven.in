@@ -40,7 +40,6 @@ Custom Hugo site with **no theme** — every template is hand-written in `layout
   `github`, `video`, optional `location`. `status` is *derived from the date*
   (future = upcoming) unless set explicitly. Previously `data/talks.yaml`.
 - `recommendations/`, `socials/` — kept from the original site.
-- `about/` — the long-form intro that used to live in `content/_index.md`.
 - `_index.md` — homepage *data only*: hero copy, credentials, tech tags, terminal card
   and the "What I work on" list all live in its front matter, not in templates.
 
@@ -80,5 +79,5 @@ Article bodies, titles, dates, descriptions, tags and links are the source of tr
 rewritten by template or design work. Cards fall back to a page's own Hugo summary rather than
 inventing copy; sections with no content render an empty state instead of placeholder items.
 
-Nav is Home / Writing / Talks / About. `/recommendations/` and `/socials/` stay reachable from
+Nav is Home / Writing / Talks. `/recommendations/` and `/socials/` stay reachable from
 the footer.

@@ -8,7 +8,7 @@
        On single pages the template already renders that title as the page's
        H1, so a body-level H1 is demoted to H2 to keep one H1 per document.
        Only the element name changes — the heading text is untouched — and
-       section pages (/about/, which has no template H1 of its own) are left
+       section pages, which have no template H1 of their own, are left
        alone. */ -}}
 {{- $level := .Level -}}
 {{- if and (eq $level 1) (eq .Page.Kind "page") }}{{ $level = 2 }}{{ end -}}

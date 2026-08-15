@@ -7,16 +7,13 @@ title: "Welcome to BloodRaven"
 # Everything the homepage renders lives here, not in the templates — edit this
 # file to change the hero, the credential row, the terminal card or the
 # "What I work on" strip.
-#
-# The long-form "About Me" copy that used to sit in this file was moved,
-# unchanged, to content/about/_index.md when the site was restructured.
 # ---------------------------------------------------------------------------
 
 hero:
   greeting: "Hi, I'm"
   name: "Ishan Jain."
-  role: "Cloud & Platform Engineer."
-  tagline: "Kubernetes enthusiast. Open source contributor."
+  role: "Devops & SRE Engineer."
+  tagline: "Devops and Coffee enthusiast. Open source Maintainer."
   lede: >-
     I build, operate, and talk about reliable infrastructure, distributed
     systems, Kubernetes, cloud platforms, and developer tooling.

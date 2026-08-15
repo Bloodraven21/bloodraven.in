@@ -53,9 +53,6 @@ menu:
     - name: "Talks"
       url: "/talks/"
       weight: 3
-    - name: "About"
-      url: "/about/"
-      weight: 4
 
 markup:
   goldmark:
