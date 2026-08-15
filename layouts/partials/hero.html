@@ -4,7 +4,7 @@
   <div class="container">
     <div class="hero__grid">
 
-      <div class="hero__text reveal">
+      <div class="hero__text">
         {{- with $h.greeting }}<p class="hero__greeting">{{ . }}</p>{{ end }}
         <h1 class="hero__name">{{ $h.name | default site.Params.author }}</h1>
         {{- with $h.role }}<p class="hero__role">{{ . }}</p>{{ end }}
@@ -28,7 +28,7 @@
       </div>
 
       {{- with .Params.terminal }}
-      <div class="hero__aside reveal reveal-2">
+      <div class="hero__aside">
         {{ partial "terminal-card.html" . }}
       </div>
       {{- end }}
@@ -36,7 +36,7 @@
     </div>
 
     {{- if or .Params.credentials .Params.techTags }}
-    <div class="credentials reveal reveal-3">
+    <div class="credentials">
       {{- range .Params.credentials }}
         {{ partial "badge.html" . }}
       {{- end }}

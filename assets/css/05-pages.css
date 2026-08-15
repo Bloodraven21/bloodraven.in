@@ -481,27 +481,4 @@
   color: var(--text-muted);
 }
 
-/* ==========================================================================
-   Page-load reveal — purely decorative, skipped for reduced motion
-   ========================================================================== */
-
-.reveal {
-  opacity: 0;
-  transform: translateY(8px);
-  animation: reveal-in var(--dur-slow) var(--ease) forwards;
-}
-
-.reveal-2 {
-  animation-delay: 60ms;
-}
-
-.reveal-3 {
-  animation-delay: 120ms;
-}
-
-@keyframes reveal-in {
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
+/* Page-load motion lives in 07-motion.css. */

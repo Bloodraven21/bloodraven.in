@@ -66,7 +66,7 @@ capabilities:
   - title: "Cloud"
     icon: "cloud"
     description: ""
-  - title: "Platform Engineering"
+  - title: "Site Reliability Engineering"
     icon: "layers"
     description: ""
   - title: "Observability"

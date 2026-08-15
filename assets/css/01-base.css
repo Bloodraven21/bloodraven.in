@@ -236,9 +236,4 @@ pre {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-
-  .reveal {
-    opacity: 1 !important;
-    transform: none !important;
-  }
 }
