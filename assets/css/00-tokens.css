@@ -107,10 +107,10 @@
      motion. The expo-out curve settles rather than stops, which is what
      makes a page load read as calm instead of bouncy. See 07-motion.css. */
   --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-enter: 600ms;      /* first-paint choreography */
-  --dur-reveal: 700ms;     /* scroll reveal, further down the page */
-  --enter-step: 60ms;      /* gap between staggered siblings */
-  --enter-rise: 14px;      /* how far an entering element travels */
+  --dur-enter: 950ms;      /* first-paint choreography */
+  --dur-reveal: 1000ms;    /* scroll reveal, further down the page */
+  --enter-step: 110ms;     /* gap between staggered siblings */
+  --enter-rise: 20px;      /* how far an entering element travels */
 
   color-scheme: dark;
 }

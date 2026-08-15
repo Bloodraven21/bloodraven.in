@@ -65,10 +65,10 @@ content in a hidden state. *Scroll reveal* uses the `.reveal` / `.reveal-in` pai
 hidden class is added **by `site.js`, never by the stylesheet** — with JS blocked, nothing is
 ever invisible. Do not move `.reveal { opacity: 0 }` behind a plain `html.js` gate; that
 reintroduces the blank-page failure mode. Only `opacity` and `transform` are animated, which
-keeps CLS at 0. Timing lives in `00-tokens.css` (`--dur-enter`, `--enter-step`, `--enter-rise`);
-the stagger costs roughly 250–300ms of FCP/LCP, so shorten those two values rather than adding
-new animations if that budget matters. The class is `.reveal`, not `.sr` — Chroma owns `.sr`
-(String.Regex) inside code blocks.
+keeps CLS at 0. Timing lives in `00-tokens.css` (`--dur-enter`, `--enter-step`, `--enter-rise`) —
+change the pace there, not in `07-motion.css`, whose hardcoded values are offsets tuned to sit
+against those tokens. The whole load choreography runs about 2.2s. The class is `.reveal`, not
+`.sr` — Chroma owns `.sr` (String.Regex) inside code blocks.
 
 **JavaScript:** one file, `assets/js/site.js`, strictly progressive enhancement (theme toggle,
 mobile nav, copy-code buttons, table wrapping, filter chips, scroll reveal). Every page works

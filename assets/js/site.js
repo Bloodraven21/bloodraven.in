@@ -198,7 +198,7 @@
             return a.boundingClientRect.top - b.boundingClientRect.top;
           })
           .forEach(function (e, i) {
-            e.target.style.animationDelay = Math.min(i, 5) * 70 + "ms";
+            e.target.style.animationDelay = Math.min(i, 5) * 120 + "ms";
             revealNow(e.target);
             io.unobserve(e.target);
           });

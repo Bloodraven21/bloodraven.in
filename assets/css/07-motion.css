@@ -120,15 +120,15 @@
    -------------------------------------------------------------------------- */
 
 .site-header {
-  animation: enter-drop 520ms var(--ease-enter) backwards;
+  animation: enter-drop 800ms var(--ease-enter) backwards;
 }
 
 /* The nav collapses behind a toggle below this width, where an entrance
    animation would fight the open/close transition. */
 @media (min-width: 62rem) {
   .site-header .nav-list > li {
-    animation: enter-fade 500ms var(--ease-enter) backwards;
-    animation-delay: calc(160ms + var(--enter-i, 0) * 45ms);
+    animation: enter-fade 700ms var(--ease-enter) backwards;
+    animation-delay: calc(260ms + var(--enter-i, 0) * 70ms);
   }
 
   .site-header .nav-list > li:nth-child(1) { --enter-i: 0; }
@@ -146,26 +146,26 @@
    -------------------------------------------------------------------------- */
 
 .hero::before {
-  animation: enter-glow 1400ms var(--ease-enter) backwards;
+  animation: enter-glow 2200ms var(--ease-enter) backwards;
 }
 
 .hero__text > * {
-  --enter-rise: 16px;
+  --enter-rise: 22px;
 }
 
 .hero__aside {
-  animation: enter-card 760ms var(--ease-enter) 200ms backwards;
+  animation: enter-card 1150ms var(--ease-enter) 320ms backwards;
 }
 
 .credentials {
-  animation: enter-rise var(--dur-enter) var(--ease-enter) 400ms backwards;
+  animation: enter-rise var(--dur-enter) var(--ease-enter) 720ms backwards;
 }
 
 /* Terminal lines print rather than rise: a tighter step, no travel. The card
    is aria-hidden, so this is decorative in the strictest sense. */
 .terminal__body code > * {
-  animation: enter-fade 260ms linear backwards;
-  animation-delay: calc(560ms + var(--enter-i, 0) * 34ms);
+  animation: enter-fade 340ms linear backwards;
+  animation-delay: calc(900ms + var(--enter-i, 0) * 55ms);
 }
 
 .terminal__body code > *:nth-child(1)  { --enter-i: 0; }
@@ -191,7 +191,7 @@
 
 /* The caret should not blink until the line it sits on has printed. */
 .terminal__caret {
-  animation-delay: 1250ms;
+  animation-delay: 2100ms;
 }
 
 /* --------------------------------------------------------------------------
@@ -204,7 +204,7 @@
 
 .page-header > *,
 .article-header > * {
-  --enter-rise: 12px;
+  --enter-rise: 24px;
 }
 
 /* --------------------------------------------------------------------------
@@ -232,7 +232,7 @@
 
 .article-body.reveal,
 .prose.reveal {
-  --enter-rise: 10px;
+  --enter-rise: 14px;
 }
 
 /* --------------------------------------------------------------------------
