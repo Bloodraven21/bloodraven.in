@@ -1,0 +1,10 @@
+{{- /* Table of contents for long articles only.
+       Threshold: params.tocMinWords in hugo.yaml.
+       {{ partial "toc.html" . }} */ -}}
+{{- $min := site.Params.tocMinWords | default 900 -}}
+{{- if and (ge .WordCount $min) (gt (len .TableOfContents) 60) }}
+<details class="toc" open>
+  <summary>On this page</summary>
+  <nav aria-label="Table of contents">{{ .TableOfContents }}</nav>
+</details>
+{{- end }}

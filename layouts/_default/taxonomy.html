@@ -1,0 +1,26 @@
+{{ define "main" }}
+<div class="container">
+
+  <header class="page-header">
+    <p class="eyebrow">{{ humanize .Data.Singular }}</p>
+    <h1>{{ .Title }}</h1>
+    <p class="page-header__lede">
+      {{ len .Pages }} {{ cond (eq (len .Pages) 1) "post" "posts" }} tagged
+      &ldquo;{{ .Title }}&rdquo;.
+    </p>
+  </header>
+
+  <div class="article-list">
+    {{- range .Pages }}
+      {{ partial "article-card.html" (dict "page" . "heading" "h2") }}
+    {{- end }}
+  </div>
+
+  <p style="margin-top:var(--space-7)">
+    <a class="link-arrow" href="{{ "writing/" | relURL }}">
+      All writing {{ partial "icon.html" "arrow-right" }}
+    </a>
+  </p>
+
+</div>
+{{ end }}

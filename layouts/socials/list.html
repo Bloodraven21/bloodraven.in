@@ -1,12 +1,16 @@
 {{ define "main" }}
-<div class="post-header">
+<div class="container">
+
+  <header class="page-header">
+    <p class="eyebrow">Elsewhere</p>
     <h1>{{ .Title }}</h1>
-</div>
-<div class="socials-list">
-    <a class="social-link-card" href="https://linkedin.com/in/ishan-jain21" target="_blank">LinkedIn</a>
-    <a class="social-link-card" href="https://github.com/bloodraven21" target="_blank">GitHub</a>
-    <a class="social-link-card" href="https://open.spotify.com/user/ombme5qsyz04e8n48iq44wbfz?si=DFRZ2KWrRJCXE7xWZItmrg" target="_blank">Spotify</a>
-    <a class="social-link-card" href="https://www.instagram.com/bloodraven.2112" target="_blank">Instagram</a>
-    <a class="social-link-card" href="https://x.com/bloodravendev" target="_blank">Twitter</a>
+    <p class="page-header__lede">Places you can find me.</p>
+  </header>
+
+  {{- /* Links come from data/social.yaml, which carries every URL that used
+         to be hard-coded in this template, in footer.html and in
+         content/socials/_index.md. Edit that one file to change them. */ -}}
+  {{ partial "social-links.html" (dict "style" "tiles") }}
+
 </div>
 {{ end }}

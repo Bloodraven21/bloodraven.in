@@ -1,0 +1,18 @@
+{{- /* Adds a permalink anchor to every heading in article bodies.
+       The heading text itself is passed through untouched.
+
+       The "#" is drawn by CSS rather than being a text node, so it never
+       leaks into .Summary, .Plain, the RSS feed or a screen reader.
+
+       One existing post opens its body by repeating its own title as an H1.
+       On single pages the template already renders that title as the page's
+       H1, so a body-level H1 is demoted to H2 to keep one H1 per document.
+       Only the element name changes — the heading text is untouched — and
+       section pages (/about/, which has no template H1 of its own) are left
+       alone. */ -}}
+{{- $level := .Level -}}
+{{- if and (eq $level 1) (eq .Page.Kind "page") }}{{ $level = 2 }}{{ end -}}
+<h{{ $level }} id="{{ .Anchor }}">
+  {{- .Text | safeHTML -}}
+  <a class="heading-anchor" href="#{{ .Anchor }}" aria-label="Link to this section"></a>
+</h{{ $level }}>
