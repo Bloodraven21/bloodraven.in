@@ -1,0 +1,10 @@
+{{- /* A credential / identity pill.
+       {{ partial "badge.html" "Docker Captain" }}
+       {{ partial "badge.html" (dict "label" "Docker Captain" "icon" "star") }} */ -}}
+{{- $label := . -}}
+{{- $icon := "star" -}}
+{{- if reflect.IsMap . -}}
+  {{- $label = .label -}}
+  {{- $icon = .icon | default "star" -}}
+{{- end -}}
+<span class="badge">{{ partial "icon.html" $icon }}{{ $label }}</span>

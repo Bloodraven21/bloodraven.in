@@ -1,0 +1,30 @@
+{{- /* Featured-talk card (homepage). Metadata only — no invented abstract.
+       {{ partial "talk-card.html" (dict "page" $talk "heading" "h3") }} */ -}}
+{{- $p := .page -}}
+{{- $heading := .heading | default "h3" -}}
+{{- $status := partial "talk-status.html" $p -}}
+<article class="card card--feature">
+  <p class="card__kicker">{{ partial "icon.html" "mic" }}Featured talk</p>
+
+  <div class="card__meta">
+    {{- with $p.Params.event }}<span class="cat">{{ . }}</span>{{ end }}
+    <span class="status status--{{ $status }}">{{ upper $status }}</span>
+  </div>
+
+  {{ printf `<%s class="card__title">` $heading | safeHTML }}
+    <a href="{{ $p.RelPermalink }}">{{ $p.Title }}</a>
+  {{ printf "</%s>" $heading | safeHTML }}
+
+  <p class="card__desc">
+    <time datetime="{{ $p.Date.Format "2006-01-02" }}">{{ $p.Date.Format "January 2, 2006" }}</time>
+    {{- with $p.Params.location }} &middot; {{ . }}{{ end }}
+  </p>
+
+  {{ partial "talk-links.html" $p }}
+
+  <div class="card__footer">
+    <a class="link-arrow" href="{{ $p.RelPermalink }}">
+      View details {{ partial "icon.html" "arrow-right" }}
+    </a>
+  </div>
+</article>

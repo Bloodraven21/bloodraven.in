@@ -1,7 +1,113 @@
 {{ define "main" }}
-<div class="intro-section">
-    <div class="intro-content">
-        {{ .Content }}
+
+{{ partial "hero.html" . }}
+
+{{- /* ------------------------------------------------------- What I work on */ -}}
+{{- with .Params.capabilities }}
+<section class="section" aria-labelledby="work-on">
+  <div class="container">
+    {{ partial "section-header.html" (dict
+        "eyebrow" "What I work on"
+        "title" "The stack I live in"
+        "id" "work-on"
+        "level" "h2") }}
+    <div class="capabilities">
+      {{- range . }}
+      <div class="capability">
+        <span class="capability__mark">{{ partial "icon.html" (.icon | default "hexagon") }}</span>
+        <h3>{{ .title }}</h3>
+        {{- with .description }}<p>{{ . }}</p>{{ end }}
+      </div>
+      {{- end }}
     </div>
-</div>
+  </div>
+</section>
+{{- end }}
+
+{{- /* ------------------------------------------------------------- Featured */ -}}
+{{- $posts := where site.RegularPages "Section" "writing" -}}
+{{- $featuredPosts := where $posts "Params.featured" true -}}
+{{- $post := "" -}}
+{{- if $featuredPosts }}{{ $post = index $featuredPosts 0 }}{{ else if $posts }}{{ $post = index $posts 0 }}{{ end -}}
+
+{{- $talks := where site.RegularPages "Section" "talks" -}}
+{{- $upcoming := where $talks "Date" "ge" now -}}
+{{- $talk := "" -}}
+{{- if $upcoming }}{{ $talk = index (sort $upcoming "Date" "asc") 0 }}{{ else if $talks }}{{ $talk = index $talks 0 }}{{ end -}}
+
+{{- if or $post $talk }}
+<section class="section" aria-labelledby="featured">
+  <div class="container">
+    {{ partial "section-header.html" (dict
+        "eyebrow" "Featured"
+        "title" "Latest work"
+        "id" "featured"
+        "level" "h2"
+        "linkURL" "/writing/" "linkLabel" "All writing") }}
+
+    <div class="featured-grid">
+      {{- with $post }}
+      {{- $cat := "" -}}
+      {{- with .Params.categories }}{{ $cat = index . 0 }}{{ end -}}
+      {{- if not $cat }}{{ with .Params.tags }}{{ $cat = index . 0 }}{{ end }}{{ end -}}
+      {{- $desc := partial "page-description.html" . -}}
+      <article class="card card--feature">
+        <p class="card__kicker">{{ partial "icon.html" "file-text" }}Latest article</p>
+        <div class="card__meta">
+          {{- with $cat }}<span class="cat">{{ . }}</span><span class="sep" aria-hidden="true">·</span>{{ end }}
+          <span>{{ .ReadingTime }} min read</span>
+        </div>
+        <h3 class="card__title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        {{- with $desc }}<p class="card__desc">{{ . | truncate 210 }}</p>{{ end }}
+        <div class="card__footer">
+          <time class="card__meta" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+          <span class="link-arrow">Read article {{ partial "icon.html" "arrow-right" }}</span>
+        </div>
+      </article>
+      {{- end }}
+
+      {{- with $talk }}
+        {{ partial "talk-card.html" (dict "page" . "heading" "h3") }}
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{- end }}
+
+{{- /* ----------------------------------------------------------- Open source
+
+  Rendered only when there are real project pages under content/projects/.
+  The redesign does not ship placeholder repositories, and no star or fork
+  counts are hard-coded anywhere.                                          */ -}}
+{{- $projects := where site.RegularPages "Section" "projects" -}}
+{{- $featuredProjects := where $projects "Params.featured" true -}}
+{{- $shown := cond (gt (len $featuredProjects) 0) $featuredProjects $projects -}}
+{{- with first 4 $shown }}
+{{- $gh := "" }}{{ with index (where site.Data.social "icon" "github") 0 }}{{ $gh = .url }}{{ end }}
+<section class="section" aria-labelledby="open-source">
+  <div class="container">
+    {{ partial "section-header.html" (dict
+        "eyebrow" "Open source"
+        "title" "Things I build and maintain"
+        "id" "open-source"
+        "level" "h2"
+        "linkURL" "/projects/" "linkLabel" "All projects") }}
+
+    <div class="grid grid--4">
+      {{- range . }}
+        {{ partial "project-card.html" (dict "page" .) }}
+      {{- end }}
+    </div>
+
+    {{- with $gh }}
+    <p style="margin-top:var(--space-6)">
+      <a class="link-arrow" href="{{ . }}" rel="noopener" target="_blank">
+        View more on GitHub {{ partial "icon.html" "arrow-up-right" }}
+      </a>
+    </p>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+
 {{ end }}

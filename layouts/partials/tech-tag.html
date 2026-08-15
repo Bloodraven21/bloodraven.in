@@ -1,0 +1,14 @@
+{{- /* A single technology / topic tag.
+       {{ partial "tech-tag.html" "Kubernetes" }}
+       {{ partial "tech-tag.html" (dict "label" "Kubernetes" "url" "/tags/kubernetes/") }} */ -}}
+{{- $label := . -}}
+{{- $url := "" -}}
+{{- if reflect.IsMap . -}}
+  {{- $label = .label -}}
+  {{- $url = .url | default "" -}}
+{{- end -}}
+{{- if $url -}}
+<a class="tag" href="{{ $url | relURL }}">{{ $label }}</a>
+{{- else -}}
+<span class="tag">{{ $label }}</span>
+{{- end -}}
