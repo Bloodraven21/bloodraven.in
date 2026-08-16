@@ -19,9 +19,9 @@ params:
   author: "Ishan Jain"
   description: "My Corner of the Internet"
   # Used for the homepage <title> and Open Graph metadata (plan §24).
-  role: "Cloud & Platform Engineer"
+  role: "Devops & SRE Engineer"
   siteDescription: >-
-    Ishan Jain — Cloud & Platform Engineer writing and speaking about
+    Ishan Jain — Devops & SRE  Engineer writing and speaking about
     Kubernetes, cloud platforms, observability and developer tooling.
 
   # Category filter chips on /writing/. A chip is only rendered when at least

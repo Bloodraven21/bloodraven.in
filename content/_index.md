@@ -66,7 +66,7 @@ terminal:
   title: "~/ishan"
   blocks:
     - cmd: "whoami"
-      out: ["ishan"]
+      out: ["ishan jain"]
     - cmd: "cat interests.txt"
       out:
         - "cloud"
